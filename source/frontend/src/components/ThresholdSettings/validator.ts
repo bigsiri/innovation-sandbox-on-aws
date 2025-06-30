@@ -7,6 +7,7 @@ import {
 } from "@amzn/innovation-sandbox-commons/data/lease-template/lease-template";
 import { ThresholdTypes } from "@amzn/innovation-sandbox-frontend/components/ThresholdSettings/constants";
 import { validateNumber } from "@amzn/innovation-sandbox-frontend/helpers/validators";
+import i18n from "@amzn/innovation-sandbox-frontend/i18n";
 
 // Validate the list of thresholds - either return an error message or null if no errors
 export const thresholdValidator = (type: "budget" | "duration") => {
@@ -98,7 +99,7 @@ export const validateThreshold = (
 
   const actionError: string | null = (() => {
     if (!action) {
-      return "Please select an action";
+      return i18n.t('validation.selectAction', { ns: 'common' });
     }
 
     // freeze actions

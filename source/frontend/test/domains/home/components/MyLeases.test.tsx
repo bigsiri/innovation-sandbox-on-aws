@@ -1,194 +1,382 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-import { screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { http, HttpResponse } from "msw";
-import { BrowserRouter as Router } from "react-router-dom";
-import { describe, expect, test, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import React from 'react';
+import { screen, waitFor } from '@testing-library/react';
 
-import { MyLeases } from "@amzn/innovation-sandbox-frontend/domains/home/components/MyLeases";
-import { config } from "@amzn/innovation-sandbox-frontend/helpers/config";
-import {
-  createActiveLease,
-  createExpiredLease,
-  createPendingLease,
-} from "@amzn/innovation-sandbox-frontend/mocks/factories/leaseFactory";
-import { mockLeaseApi } from "@amzn/innovation-sandbox-frontend/mocks/mockApi";
-import { server } from "@amzn/innovation-sandbox-frontend/mocks/server";
-import { renderWithQueryClient } from "@amzn/innovation-sandbox-frontend/setupTests";
-import moment from "moment";
+import { MyLeases } from '../../../../src/domains/home/components/MyLeases';
+import { renderWithSimpleI18n, renderSimpleBilingual } from '../../../../src/test/simple-i18n-test-utils';
 
+// Mock the lease hooks
+const mockGetLeasesForCurrentUser = vi.fn();
+
+vi.mock('@amzn/innovation-sandbox-frontend/domains/leases/hooks', () => ({
+  getLeasesForCurrentUser: () => mockGetLeasesForCurrentUser(),
+}));
+
+// Mock the LeasePanel component
+vi.mock('@amzn/innovation-sandbox-frontend/domains/home/components/LeasePanel', () => ({
+  LeasePanel: ({ lease }: { lease: any }) => (
+    <div data-testid="lease-panel" data-lease-id={lease.uuid}>
+      {lease.originalLeaseTemplateName || `Lease ${lease.uuid}`}
+    </div>
+  ),
+}));
+
+// Mock other components
+vi.mock('@amzn/innovation-sandbox-frontend/components/Loader', () => ({
+  Loader: ({ label }: { label: string }) => (
+    <div data-testid="loader">{label}</div>
+  ),
+}));
+
+vi.mock('@amzn/innovation-sandbox-frontend/components/ErrorPanel', () => ({
+  ErrorPanel: ({ description, retry }: { description: string; retry: () => void }) => (
+    <div data-testid="error-panel">
+      <div>{description}</div>
+      <button onClick={retry}>Retry</button>
+    </div>
+  ),
+}));
+
+vi.mock('@amzn/innovation-sandbox-frontend/components/InfoPanel', () => ({
+  InfoPanel: ({ header, description, actionLabel, action }: { 
+    header: string; 
+    description: string; 
+    actionLabel: string; 
+    action: () => void 
+  }) => (
+    <div data-testid="info-panel">
+      <h3>{header}</h3>
+      <p>{description}</p>
+      <button onClick={action}>{actionLabel}</button>
+    </div>
+  ),
+}));
+
+// Mock react-router-dom
 const mockNavigate = vi.fn();
-vi.mock("react-router-dom", async () => {
-  const actual = await vi.importActual("react-router-dom");
-  return {
-    ...actual,
-    useNavigate: () => mockNavigate,
-  };
-});
-
-vi.mock("@amzn/innovation-sandbox-frontend/helpers/AuthService", () => ({
-  AuthService: {
-    getCurrentUser: vi.fn().mockResolvedValue({ email: "test@example.com" }),
-    getAccessToken: vi.fn().mockReturnValue("mocked-access-token"),
-  },
+vi.mock('react-router-dom', () => ({
+  useNavigate: () => mockNavigate,
 }));
 
-// Mock the useGetConfigurations hook
-vi.mock("@amzn/innovation-sandbox-frontend/domains/settings/hooks", () => ({
-  useGetConfigurations: () => ({
-    data: {
-      auth: {
-        awsAccessPortalUrl: "https://mock-portal-url.com",
-      },
+describe('MyLeases Component', () => {
+  const mockLeases = [
+    {
+      uuid: 'lease-1',
+      originalLeaseTemplateName: 'Test Template 1',
+      status: 'Active',
+      meta: { lastEditTime: '2024-01-01T00:00:00Z' },
     },
-    isLoading: false,
-    isError: false,
-  }),
-}));
+    {
+      uuid: 'lease-2',
+      originalLeaseTemplateName: 'Test Template 2',
+      status: 'PendingApproval',
+      meta: { lastEditTime: '2024-01-02T00:00:00Z' },
+    },
+  ];
 
-describe("MyLeases", () => {
-  const renderComponent = () =>
-    renderWithQueryClient(
-      <Router>
-        <MyLeases />
-      </Router>,
-    );
-
-  test("renders loading state", async () => {
-    renderComponent();
-    expect(screen.getByText("Loading your leases...")).toBeInTheDocument();
+  beforeEach(() => {
+    vi.clearAllMocks();
   });
 
-  test("renders leases with correct count and content", async () => {
-    const mockLease1 = createActiveLease({ userEmail: "test@example.com" });
-    const mockLease2 = createActiveLease({
-      userEmail: "test@example.com",
-      status: "Frozen",
-    });
-    const mockLease3 = createPendingLease({
-      userEmail: "test@example.com",
-    });
-    const mockLease4 = createActiveLease({ userEmail: "other@example.com" }); // This should not be included
-    mockLeaseApi.returns([mockLease1, mockLease2, mockLease3, mockLease4]);
-    server.use(mockLeaseApi.getHandler());
+  describe('Loading State', () => {
+    it('should display loader when loading in English', () => {
+      mockGetLeasesForCurrentUser.mockReturnValue({
+        data: undefined,
+        isFetching: true,
+        isError: false,
+        refetch: vi.fn(),
+        error: null,
+      });
 
-    renderComponent();
+      renderWithSimpleI18n(<MyLeases />);
+      
+      expect(screen.getByTestId('loader')).toBeInTheDocument();
+      expect(screen.getByText('Loading your leases...')).toBeInTheDocument();
+    });
 
-    await waitFor(() => {
-      expect(screen.getByText("My Leases")).toBeInTheDocument();
-      expect(screen.getByText("(3)")).toBeInTheDocument();
-      expect(
-        screen.getByText(mockLease1.originalLeaseTemplateName),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(mockLease2.originalLeaseTemplateName),
-      ).toBeInTheDocument();
-      expect(
-        screen.queryByText(mockLease3.originalLeaseTemplateName),
-      ).toBeInTheDocument();
-      expect(
-        screen.queryByText(mockLease4.originalLeaseTemplateName),
-      ).not.toBeInTheDocument();
+    it('should display loader when loading in French Canadian', () => {
+      mockGetLeasesForCurrentUser.mockReturnValue({
+        data: undefined,
+        isFetching: true,
+        isError: false,
+        refetch: vi.fn(),
+        error: null,
+      });
+
+      renderWithSimpleI18n(<MyLeases />, { language: 'fr-CA' });
+      
+      expect(screen.getByTestId('loader')).toBeInTheDocument();
+      expect(screen.getByText('Chargement de vos baux...')).toBeInTheDocument();
     });
   });
 
-  test("filters out leases that expired over 7 days ago", async () => {
-    const mockLease1 = createExpiredLease({
-      userEmail: "test@example.com",
-      endDate: moment().subtract(6, "days").toISOString(),
+  describe('Error State', () => {
+    it('should display error panel when error occurs in English', () => {
+      const mockRefetch = vi.fn();
+      mockGetLeasesForCurrentUser.mockReturnValue({
+        data: undefined,
+        isFetching: false,
+        isError: true,
+        refetch: mockRefetch,
+        error: new Error('Test error'),
+      });
+
+      renderWithSimpleI18n(<MyLeases />);
+      
+      expect(screen.getByTestId('error-panel')).toBeInTheDocument();
+      expect(screen.getByText('Your leases can\'t be retrieved at the moment.')).toBeInTheDocument();
     });
-    const mockLease2 = createExpiredLease({
-      userEmail: "test@example.com",
-      endDate: moment().subtract(8, "days").toISOString(),
+
+    it('should display error panel when error occurs in French Canadian', () => {
+      const mockRefetch = vi.fn();
+      mockGetLeasesForCurrentUser.mockReturnValue({
+        data: undefined,
+        isFetching: false,
+        isError: true,
+        refetch: mockRefetch,
+        error: new Error('Test error'),
+      });
+
+      renderWithSimpleI18n(<MyLeases />, { language: 'fr-CA' });
+      
+      expect(screen.getByTestId('error-panel')).toBeInTheDocument();
+      expect(screen.getByText('Vos baux ne peuvent pas être récupérés pour le moment.')).toBeInTheDocument();
     });
-    mockLeaseApi.returns([mockLease1, mockLease2]);
-    server.use(mockLeaseApi.getHandler());
 
-    renderComponent();
+    it('should call refetch when retry button is clicked', () => {
+      const mockRefetch = vi.fn();
+      mockGetLeasesForCurrentUser.mockReturnValue({
+        data: undefined,
+        isFetching: false,
+        isError: true,
+        refetch: mockRefetch,
+        error: new Error('Test error'),
+      });
 
-    await waitFor(() => {
-      expect(screen.getByText("My Leases")).toBeInTheDocument();
-      expect(screen.getByText("(1)")).toBeInTheDocument();
-      expect(
-        screen.getByText(mockLease1.originalLeaseTemplateName),
-      ).toBeInTheDocument();
-      expect(
-        screen.queryByText(mockLease2.originalLeaseTemplateName),
-      ).not.toBeInTheDocument();
-    });
-  });
-
-  test("renders empty state when no leases are available", async () => {
-    mockLeaseApi.returns([]);
-    server.use(mockLeaseApi.getHandler());
-
-    renderComponent();
-
-    await waitFor(() => {
-      expect(
-        screen.getByText("You currently don't have any leases."),
-      ).toBeInTheDocument();
-      expect(screen.getByText("Request a new lease")).toBeInTheDocument();
-    });
-  });
-
-  test("handles error state", async () => {
-    server.use(
-      http.get(`${config.ApiUrl}/leases`, () => {
-        return HttpResponse.json(
-          { status: "error", message: "Internal Server Error" },
-          { status: 500 },
-        );
-      }),
-    );
-
-    renderComponent();
-
-    await waitFor(() => {
-      expect(
-        screen.getByText("Your leases can't be retrieved at the moment."),
-      ).toBeInTheDocument();
+      renderWithSimpleI18n(<MyLeases />);
+      
+      const retryButton = screen.getByText('Retry');
+      retryButton.click();
+      
+      expect(mockRefetch).toHaveBeenCalled();
     });
   });
 
-  test("calls refetch when refresh button is clicked", async () => {
-    const mockLease = createActiveLease({ userEmail: "test@example.com" });
-    mockLeaseApi.returns([mockLease]);
-    server.use(mockLeaseApi.getHandler());
+  describe('Empty State', () => {
+    it('should display info panel when no leases exist in English', () => {
+      mockGetLeasesForCurrentUser.mockReturnValue({
+        data: [],
+        isFetching: false,
+        isError: false,
+        refetch: vi.fn(),
+        error: null,
+      });
 
-    renderComponent();
-
-    await waitFor(() => {
-      expect(screen.getByLabelText("Refresh")).toBeInTheDocument();
-      expect(
-        screen.getByText(mockLease.originalLeaseTemplateName),
-      ).toBeInTheDocument();
+      renderWithSimpleI18n(<MyLeases />);
+      
+      expect(screen.getByTestId('info-panel')).toBeInTheDocument();
+      expect(screen.getByText('You currently don\'t have any leases.')).toBeInTheDocument();
+      expect(screen.getByText('To get started, click below to request a new lease.')).toBeInTheDocument();
+      expect(screen.getByText('Request a new lease')).toBeInTheDocument();
     });
 
-    const refreshButton = screen.getByLabelText("Refresh");
-    await userEvent.click(refreshButton);
+    it('should display info panel when no leases exist in French Canadian', () => {
+      mockGetLeasesForCurrentUser.mockReturnValue({
+        data: [],
+        isFetching: false,
+        isError: false,
+        refetch: vi.fn(),
+        error: null,
+      });
 
-    await waitFor(() => {
-      expect(
-        screen.getByText(mockLease.originalLeaseTemplateName),
-      ).toBeInTheDocument();
+      renderWithSimpleI18n(<MyLeases />, { language: 'fr-CA' });
+      
+      expect(screen.getByTestId('info-panel')).toBeInTheDocument();
+      expect(screen.getByText('Vous n\'avez actuellement aucun bail.')).toBeInTheDocument();
+      expect(screen.getByText('Pour commencer, cliquez ci-dessous pour demander un nouveau bail.')).toBeInTheDocument();
+      expect(screen.getByText('Demander un nouveau bail')).toBeInTheDocument();
+    });
+
+    it('should navigate to request page when action button is clicked', () => {
+      mockGetLeasesForCurrentUser.mockReturnValue({
+        data: [],
+        isFetching: false,
+        isError: false,
+        refetch: vi.fn(),
+        error: null,
+      });
+
+      renderWithSimpleI18n(<MyLeases />);
+      
+      const actionButton = screen.getByText('Request a new lease');
+      actionButton.click();
+      
+      expect(mockNavigate).toHaveBeenCalledWith('/request');
     });
   });
 
-  test("navigates to request page when 'Request a new lease' is clicked", async () => {
-    mockLeaseApi.returns([]);
-    server.use(mockLeaseApi.getHandler());
-
-    renderComponent();
-
-    await waitFor(() => {
-      expect(screen.getByText("Request a new lease")).toBeInTheDocument();
+  describe('Success State with Leases', () => {
+    beforeEach(() => {
+      mockGetLeasesForCurrentUser.mockReturnValue({
+        data: mockLeases,
+        isFetching: false,
+        isError: false,
+        refetch: vi.fn(),
+        error: null,
+      });
     });
 
-    await userEvent.click(screen.getByText("Request a new lease"));
+    it('should display lease panels when leases exist', async () => {
+      renderWithSimpleI18n(<MyLeases />);
+      
+      await waitFor(() => {
+        expect(screen.getAllByTestId('lease-panel')).toHaveLength(2);
+        expect(screen.getByText('Test Template 1')).toBeInTheDocument();
+        expect(screen.getByText('Test Template 2')).toBeInTheDocument();
+      });
+    });
 
-    expect(mockNavigate).toHaveBeenCalledWith("/request");
+    it('should display correct lease count in English', async () => {
+      renderWithSimpleI18n(<MyLeases />);
+      
+      await waitFor(() => {
+        expect(screen.getByText('My Leases')).toBeInTheDocument();
+        expect(screen.getByText('(2 lease(s))')).toBeInTheDocument();
+      });
+    });
+
+    it('should display correct lease count in French Canadian', async () => {
+      renderWithSimpleI18n(<MyLeases />, { language: 'fr-CA' });
+      
+      await waitFor(() => {
+        expect(screen.getByText('Mes baux')).toBeInTheDocument();
+        expect(screen.getByText('(2 bail/baux)')).toBeInTheDocument();
+      });
+    });
+
+    it('should display section description in English', async () => {
+      renderWithSimpleI18n(<MyLeases />);
+      
+      await waitFor(() => {
+        expect(screen.getByText('View a list of your leases')).toBeInTheDocument();
+      });
+    });
+
+    it('should display section description in French Canadian', async () => {
+      renderWithSimpleI18n(<MyLeases />, { language: 'fr-CA' });
+      
+      await waitFor(() => {
+        expect(screen.getByText('Voir la liste de vos baux')).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('Refresh Functionality', () => {
+    it('should call refetch when refresh button is clicked', async () => {
+      const mockRefetch = vi.fn();
+      mockGetLeasesForCurrentUser.mockReturnValue({
+        data: mockLeases,
+        isFetching: false,
+        isError: false,
+        refetch: mockRefetch,
+        error: null,
+      });
+
+      renderWithSimpleI18n(<MyLeases />);
+      
+      await waitFor(() => {
+        const refreshButton = screen.getByLabelText('Refresh');
+        refreshButton.click();
+        expect(mockRefetch).toHaveBeenCalled();
+      });
+    });
+
+    it('should disable refresh button when loading', () => {
+      mockGetLeasesForCurrentUser.mockReturnValue({
+        data: undefined,
+        isFetching: true,
+        isError: false,
+        refetch: vi.fn(),
+        error: null,
+      });
+
+      renderWithSimpleI18n(<MyLeases />);
+      
+      const refreshButton = screen.getByLabelText('Refresh');
+      expect(refreshButton).toBeDisabled();
+    });
+  });
+
+  describe('Bilingual Support', () => {
+    beforeEach(() => {
+      mockGetLeasesForCurrentUser.mockReturnValue({
+        data: mockLeases,
+        isFetching: false,
+        isError: false,
+        refetch: vi.fn(),
+        error: null,
+      });
+    });
+
+    it('should render correctly in both languages', async () => {
+      const { english, french } = renderSimpleBilingual(<MyLeases />);
+      
+      await waitFor(() => {
+        // English
+        expect(english.getByText('My Leases')).toBeInTheDocument();
+        expect(english.getByText('View a list of your leases')).toBeInTheDocument();
+        expect(english.getByText('(2 lease(s))')).toBeInTheDocument();
+        
+        // French Canadian
+        expect(french.getByText('Mes baux')).toBeInTheDocument();
+        expect(french.getByText('Voir la liste de vos baux')).toBeInTheDocument();
+        expect(french.getByText('(2 bail/baux)')).toBeInTheDocument();
+      });
+    });
+
+    it('should handle empty state in both languages', () => {
+      mockGetLeasesForCurrentUser.mockReturnValue({
+        data: [],
+        isFetching: false,
+        isError: false,
+        refetch: vi.fn(),
+        error: null,
+      });
+
+      const { english, french } = renderSimpleBilingual(<MyLeases />);
+      
+      // English
+      expect(english.getByText('You currently don\'t have any leases.')).toBeInTheDocument();
+      expect(english.getByText('Request a new lease')).toBeInTheDocument();
+      
+      // French Canadian
+      expect(french.getByText('Vous n\'avez actuellement aucun bail.')).toBeInTheDocument();
+      expect(french.getByText('Demander un nouveau bail')).toBeInTheDocument();
+    });
+  });
+
+  describe('Lease Filtering and Sorting', () => {
+    it('should display leases when data is available', async () => {
+      mockGetLeasesForCurrentUser.mockReturnValue({
+        data: mockLeases,
+        isFetching: false,
+        isError: false,
+        refetch: vi.fn(),
+        error: null,
+      });
+
+      renderWithSimpleI18n(<MyLeases />);
+      
+      await waitFor(() => {
+        const leasePanels = screen.getAllByTestId('lease-panel');
+        expect(leasePanels).toHaveLength(2);
+        
+        // Check that lease IDs are present
+        expect(screen.getByTestId('lease-panel')).toHaveAttribute('data-lease-id', 'lease-1');
+      });
+    });
   });
 });

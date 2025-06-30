@@ -1,0 +1,8 @@
+{
+  "forms": {
+    "addUser": {
+      "emailPlaceholder": "user@example.com",
+      "emailDescription": "Enter the email address of the user to add to this lease. The user must exist in AWS Identity Center and be assigned to an Innovation Sandbox group (User, Manager, or Admin)."
+    }
+  }
+}

@@ -1,0 +1,290 @@
+{
+  "noAccounts": {
+    "title": "It looks like there are no accounts in the account pool.",
+    "description": "Start adding accounts to get started with Innovation Sandbox.",
+    "action": "Add accounts"
+  },
+  "page": {
+    "title": "Accounts",
+    "description": "Manage AWS accounts in the sandbox account pool",
+    "addAccounts": "Add Accounts"
+  },
+  "table": {
+    "title": "Accounts",
+    "columns": {
+      "accountId": "Account ID",
+      "status": "Status",
+      "added": "Added",
+      "lastModified": "Last Modified",
+      "name": "Name",
+      "email": "Email",
+      "access": "Access"
+    }
+  },
+  "forms": {
+    "add": {
+      "title": "Add Accounts",
+      "description": "Register new AWS accounts with the solution",
+      "register": "Register",
+      "refresh": "Refresh",
+      "reviewTitle": "Review Accounts to Register",
+      "reviewDescription": "{{count}} account(s) will be added to the account pool",
+      "warning": {
+        "title": "Warning",
+        "message": "The accounts listed above will be nuked meaning all resources in the account will be deleted permanently.",
+        "disclaimer": "This action cannot be undone!"
+      },
+      "success": "Accounts were successfully registered with the solution and are now in cleanup.",
+      "error": "One or more accounts failed to register, try resubmitting registration.",
+      "errorTitle": "Failed to register accounts"
+    },
+    "manage": {
+      "title": "Manage Account",
+      "description": "Manage account settings and configuration",
+      "save": "Save Changes",
+      "cancel": "Cancel",
+      "success": "Account updated successfully",
+      "error": "Failed to update account"
+    }
+  },
+  "status": {
+    "available": "Available",
+    "active": "Active",
+    "frozen": "Frozen",
+    "cleanup": "Clean Up",
+    "quarantine": "Quarantine",
+    "unknown": "Unknown",
+    "messages": {
+      "cleanup": "This account is being cleaned up and will be ready to use soon.",
+      "cleanupStuck": "The cleanup process may be stuck, please retry.",
+      "cleanupInitiated": "Cleanup initiated:"
+    }
+  },
+  "actions": {
+    "add": "Add Account",
+    "register": "Register",
+    "cleanup": "Clean Up",
+    "eject": "Eject",
+    "freeze": "Freeze",
+    "unfreeze": "Unfreeze",
+    "quarantine": "Quarantine",
+    "release": "Release",
+    "view": "View Details",
+    "edit": "Edit",
+    "delete": "Delete",
+    "refresh": "Refresh",
+    "retry": "Retry",
+    "login": "Login to Account",
+    "console": "AWS Console",
+    "manage": "Manage",
+    "monitor": "Monitor",
+    "audit": "Audit"
+  },
+  "details": {
+    "accountId": "AWS Account ID",
+    "accountName": "Account Name",
+    "accountEmail": "Account Email",
+    "status": "Status",
+    "createdDate": "Created Date",
+    "lastUpdated": "Last Updated",
+    "lastCleanup": "Last Cleanup",
+    "nextCleanup": "Next Cleanup",
+    "owner": "Owner",
+    "region": "Region",
+    "organizationUnit": "Organization Unit",
+    "tags": "Tags",
+    "resources": "Resources",
+    "costs": "Costs",
+    "usage": "Usage",
+    "limits": "Limits",
+    "quotas": "Quotas"
+  },
+  "list": {
+    "title": "Accounts",
+    "description": "Manage AWS sandbox accounts",
+    "noAccounts": "No accounts found",
+    "loadingAccounts": "Loading accounts...",
+    "searchPlaceholder": "Search accounts...",
+    "filterByStatus": "Filter by status",
+    "filterByOwner": "Filter by owner",
+    "sortBy": "Sort by",
+    "sortByDate": "Date",
+    "sortByStatus": "Status",
+    "sortByName": "Name",
+    "sortById": "Account ID",
+    "selectedCount": "{{count}} account(s) selected",
+    "totalCount": "{{count}} total accounts"
+  },
+  "summary": {
+    "title": "Account Summary",
+    "totalAccounts": "Total",
+    "availableAccounts": "Available Accounts",
+    "activeAccounts": "Active Accounts",
+    "frozenAccounts": "Frozen Accounts",
+    "cleanupAccounts": "Accounts in Cleanup",
+    "quarantineAccounts": "Quarantined Accounts",
+    "utilizationRate": "Utilization Rate",
+    "averageUsage": "Average Usage",
+    "costSummary": "Cost Summary",
+    "resourceSummary": "Resource Summary",
+    "accounts": "accounts"
+  },
+  "columns": {
+    "accountId": "AWS Account ID",
+    "name": "Name",
+    "email": "Email",
+    "status": "Status",
+    "owner": "Owner",
+    "createdDate": "Created",
+    "lastUpdated": "Last Updated",
+    "actions": "Actions"
+  },
+  "validation": {
+    "accountIdRequired": "Account ID is required",
+    "accountIdInvalid": "Please enter a valid AWS Account ID",
+    "accountNameRequired": "Account name is required",
+    "accountEmailRequired": "Account email is required",
+    "accountEmailInvalid": "Please enter a valid email address",
+    "selectionRequired": "Please select at least one account",
+    "confirmationRequired": "Please confirm this action"
+  },
+  "messages": {
+    "addSuccess": "Account added successfully",
+    "addError": "Failed to add account",
+    "updateSuccess": "Account updated successfully",
+    "updateError": "Failed to update account",
+    "deleteSuccess": "Account deleted successfully",
+    "deleteError": "Failed to delete account",
+    "cleanupSuccess": "Account cleanup initiated successfully",
+    "cleanupError": "Failed to initiate account cleanup",
+    "ejectSuccess": "Account ejected successfully",
+    "ejectError": "Failed to eject account",
+    "freezeSuccess": "Account frozen successfully",
+    "freezeError": "Failed to freeze account",
+    "unfreezeSuccess": "Account unfrozen successfully",
+    "unfreezeError": "Failed to unfreeze account",
+    "quarantineSuccess": "Account quarantined successfully",
+    "quarantineError": "Failed to quarantine account",
+    "releaseSuccess": "Account released from quarantine successfully",
+    "releaseError": "Failed to release account from quarantine",
+    "confirmCleanup": "Are you sure you want to clean up this account? All resources will be deleted.",
+    "confirmEject": "Are you sure you want to eject this account?",
+    "confirmFreeze": "Are you sure you want to freeze this account?",
+    "confirmUnfreeze": "Are you sure you want to unfreeze this account?",
+    "confirmQuarantine": "Are you sure you want to quarantine this account?",
+    "confirmRelease": "Are you sure you want to release this account from quarantine?",
+    "confirmDelete": "Are you sure you want to delete this account?",
+    "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?",
+    "loadingError": "Failed to load account information",
+    "networkError": "Network error. Please try again.",
+    "permissionDenied": "You don't have permission to perform this action",
+    "operationInProgress": "Operation in progress...",
+    "operationCompleted": "Operation completed successfully",
+    "operationFailed": "Operation failed"
+  },
+  "breadcrumbs": {
+    "home": "Home",
+    "accounts": "Accounts",
+    "addAccounts": "Add Accounts",
+    "manageAccount": "Manage Account",
+    "accountDetails": "Account Details",
+    "loading": "Loading...",
+    "error": "Error"
+  },
+  "filters": {
+    "all": "All Accounts",
+    "available": "Available",
+    "active": "Active",
+    "frozen": "Frozen",
+    "cleanup": "In Cleanup",
+    "quarantine": "Quarantined",
+    "myAccounts": "My Accounts",
+    "recentlyUsed": "Recently Used",
+    "neverUsed": "Never Used"
+  },
+  "batch": {
+    "actions": "Batch Actions",
+    "cleanup": "Cleanup Selected",
+    "eject": "Eject Selected",
+    "freeze": "Freeze Selected",
+    "unfreeze": "Unfreeze Selected",
+    "quarantine": "Quarantine Selected",
+    "release": "Release Selected",
+    "confirmBatchAction": "Are you sure you want to perform this action on {{count}} account(s)?",
+    "batchSuccess": "Batch operation completed successfully",
+    "batchError": "Some operations failed. Please check individual account status.",
+    "batchInProgress": "Processing {{current}} of {{total}} accounts..."
+  },
+  "metrics": {
+    "title": "Account Metrics",
+    "uptime": "Uptime",
+    "downtime": "Downtime",
+    "utilization": "Utilization",
+    "performance": "Performance",
+    "availability": "Availability",
+    "reliability": "Reliability",
+    "costEfficiency": "Cost Efficiency",
+    "resourceUsage": "Resource Usage",
+    "errorRate": "Error Rate",
+    "responseTime": "Response Time"
+  },
+  "notifications": {
+    "accountAvailable": "Account is now available",
+    "accountActive": "Account is now active",
+    "accountFrozen": "Account has been frozen",
+    "accountCleaned": "Account cleanup completed",
+    "accountQuarantined": "Account has been quarantined",
+    "cleanupStarted": "Account cleanup started",
+    "cleanupFailed": "Account cleanup failed",
+    "maintenanceScheduled": "Maintenance scheduled for this account",
+    "quotaExceeded": "Account quota exceeded",
+    "costThresholdReached": "Cost threshold reached for this account"
+  },
+  "accounts": {
+    "noAccounts": {
+      "title": "It looks like there are no accounts in the account pool.",
+      "description": "Start adding accounts to get started with Innovation Sandbox.",
+      "action": "Add accounts"
+    }
+  },
+  "table": {
+    "title": "Accounts",
+    "columns": {
+      "accountId": "Account ID",
+      "status": "Status",
+      "added": "Added",
+      "lastModified": "Last Modified",
+      "name": "Name",
+      "email": "Email",
+      "access": "Access"
+    }
+  },
+  "actions": {
+    "title": "Actions",
+    "eject": "Eject Account(s)",
+    "cleanup": "Cleanup Account(s)",
+    "description": "{{count}} account(s) to {{action}}",
+    "success": {
+      "eject": "Account(s) were ejected successfully.",
+      "cleanup": "Account(s) cleanup was initiated successfully."
+    },
+    "error": {
+      "eject": {
+        "message": "One or more accounts failed to eject, try resubmitting.",
+        "title": "Failed to eject account(s)"
+      },
+      "cleanup": {
+        "message": "One or more accounts failed to cleanup, try resubmitting.",
+        "title": "Failed to cleanup account(s)"
+      }
+    }
+  },
+  "modal": {
+    "eject": {
+      "title": "Eject Account(s)"
+    },
+    "cleanup": {
+      "title": "Cleanup Account(s)"
+    }
+  }
+}

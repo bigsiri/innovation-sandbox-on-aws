@@ -1,0 +1,52 @@
+{
+  "page": {
+    "title": "Approbations",
+    "description": "Gérer les demandes de location de comptes sandbox"
+  },
+  "table": {
+    "title": "Approbations",
+    "columns": {
+      "requestedBy": "Demandé par",
+      "leaseTemplate": "Modèle de bail",
+      "requested": "Demandé",
+      "comments": "Commentaires"
+    }
+  },
+  "actions": {
+    "title": "Actions",
+    "approve": "Approuver la/les demande(s)",
+    "deny": "Refuser la/les demande(s)"
+  },
+  "modal": {
+    "approve": {
+      "title": "Approuver la/les demande(s)"
+    },
+    "deny": {
+      "title": "Refuser la/les demande(s)"
+    }
+  },
+  "review": {
+    "description": "{{count}} demande(s) de bail à examiner",
+    "success": {
+      "approved": "La/les demande(s) de bail ont été approuvées avec succès.",
+      "denied": "La/les demande(s) de bail ont été refusées avec succès."
+    },
+    "error": {
+      "message": "Une ou plusieurs demandes de bail ont échoué à l'examen, essayez de les soumettre à nouveau.",
+      "title": "Échec de l'examen des demandes de bail"
+    }
+  },
+  "breadcrumbs": {
+    "home": "Accueil",
+    "approvals": "Approbations",
+    "leases": "Baux",
+    "loading": "Chargement...",
+    "error": "Erreur"
+  },
+  "forms": {
+    "approval": {
+      "approve": "Approuver",
+      "reject": "Rejeter"
+    }
+  }
+}

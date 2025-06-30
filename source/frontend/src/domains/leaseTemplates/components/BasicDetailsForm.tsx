@@ -9,6 +9,7 @@ import { Form } from "@amzn/innovation-sandbox-frontend/components/Form";
 import { basicFormFields } from "@amzn/innovation-sandbox-frontend/domains/leaseTemplates/formFields/basic";
 import { useUpdateLeaseTemplate } from "@amzn/innovation-sandbox-frontend/domains/leaseTemplates/hooks";
 import { LeaseTemplateFormData } from "@amzn/innovation-sandbox-frontend/domains/leaseTemplates/types";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 
 interface BasicDetailsFormProps {
   leaseTemplate: LeaseTemplate;
@@ -16,6 +17,7 @@ interface BasicDetailsFormProps {
 
 export const BasicDetailsForm = ({ leaseTemplate }: BasicDetailsFormProps) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const { mutateAsync: updateLeaseTemplate, isPending: isUpdating } =
     useUpdateLeaseTemplate();
@@ -40,11 +42,11 @@ export const BasicDetailsForm = ({ leaseTemplate }: BasicDetailsFormProps) => {
         ...leaseTemplate,
       }}
       schema={{
-        submitLabel: "Update Basic Details",
+        submitLabel: t('forms.basic.submitLabel', { ns: 'leaseTemplates' }),
         fields: [
           {
             component: componentTypes.SUB_FORM,
-            ...basicFormFields(),
+            ...basicFormFields(t),
           },
         ],
       }}

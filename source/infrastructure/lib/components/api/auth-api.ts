@@ -159,12 +159,21 @@ export class AuthApi {
     grantIsbSsmParameterRead(
       ssoLambda.lambdaFunction.role! as Role,
       sharedIdcSsmParamName(props.namespace),
-      props.idcAccountId,
+      // Remove idcAccountId parameter - SSM parameter is in current account, not IDC account
     );
     grantIsbAppConfigRead(scope, ssoLambda, globalConfigConfigurationProfileId);
     addAppConfigExtensionLayer(ssoLambda);
     ssoLambda.lambdaFunction.addToRolePolicy(secretAccessPolicy);
     kmsKey.grantEncryptDecrypt(ssoLambda.lambdaFunction);
+
+    // Grant permission to assume the cross-account IDC role
+    ssoLambda.lambdaFunction.addToRolePolicy(
+      new aws_iam.PolicyStatement({
+        effect: aws_iam.Effect.ALLOW,
+        actions: ["sts:AssumeRole"],
+        resources: [getIdcRoleArn(scope, props.namespace, props.idcAccountId)],
+      }),
+    );
 
     IntermediateRole.addTrustedRole(ssoLambda.lambdaFunction.role! as Role);
 

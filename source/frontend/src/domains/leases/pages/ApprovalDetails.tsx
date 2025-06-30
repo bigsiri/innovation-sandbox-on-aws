@@ -18,8 +18,10 @@ import { generateBreadcrumb } from "@amzn/innovation-sandbox-frontend/domains/le
 import { useGetLeaseById } from "@amzn/innovation-sandbox-frontend/domains/leases/hooks";
 import { useBreadcrumb } from "@amzn/innovation-sandbox-frontend/hooks/useBreadcrumb";
 import { useModal } from "@amzn/innovation-sandbox-frontend/hooks/useModal";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 
 export const ApprovalDetails = () => {
+  const { t } = useTranslation('approvals');
   const { leaseId } = useParams();
   const setBreadcrumb = useBreadcrumb();
 
@@ -32,9 +34,9 @@ export const ApprovalDetails = () => {
 
   // update breadcrumb with approval details
   useEffect(() => {
-    const breadcrumb = generateBreadcrumb(query, true);
+    const breadcrumb = generateBreadcrumb(query, t, true);
     setBreadcrumb(breadcrumb);
-  }, [query.isLoading]);
+  }, [query.isLoading, t]);
 
   const errorPanel = (
     <ErrorPanel
@@ -50,7 +52,9 @@ export const ApprovalDetails = () => {
     }
 
     showModal({
-      header: mode === "approve" ? "Approve request(s)" : "Deny request(s)",
+      header: mode === "approve" 
+        ? t('forms.approval.approve')
+        : t('forms.approval.reject'),
       content: (
         <ReviewLeaseConfirmation
           mode={mode}
@@ -81,10 +85,10 @@ export const ApprovalDetails = () => {
                 iconName="check"
                 onClick={() => showReviewModal("approve")}
               >
-                Approve
+                {t('actions.approve')}
               </Button>
               <Button iconName="close" onClick={() => showReviewModal("deny")}>
-                Deny
+                {t('actions.reject')}
               </Button>
             </SpaceBetween>
           }

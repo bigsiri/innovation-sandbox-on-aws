@@ -1,0 +1,56 @@
+{
+  "yes": "Yes",
+  "no": "No",
+  "status": {
+    "loading": "Loading",
+    "success": "Success",
+    "failed": "Failed"
+  },
+  "actions": {
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "retry": "Retry",
+    "refresh": "Refresh",
+    "chooseOptions": "Choose options",
+    "title": "Actions",
+    "search": "Search",
+    "loading": "Loading...",
+    "noItemsFound": "No items found"
+  },
+  "wizard": {
+    "step": "Step {{number}}",
+    "cancel": "Cancel",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit"
+  },
+  "summary": {
+    "count": "Count",
+    "accountPoolTitle": "Account Pool Summary"
+  },
+  "duration": {
+    "expiringSoon": "Expiring soon",
+    "afterApproval": "after approval",
+    "popover": {
+      "expired": "Expired on {{date}}",
+      "willExpire": "Will expire on {{date}}"
+    }
+  },
+  "languageSwitcher": {
+    "ariaLabel": "Change language",
+    "english": "English",
+    "frenchCanadian": "Français (Canada)",
+    "languageChanged": "Language changed to {{language}}",
+    "switchingLanguage": "Switching language...",
+    "error": "Failed to change language. Please try again."
+  },
+  "accountLogin": {
+    "loginToAccount": "Login to Account"
+  },
+  "navigation": {
+    "breadcrumbs": {
+      "home": "Home",
+      "leaseTemplates": "Lease Templates"
+    }
+  }
+}

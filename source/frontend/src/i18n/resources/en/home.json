@@ -1,0 +1,258 @@
+{
+  "page": {
+    "title": "Welcome to Innovation Sandbox on AWS",
+    "description": "Your central hub for managing AWS sandbox accounts and leases",
+    "loading": "Loading dashboard...",
+    "error": "Failed to load dashboard",
+    "retry": "Retry"
+  },
+  "welcome": {
+    "title": "Welcome to Innovation Sandbox on AWS",
+    "subtitle": "Get started with your AWS sandbox environment",
+    "description": "Innovation Sandbox provides secure, temporary AWS accounts for experimentation and learning",
+    "getStarted": "Get Started",
+    "learnMore": "Learn More",
+    "quickStart": "Quick Start Guide",
+    "documentation": "Documentation"
+  },
+  "actions": {
+    "requestLease": "Request a new lease",
+    "viewLeases": "View all leases",
+    "manageAccounts": "Manage accounts",
+    "viewApprovals": "View approvals",
+    "viewSettings": "Settings",
+    "refresh": "Refresh",
+    "getHelp": "Get Help"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "overview": "Overview",
+    "quickActions": "Quick Actions",
+    "recentActivity": "Recent Activity",
+    "statistics": "Statistics",
+    "summary": "Summary"
+  },
+  "widgets": {
+    "myLeases": {
+      "title": "My Leases",
+      "description": "View a list of your leases",
+      "count": "{{count}} lease(s)",
+      "noLeases": {
+        "title": "You currently don't have any leases.",
+        "description": "To get started, click below to request a new lease.",
+        "action": "Request a new lease"
+      },
+      "loading": "Loading your leases...",
+      "error": "Your leases can't be retrieved at the moment.",
+      "retry": "Retry loading leases"
+    },
+    "approvals": {
+      "title": "Approvals",
+      "description": "Review pending lease approval requests",
+      "noPending": "No pending approvals. Nothing to review.",
+      "pendingTitle": "Pending approvals",
+      "pendingSingle": "There is {{count}} pending approval.",
+      "pendingMultiple": "There are {{count}} pending approvals.",
+      "viewApprovals": "View approvals",
+      "loading": "Checking for approval requests...",
+      "error": "Approvals could not be loaded.",
+      "retry": "Retry loading approvals"
+    },
+    "accounts": {
+      "title": "Administration",
+      "description": "Manage AWS sandbox accounts",
+      "manageAccounts": "Manage accounts",
+      "addAccounts": "Add accounts",
+      "viewSummary": "View summary",
+      "loading": "Loading account information...",
+      "error": "Account information could not be loaded.",
+      "retry": "Retry loading accounts"
+    },
+    "sharedLeases": {
+      "title": "Shared Leases",
+      "description": "View leases shared with you by other users",
+      "noShared": "No shared leases available",
+      "viewAll": "View all shared leases",
+      "loading": "Loading shared leases...",
+      "error": "Shared leases could not be loaded."
+    }
+  },
+  "leasePanel": {
+    "title": "Lease Details",
+    "awsAccountId": "AWS Account ID",
+    "expiry": "Expiry",
+    "budget": "Budget",
+    "status": "Status",
+    "template": "Template",
+    "duration": "Duration",
+    "cost": "Current Cost",
+    "remaining": "Remaining",
+    "noAccountAssigned": "No account assigned",
+    "noAccountAssignedYet": "No account assigned yet",
+    "pendingApproval": "Your account is pending approval",
+    "loginToAccount": "Login to Account",
+    "viewDetails": "View Details",
+    "extendLease": "Extend Lease",
+    "terminateLease": "Terminate Lease"
+  },
+  "statistics": {
+    "totalLeases": "Total Leases",
+    "activeLeases": "Active Leases",
+    "pendingLeases": "Pending Leases",
+    "expiredLeases": "Expired Leases",
+    "totalAccounts": "Total Accounts",
+    "availableAccounts": "Available Accounts",
+    "utilizationRate": "Utilization Rate",
+    "averageCost": "Average Cost",
+    "totalSpend": "Total Spend",
+    "budgetUsage": "Budget Usage",
+    "successRate": "Success Rate",
+    "approvalRate": "Approval Rate"
+  },
+  "status": {
+    "healthy": "Healthy",
+    "warning": "Warning",
+    "critical": "Critical",
+    "maintenance": "Maintenance",
+    "operational": "Operational",
+    "degraded": "Degraded",
+    "outage": "Outage"
+  },
+  "timeframes": {
+    "today": "Today",
+    "thisWeek": "This Week",
+    "thisMonth": "This Month",
+    "last7Days": "Last 7 Days",
+    "last30Days": "Last 30 Days",
+    "last90Days": "Last 90 Days",
+    "allTime": "All Time"
+  },
+  "filters": {
+    "all": "All",
+    "active": "Active",
+    "pending": "Pending",
+    "expired": "Expired",
+    "approved": "Approved",
+    "denied": "Denied",
+    "myItems": "My Items",
+    "shared": "Shared",
+    "recent": "Recent"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "leases": "Leases",
+    "accounts": "Accounts",
+    "approvals": "Approvals",
+    "settings": "Settings",
+    "help": "Help",
+    "profile": "Profile"
+  },
+  "messages": {
+    "welcomeBack": "Welcome back!",
+    "goodMorning": "Good morning",
+    "goodAfternoon": "Good afternoon",
+    "goodEvening": "Good evening",
+    "lastLogin": "Last login: {{date}}",
+    "systemStatus": "System Status: {{status}}",
+    "maintenanceNotice": "Scheduled maintenance: {{date}}",
+    "newFeatures": "New features available",
+    "updateAvailable": "Update available",
+    "noNotifications": "No new notifications",
+    "dataRefreshed": "Data refreshed at {{time}}",
+    "autoRefresh": "Auto-refresh enabled",
+    "offlineMode": "You are currently offline"
+  },
+  "help": {
+    "gettingStarted": "Getting Started",
+    "userGuide": "User Guide",
+    "faq": "Frequently Asked Questions",
+    "support": "Contact Support",
+    "documentation": "Documentation",
+    "tutorials": "Tutorials",
+    "bestPractices": "Best Practices",
+    "troubleshooting": "Troubleshooting",
+    "whatsNew": "What's New",
+    "feedback": "Provide Feedback"
+  },
+  "accessibility": {
+    "skipToContent": "Skip to main content",
+    "skipToNavigation": "Skip to navigation",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "expandSection": "Expand section",
+    "collapseSection": "Collapse section",
+    "sortAscending": "Sort ascending",
+    "sortDescending": "Sort descending",
+    "filterResults": "Filter results",
+    "searchResults": "Search results",
+    "loadingContent": "Loading content",
+    "errorMessage": "Error message",
+    "successMessage": "Success message"
+  },
+  "breadcrumbs": {
+    "home": "Home"
+  },
+  "widgets": {
+    "myLeases": {
+      "title": "My Leases",
+      "description": "Your current and recent lease requests",
+      "loading": "Loading your leases...",
+      "error": "Your leases can't be retrieved at the moment.",
+      "count": "{{count}}",
+      "noLeases": {
+        "title": "No Active Leases",
+        "description": "You don't have any active leases at the moment. Request a new lease to get started.",
+        "action": "Request Lease"
+      }
+    },
+    "approvals": {
+      "title": "Approvals",
+      "loading": "Loading approvals...",
+      "error": "Approvals can't be retrieved at the moment.",
+      "noPending": "No pending approvals at this time.",
+      "pendingTitle": "Pending Approvals",
+      "pendingSingle": "There is {{count}} lease request awaiting approval.",
+      "pendingMultiple": "There are {{count}} lease requests awaiting approval.",
+      "viewApprovals": "View Approvals"
+    },
+    "accounts": {
+      "title": "Accounts",
+      "manageAccounts": "Manage Accounts"
+    },
+    "sharedLeases": {
+      "title": "Shared with Me",
+      "description": "Leases that have been shared with you by other users",
+      "loading": "Loading shared leases...",
+      "error": "Shared leases can't be retrieved at the moment.",
+      "refresh": "Refresh shared leases",
+      "count": "{{count}}",
+      "defaultTitle": "Shared Lease",
+      "leaseTitle": "Lease {{id}}",
+      "accountLabel": "Account",
+      "sharedByLabel": "Shared by",
+      "notYetAssigned": "Not yet assigned",
+      "notAssigned": "Not assigned",
+      "unknownUser": "Unknown user",
+      "status": {
+        "active": "Active",
+        "pendingApproval": "Pending Approval",
+        "frozen": "Frozen",
+        "expired": "Expired",
+        "budgetExceeded": "Budget Exceeded",
+        "terminated": "Terminated",
+        "unknown": "Unknown"
+      },
+      "tabs": {
+        "all": "All",
+        "active": "Active",
+        "pending": "Pending",
+        "frozen": "Frozen"
+      },
+      "noLeases": {
+        "all": "No leases have been shared with you yet.",
+        "filtered": "No {{status}} shared leases found.",
+        "description": "When someone shares a lease with you, it will appear here."
+      }
+    }
+  }
+}

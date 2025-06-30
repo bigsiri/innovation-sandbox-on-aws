@@ -12,6 +12,7 @@ import { DurationStatus } from "@amzn/innovation-sandbox-frontend/components/Dur
 import { Form } from "@amzn/innovation-sandbox-frontend/components/Form";
 import { ThresholdSettings } from "@amzn/innovation-sandbox-frontend/components/ThresholdSettings";
 import { thresholdValidator } from "@amzn/innovation-sandbox-frontend/components/ThresholdSettings/validator";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 
 export type LeaseDurationFormProps = {
   expirationDate: MonitoredLease["expirationDate"];
@@ -34,6 +35,8 @@ export const LeaseDurationForm = ({
   onCancel,
   isUpdating,
 }: LeaseDurationFormProps) => {
+  const { t } = useTranslation();
+
   return (
     <Form
       insideTab
@@ -61,12 +64,12 @@ export const LeaseDurationForm = ({
         }
       }}
       schema={{
-        submitLabel: "Update Duration Settings",
+        submitLabel: t('duration.updateButton', { ns: 'leases' }),
         fields: [
           {
             component: componentTypes.SUB_FORM,
             name: "duration",
-            title: "Lease Duration",
+            title: t('duration.title', { ns: 'leases' }),
             fields: [
               {
                 component: componentTypes.PLAIN_TEXT,
@@ -75,11 +78,11 @@ export const LeaseDurationForm = ({
                   <Alert type="info">
                     {expirationDate ? (
                       <>
-                        This lease currently expires{" "}
+                        {t('duration.currentlyExpires', { ns: 'leases' })}{" "}
                         <DurationStatus date={expirationDate} />
                       </>
                     ) : (
-                      <>This lease currently does not expire</>
+                      <>{t('duration.noExpiration', { ns: 'leases' })}</>
                     )}
                   </Alert>
                 ),
@@ -87,23 +90,23 @@ export const LeaseDurationForm = ({
               {
                 component: componentTypes.RADIO,
                 name: "expiryDateEnabled",
-                label: <FormField label="Expiry Date" />,
+                label: <FormField label={t('duration.expirationLabel', { ns: 'leases' })} />,
                 options: [
                   {
                     label: expirationDate
-                      ? "Remove expiry date"
-                      : "Do not set an expiry date",
+                      ? t('duration.removeExpiry', { ns: 'leases' })
+                      : t('duration.noExpiryOption', { ns: 'leases' }),
                     value: false,
                   },
                   {
-                    label: "Set an expiry date",
+                    label: t('duration.setExpiryOption', { ns: 'leases' }),
                     value: true,
                   },
                 ],
                 validate: [
                   {
                     type: validatorTypes.REQUIRED,
-                    message: "Please select an option",
+                    message: t('duration.selectOptionRequired', { ns: 'leases' }),
                   },
                 ],
               },
@@ -116,7 +119,7 @@ export const LeaseDurationForm = ({
                 validate: [
                   (date: Date) => {
                     if (!date) {
-                      return "Please enter a valid date and time";
+                      return t('duration.validDateRequired', { ns: 'leases' });
                     }
 
                     // Convert to moment object for easier comparison
@@ -125,7 +128,7 @@ export const LeaseDurationForm = ({
 
                     // Check if the date/time is at least 1 hour in the future
                     if (selectedDateTime.isBefore(oneHourFromNow)) {
-                      return "Please select a date and time at least 1 hour in the future";
+                      return t('duration.futureDateRequired', { ns: 'leases' });
                     }
                   },
                 ],
@@ -153,8 +156,8 @@ export const LeaseDurationForm = ({
                 component: componentTypes.CUSTOM,
                 CustomComponent: ThresholdSettings,
                 name: "durationThresholds",
-                label: "Duration Thresholds",
-                description: "Determine what happens as time passes.",
+                label: t('thresholds.durationThresholds', { ns: 'leases' }),
+                description: t('thresholds.durationDescription', { ns: 'leases' }),
                 thresholdType: "duration",
                 validate: [thresholdValidator("duration")],
                 showError: true,

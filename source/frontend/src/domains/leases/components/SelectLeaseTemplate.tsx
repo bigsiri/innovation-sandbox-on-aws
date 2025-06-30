@@ -18,6 +18,7 @@ import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 
 import { LeaseTemplate } from "@amzn/innovation-sandbox-commons/data/lease-template/lease-template";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 import { ErrorPanel } from "@amzn/innovation-sandbox-frontend/components/ErrorPanel";
 import { Loader } from "@amzn/innovation-sandbox-frontend/components/Loader";
 import { useGetLeaseTemplates } from "@amzn/innovation-sandbox-frontend/domains/leaseTemplates/hooks";
@@ -35,47 +36,76 @@ interface SelectLeaseTemplateProps {
 }
 
 const LEASE_TEMPLATES_PER_PAGE = 12;
-const LeaseTemplateCardContent = ({ option }: { option: LeaseTemplate }) => (
-  <SpaceBetween size="l">
-    <div>{option.description}</div>
-    <Container>
-      <SpaceBetween size="l">
-        <ColumnLayout columns={3} minColumnWidth={150} variant="text-grid">
-          <Box>
-            <FormField data-nowrap label="Max Budget:" />
-            {option.maxSpend ? (
-              formatCurrency(option.maxSpend)
-            ) : (
-              <StatusIndicator type="info">No max budget</StatusIndicator>
-            )}
-          </Box>
+const LeaseTemplateCardContent = ({ option }: { option: LeaseTemplate }) => {
+  const { t, currentLanguage } = useTranslation();
+  
+  // Function to get localized duration
+  const getLocalizedDuration = (durationInHours: number) => {
+    if (currentLanguage === 'fr-CA') {
+      const days = Math.floor(durationInHours / 24);
+      const hours = durationInHours % 24;
+      
+      if (days > 0) {
+        if (days === 1) {
+          return hours > 0 ? `1 jour ${hours} heure${hours > 1 ? 's' : ''}` : '1 jour';
+        } else {
+          return hours > 0 ? `${days} jours ${hours} heure${hours > 1 ? 's' : ''}` : `${days} jours`;
+        }
+      } else {
+        return hours === 1 ? '1 heure' : `${hours} heures`;
+      }
+    } else {
+      // For English, use moment.js
+      moment.locale('en');
+      return moment.duration(durationInHours, "hours").humanize();
+    }
+  };
+  
+  return (
+    <SpaceBetween size="l">
+      <div>{option.description}</div>
+      <Container>
+        <SpaceBetween size="l">
+          <ColumnLayout columns={3} minColumnWidth={150} variant="text-grid">
+            <Box>
+              <FormField data-nowrap label={t('forms.request.selectTemplate.maxBudget', { ns: 'leases' })} />
+              {option.maxSpend ? (
+                formatCurrency(option.maxSpend)
+              ) : (
+                <StatusIndicator type="info">{t('forms.request.selectTemplate.noMaxBudget', { ns: 'leases' })}</StatusIndicator>
+              )}
+            </Box>
 
-          <Box>
-            <FormField data-nowrap label="Expires:" />
-            {option.leaseDurationInHours ? (
-              `after ${moment.duration(option.leaseDurationInHours, "hours").humanize()}`
-            ) : (
-              <StatusIndicator type="info">No expiry</StatusIndicator>
-            )}
-          </Box>
+            <Box>
+              <FormField data-nowrap label={t('forms.request.selectTemplate.expires', { ns: 'leases' })} />
+              {option.leaseDurationInHours ? (
+                t('forms.request.selectTemplate.expiresAfter', { 
+                  replace: { duration: getLocalizedDuration(option.leaseDurationInHours) },
+                  ns: 'leases'
+                })
+              ) : (
+                <StatusIndicator type="info">{t('forms.request.selectTemplate.noExpiry', { ns: 'leases' })}</StatusIndicator>
+              )}
+            </Box>
 
-          <Box>
-            <FormField data-nowrap label="Approval:" />
-            {option.requiresApproval ? (
-              <StatusIndicator type="warning">
-                <span data-wrap>Requires approval</span>
-              </StatusIndicator>
-            ) : (
-              <StatusIndicator type="success">
-                <span data-wrap>No approval required</span>
-              </StatusIndicator>
-            )}
-          </Box>
-        </ColumnLayout>
-      </SpaceBetween>
-    </Container>
-  </SpaceBetween>
-);
+            <Box>
+              <FormField data-nowrap label={t('forms.request.selectTemplate.approval', { ns: 'leases' })} />
+              {option.requiresApproval ? (
+                <StatusIndicator type="warning">
+                  <span data-wrap>{t('forms.request.selectTemplate.requiresApproval', { ns: 'leases' })}</span>
+                </StatusIndicator>
+              ) : (
+                <StatusIndicator type="success">
+                  <span data-wrap>{t('forms.request.selectTemplate.noApprovalRequired', { ns: 'leases' })}</span>
+                </StatusIndicator>
+              )}
+            </Box>
+          </ColumnLayout>
+        </SpaceBetween>
+      </Container>
+    </SpaceBetween>
+  );
+};
 
 export const SelectLeaseTemplate = ({
   input,
@@ -84,6 +114,7 @@ export const SelectLeaseTemplate = ({
   description,
   meta: { error },
 }: SelectLeaseTemplateProps) => {
+  const { t } = useTranslation();
   const [selectedLeaseTemplates, setSelectedLeaseTemplates] = useState<
     LeaseTemplate[]
   >([]);
@@ -158,13 +189,13 @@ export const SelectLeaseTemplate = ({
   }, [searchTerm]);
 
   if (isLoading) {
-    return <Loader label="Loading lease templates..." />;
+    return <Loader label={t('forms.request.selectTemplate.loading', { ns: 'leases' })} />;
   }
 
   if (isError) {
     return (
       <ErrorPanel
-        description="Could not load lease templates at the moment."
+        description={t('forms.request.selectTemplate.loadError', { ns: 'leases' })}
         retry={refetch}
         error={fetchError as Error}
       />
@@ -173,8 +204,8 @@ export const SelectLeaseTemplate = ({
 
   if ((leaseTemplates || []).length === 0) {
     return (
-      <Alert type="error" header="No lease templates configured.">
-        Please contact your system administrator.
+      <Alert type="error" header={t('forms.request.selectTemplate.noTemplates', { ns: 'leases' })}>
+        {t('forms.request.selectTemplate.noTemplatesMessage', { ns: 'leases' })}
       </Alert>
     );
   }
@@ -187,10 +218,10 @@ export const SelectLeaseTemplate = ({
           <Box>
             <Input
               type="search"
-              placeholder="Search by template name"
+              placeholder={t('search.placeholder', { ns: 'leaseTemplates' })}
               value={searchTerm}
               onChange={({ detail }) => setSearchTerm(detail.value)}
-              ariaLabel="Search lease templates"
+              ariaLabel={t('search.ariaLabel', { ns: 'leaseTemplates' })}
             />
           </Box>
 
@@ -203,10 +234,13 @@ export const SelectLeaseTemplate = ({
                   setCurrentPageIndex(detail.currentPageIndex)
                 }
                 ariaLabels={{
-                  nextPageLabel: "Next page",
-                  previousPageLabel: "Previous page",
+                  nextPageLabel: t('forms.request.selectTemplate.pagination.nextPage', { ns: 'leases' }),
+                  previousPageLabel: t('forms.request.selectTemplate.pagination.previousPage', { ns: 'leases' }),
                   pageLabel: (pageNumber) =>
-                    `Page ${pageNumber} of ${totalPages}`,
+                    t('forms.request.selectTemplate.pagination.pageLabel', { 
+                      replace: { current: pageNumber, total: totalPages },
+                      ns: 'leases'
+                    }),
                 }}
               />
             </Box>
@@ -214,8 +248,8 @@ export const SelectLeaseTemplate = ({
         </ColumnLayout>
         <Box>
           {filteredLeaseTemplates.length === 0 && searchTerm.trim() !== "" ? (
-            <Alert type="info" header="No matching templates">
-              No lease templates match your search term. Try a different search.
+            <Alert type="info" header={t('forms.request.selectTemplate.noMatching', { ns: 'leases' })}>
+              {t('forms.request.selectTemplate.noMatchingMessage', { ns: 'leases' })}
             </Alert>
           ) : (
             <Cards

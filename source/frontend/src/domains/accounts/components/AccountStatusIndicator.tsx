@@ -3,6 +3,8 @@
 
 import { SandboxAccountStatus } from "@amzn/innovation-sandbox-commons/data/sandbox-account/sandbox-account";
 import { getColor } from "@amzn/innovation-sandbox-frontend/components/AccountsSummary/helpers";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
+import { formatDate } from "@amzn/innovation-sandbox-frontend/i18n/utils/dateLocalization";
 import { Box, Icon, Popover } from "@cloudscape-design/components";
 import { colorChartsStatusHigh } from "@cloudscape-design/design-tokens";
 import moment from "moment";
@@ -16,25 +18,27 @@ export const AccountStatusIndicator = ({
   status,
   lastCleanupStartTime,
 }: AccountStatusIndicatorProps) => {
+  const { t, currentLanguage } = useTranslation();
+
   switch (status) {
     case "Available":
       return (
         <span style={{ color: getColor(status) }}>
-          <Icon name="status-positive" /> Available
+          <Icon name="status-positive" /> {t('status.available', { ns: 'accounts' })}
         </span>
       );
 
     case "Active":
       return (
         <span style={{ color: getColor(status) }}>
-          <Icon name="status-in-progress" /> Active
+          <Icon name="status-in-progress" /> {t('status.active', { ns: 'accounts' })}
         </span>
       );
 
     case "Frozen":
       return (
         <span style={{ color: getColor(status) }}>
-          <Icon name="status-stopped" /> Frozen
+          <Icon name="status-stopped" /> {t('status.frozen', { ns: 'accounts' })}
         </span>
       );
 
@@ -42,8 +46,8 @@ export const AccountStatusIndicator = ({
       const hoursElapsed = moment().diff(moment(lastCleanupStartTime), "hours");
       const isStale = hoursElapsed >= 24;
       const message = isStale
-        ? "The cleanup process may be stuck, please retry."
-        : "This account is being cleaned up and will be ready to use soon.";
+        ? t('status.messages.cleanupStuck', { ns: 'accounts' })
+        : t('status.messages.cleanup', { ns: 'accounts' });
       const color = isStale ? colorChartsStatusHigh : getColor(status);
 
       return (
@@ -55,7 +59,7 @@ export const AccountStatusIndicator = ({
             <div style={{ color }}>
               {message}
               <Box color={"inherit"} fontWeight={"heavy"}>
-                Cleanup initiated:{` ${moment(lastCleanupStartTime)}`}
+                {t('status.messages.cleanupInitiated', { ns: 'accounts' })}{` ${formatDate(new Date(lastCleanupStartTime), 'medium', currentLanguage)}`}
               </Box>
             </div>
           }
@@ -65,7 +69,7 @@ export const AccountStatusIndicator = ({
               color,
             }}
           >
-            <Icon name="remove" /> Clean Up
+            <Icon name="remove" /> {t('status.cleanup', { ns: 'accounts' })}
           </span>
         </Popover>
       );
@@ -74,11 +78,15 @@ export const AccountStatusIndicator = ({
     case "Quarantine":
       return (
         <span style={{ color: getColor(status) }}>
-          <Icon name="status-negative" /> Quarantine
+          <Icon name="status-negative" /> {t('status.quarantine', { ns: 'accounts' })}
         </span>
       );
 
     default:
-      return null;
+      return (
+        <span style={{ color: getColor('Available') }}>
+          <Icon name="status-info" /> {t('status.unknown', { ns: 'accounts' })}
+        </span>
+      );
   }
 };

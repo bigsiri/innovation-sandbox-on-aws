@@ -8,11 +8,9 @@ import {
   Container,
   ContentLayout,
   Header,
-  Popover,
   SpaceBetween,
 } from "@cloudscape-design/components";
-import moment from "moment";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -37,6 +35,8 @@ import {
 import { useBreadcrumb } from "@amzn/innovation-sandbox-frontend/hooks/useBreadcrumb";
 import { useInit } from "@amzn/innovation-sandbox-frontend/hooks/useInit";
 import { useModal } from "@amzn/innovation-sandbox-frontend/hooks/useModal";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
+import { formatDistanceToNowLocalized } from "@amzn/innovation-sandbox-frontend/i18n/utils/dateLocalization";
 import { useAppLayoutContext } from "@aws-northstar/ui/components/AppLayout";
 
 const StatusCell = ({ account }: { account: SandboxAccount }) => (
@@ -48,290 +48,252 @@ const StatusCell = ({ account }: { account: SandboxAccount }) => (
   />
 );
 
-const CreatedOnCell = ({ account }: { account: SandboxAccount }) => (
-  <Popover
-    position="top"
-    dismissButton={false}
-    content={moment(account.meta?.createdTime).format("MM/DD/YYYY hh:mm:A")}
-  >
-    {moment(account.meta?.createdTime).fromNow()}
-  </Popover>
+const AddedCell = ({ account, currentLanguage }: { account: SandboxAccount; currentLanguage: string }) => (
+  <>{formatDistanceToNowLocalized(new Date(account.meta?.createdTime || ''), currentLanguage as any)}</>
 );
 
-const LastModifiedCell = ({ account }: { account: SandboxAccount }) => (
-  <Popover
-    position="top"
-    dismissButton={false}
-    content={moment(account.meta?.lastEditTime).format("MM/DD/YYYY hh:mm:A")}
-  >
-    {moment(account.meta?.lastEditTime).fromNow()}
-  </Popover>
+const LastModifiedCell = ({ account, currentLanguage }: { account: SandboxAccount; currentLanguage: string }) => (
+  <>{formatDistanceToNowLocalized(new Date(account.meta?.lastEditTime || ''), currentLanguage as any)}</>
 );
 
-const AccessCell = ({ account }: { account: SandboxAccount }) => (
-  <AccountLoginLink accountId={account.awsAccountId} />
+const NameCell = ({ account }: { account: SandboxAccount }) => (
+  <>{account.name || '-'}</>
 );
 
-const createColumnDefinitions = (includeLinks: boolean) =>
-  [
-    {
-      id: "awsAccountId",
-      header: "Account ID",
-      sortingField: "awsAccountId",
-      cell: (account: SandboxAccount) => account.awsAccountId,
-    },
-    {
-      id: "status",
-      header: "Status",
-      sortingComparator: accountStatusSortingComparator,
-      cell: (account: SandboxAccount) => <StatusCell account={account} />,
-    },
-    {
-      id: "createdOn",
-      header: "Added",
-      sortingField: "createdOn",
-      cell: (account: SandboxAccount) => <CreatedOnCell account={account} />,
-    },
-    {
-      id: "lastModifiedOn",
-      header: "Last Modified",
-      sortingField: "lastModifiedOn",
-      cell: (account: SandboxAccount) => <LastModifiedCell account={account} />,
-    },
-    {
-      id: "name",
-      header: "Name",
-      cell: (account: SandboxAccount) => account.name ?? "N/A",
-    },
-    {
-      id: "email",
-      header: "Email",
-      cell: (account: SandboxAccount) => account.email ?? "N/A",
-    },
-    {
-      id: "link",
-      header: "Access",
-      cell: (account: SandboxAccount) => <AccessCell account={account} />,
-    },
-  ].filter((column) => includeLinks || column.id !== "link");
+const EmailCell = ({ account }: { account: SandboxAccount }) => (
+  <>{account.email || '-'}</>
+);
 
-type EjectModalProps = {
-  selectedAccounts: SandboxAccount[];
-  ejectAccount: (accountId: string) => Promise<any>;
-  navigate: (path: string) => void;
+const AccessCell = ({ account }: { account: SandboxAccount }) => {
+  if (account.status === "Available") {
+    return (
+      <AccountLoginLink
+        accountId={account.awsAccountId}
+        variant="inline-link"
+      />
+    );
+  }
+
+  return <span>-</span>;
 };
 
-const EjectModalContent = ({
-  selectedAccounts,
-  ejectAccount,
-  navigate,
-}: EjectModalProps) => (
-  <BatchActionReview
-    items={selectedAccounts}
-    description={`${selectedAccounts.length} account(s) to eject`}
-    columnDefinitions={createColumnDefinitions(false)}
-    identifierKey="awsAccountId"
-    onSubmit={async (account: SandboxAccount) => {
-      await ejectAccount(account.awsAccountId);
-    }}
-    onSuccess={() => {
-      navigate("/accounts");
-      showSuccessToast(
-        "Account(s) were successfully ejected from the account pool.",
-      );
-    }}
-    onError={() =>
-      showErrorToast(
-        "One or more accounts failed to eject, try resubmitting.",
-        "Failed to eject account(s)",
-      )
-    }
-  />
-);
+const createColumnDefinitions = (includeLinks: boolean, t: any, currentLanguage: string) => [
+  {
+    id: "awsAccountId",
+    header: t('table.columns.accountId', { ns: 'accounts' }),
+    sortingField: "awsAccountId",
+    cell: (account: SandboxAccount) => account.awsAccountId,
+  },
+  {
+    id: "status",
+    header: t('table.columns.status', { ns: 'accounts' }),
+    sortingComparator: accountStatusSortingComparator,
+    cell: (account: SandboxAccount) => <StatusCell account={account} />, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
+  },
+  {
+    id: "added",
+    header: t('table.columns.added', { ns: 'accounts' }),
+    sortingField: "meta.createdTime",
+    cell: (account: SandboxAccount) => <AddedCell account={account} currentLanguage={currentLanguage} />, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
+  },
+  {
+    id: "lastModified",
+    header: t('table.columns.lastModified', { ns: 'accounts' }),
+    sortingField: "meta.lastEditTime",
+    cell: (account: SandboxAccount) => <LastModifiedCell account={account} currentLanguage={currentLanguage} />, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
+  },
+  {
+    id: "name",
+    header: t('table.columns.name', { ns: 'accounts' }),
+    sortingField: "name",
+    cell: (account: SandboxAccount) => <NameCell account={account} />, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
+  },
+  {
+    id: "email",
+    header: t('table.columns.email', { ns: 'accounts' }),
+    sortingField: "email",
+    cell: (account: SandboxAccount) => <EmailCell account={account} />, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
+  },
+  {
+    id: "access",
+    header: t('table.columns.access', { ns: 'accounts' }),
+    cell: (account: SandboxAccount) => <AccessCell account={account} />, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
+  },
+].filter((column) => includeLinks || column.id !== "access");
 
-type CleanupModalProps = {
+const ActionModalContent = ({
+  selectedAccounts,
+  action,
+  onAction,
+  t,
+  currentLanguage,
+}: {
   selectedAccounts: SandboxAccount[];
-  cleanupAccount: (accountId: string) => Promise<any>;
-  navigate: (path: string) => void;
+  action: "eject" | "cleanup";
+  onAction: (accountId: string) => Promise<any>;
+  t: any;
+  currentLanguage: string;
+}) => {
+  return (
+    <BatchActionReview
+      items={selectedAccounts}
+      description={t('actions.description', { 
+        ns: 'accounts', 
+        replace: { count: selectedAccounts.length, action: t(`actions.${action}`, { ns: 'accounts' }) } 
+      })}
+      columnDefinitions={createColumnDefinitions(false, t, currentLanguage)}
+      identifierKey="awsAccountId"
+      onSubmit={async (account: SandboxAccount) => {
+        await onAction(account.awsAccountId);
+      }}
+      onSuccess={() => {
+        showSuccessToast(
+          t(`actions.success.${action}`, { ns: 'accounts' }),
+        );
+      }}
+      onError={() =>
+        showErrorToast(
+          t(`actions.error.${action}.message`, { ns: 'accounts' }),
+          t(`actions.error.${action}.title`, { ns: 'accounts' }),
+        )
+      }
+    />
+  );
 };
-
-const CleanupModalContent = ({
-  selectedAccounts,
-  cleanupAccount,
-  navigate,
-}: CleanupModalProps) => (
-  <BatchActionReview
-    items={selectedAccounts}
-    description={`${selectedAccounts.length} account(s) to retry cleanup`}
-    columnDefinitions={createColumnDefinitions(false)}
-    identifierKey="awsAccountId"
-    onSubmit={async (account: SandboxAccount) => {
-      await cleanupAccount(account.awsAccountId);
-    }}
-    onSuccess={() => {
-      navigate("/accounts");
-      showSuccessToast("Account(s) were successfully sent to retry cleanup");
-    }}
-    onError={() =>
-      showErrorToast(
-        "One or more accounts failed to retry cleanup, try resubmitting.",
-        "Failed to retry cleanup on account(s)",
-      )
-    }
-  />
-);
 
 export const ListAccounts = () => {
-  // base ui hooks
+  const { t, currentLanguage } = useTranslation();
   const navigate = useNavigate();
+
+  // base ui hooks
   const setBreadcrumb = useBreadcrumb();
   const { setTools } = useAppLayoutContext();
 
   // modal hook
   const { showModal } = useModal();
 
+  // state
+  const [selectedAccounts, setSelectedAccounts] = useState<SandboxAccount[]>(
+    [],
+  );
+
   // api hooks
   const { data: accounts, isFetching, refetch } = useGetAccounts();
   const { mutateAsync: ejectAccount } = useEjectAccount();
   const { mutateAsync: cleanupAccount } = useCleanupAccount();
 
-  // state
-  const [filter, setFilter] = useState<SandboxAccountStatus>();
-  const [selectedAccounts, setSelectedAccounts] = useState<SandboxAccount[]>(
-    [],
-  );
-  const [filteredAccounts, setFilteredAccounts] = useState<SandboxAccount[]>(
-    [],
-  );
-
-  useInit(async () => {
+  const init = async () => {
     setBreadcrumb([
-      { text: "Home", href: "/" },
-      { text: "Accounts", href: "/accounts" },
+      { text: t('breadcrumbs.home', { ns: 'navigation' }), href: "/" },
+      { text: t('breadcrumbs.accounts', { ns: 'navigation' }), href: "/accounts" },
     ]);
     setTools(<Markdown file="accounts" />);
+  };
+
+  useInit(() => {
+    init();
   });
 
-  const onCreateClick = () => {
-    navigate("/accounts/new");
-  };
-
-  useEffect(() => {
-    if (!accounts) return;
-
-    filter
-      ? setFilteredAccounts(accounts.filter((x) => filter === x.status))
-      : setFilteredAccounts(accounts);
-  }, [accounts, filter]);
-
-  const showEjectModal = () => {
+  const showActionModal = (action: "eject" | "cleanup") => {
     showModal({
-      header: "Eject Account(s)",
+      header: t(`modal.${action}.title`, { ns: 'accounts' }),
       content: (
-        <EjectModalContent
+        <ActionModalContent
           selectedAccounts={selectedAccounts}
-          ejectAccount={ejectAccount}
-          navigate={navigate}
+          action={action}
+          onAction={action === "eject" ? ejectAccount : cleanupAccount}
+          t={t}
+          currentLanguage={currentLanguage}
         />
       ),
       size: "max",
     });
   };
 
-  const showCleanupModal = () => {
-    showModal({
-      header: "Clean Up Account(s)",
-      content: (
-        <CleanupModalContent
-          selectedAccounts={selectedAccounts}
-          cleanupAccount={cleanupAccount}
-          navigate={navigate}
-        />
-      ),
-      size: "max",
-    });
-  };
-
-  const handleSelectionChange = ({ detail }: any) => {
+  const handleSelectionChange = ({ detail }: { detail: any }) => {
     const accounts = detail.selectedItems as SandboxAccount[];
     setSelectedAccounts(accounts);
   };
+
+  const canEject = (status: SandboxAccountStatus) =>
+    ["Available", "Frozen"].includes(status);
+
+  const canCleanup = (status: SandboxAccountStatus) =>
+    ["Quarantine"].includes(status);
+
+  const canEjectSelected = selectedAccounts.some((account) =>
+    canEject(account.status),
+  );
+
+  const canCleanupSelected = selectedAccounts.some((account) =>
+    canCleanup(account.status),
+  );
 
   return (
     <ContentLayout
       header={
         <Header
           variant="h1"
+          description={t('page.description', { ns: 'accounts' })}
           actions={
-            <Button onClick={onCreateClick} variant="primary">
-              Add accounts
+            <Button
+              onClick={() => navigate("/accounts/add")}
+              variant="primary"
+            >
+              {t('page.addAccounts', { ns: 'accounts' })}
             </Button>
           }
-          description="Manage registered AWS accounts in the account pool"
         >
-          Accounts
+          {t('page.title', { ns: 'accounts' })}
         </Header>
       }
     >
-      <SpaceBetween size="m">
-        <AccountsSummary
-          isLoading={isFetching}
-          accounts={accounts}
-          filter={filter}
-          onFilterUpdated={setFilter}
-        />
+      <SpaceBetween size="l">
         <Container>
-          <Table
-            data-embedded-table
-            variant="embedded"
-            stripedRows
-            trackBy="awsAccountId"
-            columnDefinitions={createColumnDefinitions(true)}
-            header="Accounts"
-            items={filteredAccounts}
-            selectedItems={selectedAccounts}
-            onSelectionChange={handleSelectionChange}
-            loading={isFetching}
-            actions={
-              <SpaceBetween direction="horizontal" size="s">
-                <Button
-                  iconName="refresh"
-                  data-testid="refresh-button"
-                  onClick={() => refetch()}
-                  disabled={isFetching}
-                />
-                <ButtonDropdown
-                  disabled={selectedAccounts.length === 0}
-                  items={[
-                    { text: "Eject account", id: "eject" },
-                    {
-                      text: "Retry cleanup",
-                      id: "retryCleanup",
-                      disabled:
-                        // disable cleanup option unless all selected accounts are in quarantine or cleanup
-                        !selectedAccounts.every(
-                          (x) =>
-                            x.status === "Quarantine" || x.status === "CleanUp",
-                        ),
-                    },
-                  ]}
-                  onItemClick={({ detail }) => {
-                    switch (detail.id) {
-                      case "eject":
-                        showEjectModal();
-                        break;
-                      case "retryCleanup":
-                        showCleanupModal();
-                        break;
-                    }
-                  }}
-                >
-                  Actions
-                </ButtonDropdown>
-              </SpaceBetween>
-            }
-          />
+          <AccountsSummary accounts={accounts || []} />
         </Container>
+        <Table
+          stripedRows
+          trackBy="awsAccountId"
+          columnDefinitions={createColumnDefinitions(true, t, currentLanguage)}
+          header={t('table.title', { ns: 'accounts' })}
+          totalItemsCount={(accounts || []).length}
+          items={accounts || []}
+          selectedItems={selectedAccounts}
+          onSelectionChange={handleSelectionChange}
+          loading={isFetching}
+          loadingText={t('actions.loading', { ns: 'common' })}
+          empty={t('actions.noItemsFound', { ns: 'common' })}
+          actions={
+            <SpaceBetween direction="horizontal" size="s">
+              <Button
+                iconName="refresh"
+                onClick={() => refetch()}
+                disabled={isFetching}
+              />
+              <ButtonDropdown
+                disabled={selectedAccounts.length === 0}
+                items={[
+                  {
+                    text: t('actions.eject', { ns: 'accounts' }),
+                    id: "eject",
+                    disabled: !canEjectSelected,
+                  },
+                  {
+                    text: t('actions.cleanup', { ns: 'accounts' }),
+                    id: "cleanup",
+                    disabled: !canCleanupSelected,
+                  },
+                ]}
+                onItemClick={({ detail }) => {
+                  showActionModal(detail.id as "eject" | "cleanup");
+                }}
+              >
+                {t('actions.title', { ns: 'accounts' })}
+              </ButtonDropdown>
+            </SpaceBetween>
+          }
+        />
       </SpaceBetween>
     </ContentLayout>
   );

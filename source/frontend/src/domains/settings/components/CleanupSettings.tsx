@@ -7,8 +7,10 @@ import { ErrorPanel } from "@amzn/innovation-sandbox-frontend/components/ErrorPa
 import { Loader } from "@amzn/innovation-sandbox-frontend/components/Loader";
 import { SettingsContainer } from "@amzn/innovation-sandbox-frontend/domains/settings/components/SettingsContainer";
 import { useGetConfigurations } from "@amzn/innovation-sandbox-frontend/domains/settings/hooks";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 
 export const CleanupSettings = () => {
+  const { t } = useTranslation();
   const {
     data: config,
     isLoading,
@@ -24,7 +26,7 @@ export const CleanupSettings = () => {
   if (loadingError || !config) {
     return (
       <ErrorPanel
-        description="There was a problem loading settings."
+        description={t('page.error', { ns: 'settings' })}
         retry={refetch}
         error={error as Error}
       />
@@ -37,38 +39,46 @@ export const CleanupSettings = () => {
         columns={2}
         items={[
           {
-            label: "Wait before Rerun Successful Attempt",
+            label: t('cleanup.waitBeforeRerun.label', { ns: 'settings' }),
             value: config.cleanup.waitBeforeRerunSuccessfulAttemptSeconds ? (
               <>
-                {config.cleanup.waitBeforeRerunSuccessfulAttemptSeconds} seconds
+                {config.cleanup.waitBeforeRerunSuccessfulAttemptSeconds} {t('cleanup.waitBeforeRerun.unit', { ns: 'settings' })}
               </>
             ) : (
-              <StatusIndicator type="warning">Not set</StatusIndicator>
+              <StatusIndicator type="warning">
+                {t('cleanup.waitBeforeRerun.notSet', { ns: 'settings' })}
+              </StatusIndicator>
             ),
           },
 
           {
-            label: "Number of failed attempts to cancel cleanup",
+            label: t('cleanup.failedAttempts.label', { ns: 'settings' }),
             value: config.cleanup.numberOfFailedAttemptsToCancelCleanup ? (
               <>{config.cleanup.numberOfFailedAttemptsToCancelCleanup}</>
             ) : (
-              <StatusIndicator type="warning">Not set</StatusIndicator>
+              <StatusIndicator type="warning">
+                {t('cleanup.failedAttempts.notSet', { ns: 'settings' })}
+              </StatusIndicator>
             ),
           },
           {
-            label: "Wait before retrying failed attempt",
+            label: t('cleanup.waitBeforeRetry.label', { ns: 'settings' }),
             value: config.cleanup.waitBeforeRetryFailedAttemptSeconds ? (
-              <>{config.cleanup.waitBeforeRetryFailedAttemptSeconds} seconds</>
+              <>{config.cleanup.waitBeforeRetryFailedAttemptSeconds} {t('cleanup.waitBeforeRetry.unit', { ns: 'settings' })}</>
             ) : (
-              <StatusIndicator type="warning">Not set</StatusIndicator>
+              <StatusIndicator type="warning">
+                {t('cleanup.waitBeforeRetry.notSet', { ns: 'settings' })}
+              </StatusIndicator>
             ),
           },
           {
-            label: "Number of successful attempts to finish cleanup",
+            label: t('cleanup.successfulAttempts.label', { ns: 'settings' }),
             value: config.cleanup.numberOfSuccessfulAttemptsToFinishCleanup ? (
               <>{config.cleanup.numberOfSuccessfulAttemptsToFinishCleanup}</>
             ) : (
-              <StatusIndicator type="warning">Not set</StatusIndicator>
+              <StatusIndicator type="warning">
+                {t('cleanup.successfulAttempts.notSet', { ns: 'settings' })}
+              </StatusIndicator>
             ),
           },
         ]}

@@ -13,6 +13,14 @@ import {
 } from "@amzn/innovation-sandbox-frontend/helpers/ApiProxy";
 import { ApiPaginatedResult } from "@amzn/innovation-sandbox-frontend/types";
 
+
+
+
+
+
+
+
+
 export class LeaseService {
   private api: IApiProxy;
 
@@ -77,4 +85,8 @@ export class LeaseService {
   async freezeLease(leaseId: string): Promise<void> {
     await this.api.post(`/leases/${leaseId}/freeze`);
   }
+
+
+
+
 }

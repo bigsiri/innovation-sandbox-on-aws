@@ -1,0 +1,282 @@
+{
+  "page": {
+    "title": "Chargement des conditions de service...",
+    "description": "Avant de continuer, veuillez examiner les conditions de service ci-dessous.",
+    "reviewTermsInstruction": "Avant de continuer, veuillez examiner les conditions de service ci-dessous.",
+    "loadingTermsOfService": "Chargement des conditions de service...",
+    "leaseTemplateLabel": "Modèle de bail sélectionné",
+    "maxBudgetLabel": "Budget maximum :",
+    "requiresApprovalLabel": "Nécessite une approbation"
+  },
+  "table": {
+    "title": "Baux",
+    "columns": {
+      "user": "Utilisateur",
+      "leaseTemplate": "Modèle de bail",
+      "budget": "Budget",
+      "expiry": "Expiration",
+      "status": "Statut",
+      "awsAccount": "Compte AWS",
+      "access": "Accès"
+    },
+    "noAccountAssignedYet": "Aucun compte assigné pour le moment",
+    "noAccountAssigned": "Aucun compte assigné"
+  },
+  "filters": {
+    "title": "Options de filtre",
+    "status": "Statut",
+    "statusPlaceholder": "Sélectionner le statut",
+    "leaseTemplate": "Modèle de bail",
+    "leaseTemplatePlaceholder": "Sélectionner le modèle de bail",
+    "groups": {
+      "active": "Actifs",
+      "pending": "En attente",
+      "expired": "Expirés"
+    }
+  },
+  "actions": {
+    "title": "Actions",
+    "requestLease": "Demander un bail",
+    "terminate": "Terminer",
+    "freeze": "Geler",
+    "update": "Mettre à jour",
+    "refresh": "Actualiser",
+    "chooseOptions": "Choisir les options",
+    "search": "Rechercher",
+    "loading": "Chargement...",
+    "noLeasesFound": "Aucun bail trouvé",
+    "description": "{{count}} bail/baux à {{action}}",
+    "modal": {
+      "terminate": {
+        "title": "Terminer le/les bail/baux",
+        "description": "{{count}} bail/baux à terminer"
+      },
+      "freeze": {
+        "title": "Geler le/les bail/baux",
+        "description": "{{count}} bail/baux à geler"
+      },
+      "cancel": "Annuler",
+      "submit": "Soumettre",
+      "retry": "Réessayer",
+      "status": "Statut"
+    },
+    "success": {
+      "terminate": "Le/les bail/baux ont été terminés avec succès.",
+      "freeze": "Le/les bail/baux ont été gelés avec succès."
+    },
+    "error": {
+      "terminate": {
+        "message": "Un ou plusieurs baux ont échoué à se terminer, essayez de les soumettre à nouveau.",
+        "title": "Échec de la terminaison du/des bail/baux"
+      },
+      "freeze": {
+        "message": "Un ou plusieurs baux ont échoué à geler, essayez de les soumettre à nouveau.",
+        "title": "Échec du gel du/des bail/baux"
+      }
+    }
+  },
+  "details": {
+    "updateSuccess": "Bail mis à jour avec succès.",
+    "tabs": {
+      "summary": "Résumé",
+      "budget": "Budget",
+      "duration": "Durée",
+      "users": "Utilisateurs"
+    },
+    "leaseId": "ID du bail",
+    "awsAccountId": "ID du compte AWS",
+    "leaseTemplate": "Modèle de bail",
+    "requestedBy": "Demandé par",
+    "approvedBy": "Approuvé par",
+    "autoApproved": "Approuvé automatiquement",
+    "status": "Statut",
+    "maxBudget": "Budget maximum",
+    "budgetStatus": "Statut du budget",
+    "leaseStarted": "Bail commencé",
+    "leaseExpiry": "Expiration du bail",
+    "lastMonitored": "Dernière surveillance",
+    "comments": "Commentaires",
+    "noAccountAssigned": "Aucun compte assigné pour le moment",
+    "noComments": "Aucun commentaire fourni"
+  },
+  "summary": {
+    "title": "Résumé du bail",
+    "copySuccess": {
+      "leaseId": "ID du bail copié dans le presse-papiers",
+      "accountId": "ID du compte copié dans le presse-papiers"
+    },
+    "copyError": {
+      "leaseId": "Échec de la copie de l'ID du bail",
+      "accountId": "Échec de la copie de l'ID du compte"
+    }
+  },
+  "budget": {
+    "title": "Budget",
+    "updateButton": "Mettre à jour les paramètres de budget",
+    "maxBudgetLabel": "Budget maximum",
+    "noBudgetOption": "Ne pas définir de budget",
+    "setBudgetOption": "Définir un budget maximum",
+    "selectOptionRequired": "Veuillez sélectionner une option",
+    "noBudgetWarning": "Si vous ne définissez pas de budget maximum, il y a un risque que ces comptes aient des dépassements de coûts.",
+    "maxBudgetAmount": "Montant du budget maximum",
+    "maxBudgetExceeded": "Le budget maximum est de {{amount}} $",
+    "thresholdsLabel": "Seuils de budget",
+    "thresholdsDescription": "Déterminez ce qui se passe lorsque le budget est consommé.",
+    "maxSpendLabel": "Dépense maximale",
+    "enableBudgetLabel": "Activer la limite de budget",
+    "budgetDescription": "Définir les limites de dépenses et les seuils de notification pour ce bail"
+  },
+  "duration": {
+    "title": "Paramètres de durée",
+    "updateButton": "Mettre à jour les paramètres de durée",
+    "expirationLabel": "Date d'expiration",
+    "thresholdsLabel": "Seuils de durée",
+    "enableExpirationLabel": "Activer la date d'expiration",
+    "durationDescription": "Configurer la durée du bail et les seuils de notification",
+    "currentlyExpires": "Ce bail expire actuellement",
+    "noExpiration": "Ce bail n'expire actuellement pas",
+    "removeExpiry": "Supprimer la date d'expiration",
+    "noExpiryOption": "Ne pas définir de date d'expiration",
+    "setExpiryOption": "Définir une date d'expiration",
+    "selectOptionRequired": "Veuillez sélectionner une option",
+    "validDateRequired": "Veuillez entrer une date et une heure valides",
+    "futureDateRequired": "Veuillez sélectionner une date et une heure au moins 1 heure dans le futur"
+  },
+  "users": {
+    "title": "Utilisateurs du bail",
+    "description": "Ajouter des utilisateurs pour partager l'accès à ce compte AWS",
+    "addUserButton": "Ajouter un utilisateur",
+    "removeUserButton": "Supprimer l'utilisateur",
+    "currentUser": "Utilisateur actuel",
+    "leaseOwner": "Propriétaire du bail",
+    "addUserTitle": "Ajouter un utilisateur au bail",
+    "removeUserTitle": "Supprimer l'utilisateur du bail",
+    "userEmail": "Courriel de l'utilisateur",
+    "userRole": "Rôle",
+    "addUserSuccess": "Utilisateur ajouté avec succès",
+    "removeUserSuccess": "Utilisateur supprimé avec succès",
+    "addUserError": "Échec de l'ajout de l'utilisateur",
+    "removeUserError": "Échec de la suppression de l'utilisateur",
+    "noUsers": "Aucun utilisateur supplémentaire ajouté à ce bail",
+    "noUsersDescription": "Ce bail n'est actuellement accessible que par le propriétaire du bail. Ajoutez des utilisateurs pour partager l'accès au compte AWS.",
+    "leaseInactive": "Impossible de modifier les utilisateurs - le bail n'est pas actif",
+    "loadingError": "Il y a eu un problème lors du chargement des utilisateurs pour ce bail.",
+    "assignmentsFailed": "{{count}} assignation{{count, plural, one {} other {s}}} d'utilisateur{{count, plural, one {} other {s}}} a échoué{{count, plural, one {} other {nt}}}",
+    "assignmentsFailedDescription": "Certaines assignations d'utilisateurs ont échoué. Vous pouvez réessayer les assignations ou supprimer les utilisateurs en échec."
+  },
+  "status": {
+    "active": "Actif",
+    "frozen": "Modèle de bail sélectionné",
+    "frozenThresholdReached": "Gelé - seuil atteint",
+    "pendingApproval": "En attente d'approbation",
+    "approvalDenied": "Approbation refusée",
+    "expired": "Budget maximum :",
+    "budgetExceeded": "Budget dépassé",
+    "manuallyTerminated": "Terminé manuellement",
+    "accountQuarantined": "Compte en quarantaine",
+    "ejected": "Nécessite une approbation",
+    "noExpiry": "Aucune expiration",
+    "noAccountAssigned": "Aucun compte assigné",
+    "unknown": "Inconnu"
+  },
+  "breadcrumbs": {
+    "home": "Accueil",
+    "approvals": "Approbations",
+    "leases": "Baux",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "request": "Demande"
+  },
+  "forms": {
+    "request": {
+      "title": "Demander un bail",
+      "description": "Demander un nouveau bail de compte sandbox",
+      "success": "Demande de bail soumise avec succès",
+      "messages": {
+        "reviewInstruction": "Avant de continuer, veuillez examiner les conditions de service ci-dessous.",
+        "loadingTerms": "Chargement des conditions de service..."
+      },
+      "termsOfService": {
+        "title": "Conditions de service",
+        "reviewText": "Avant de continuer, veuillez examiner les conditions de service ci-dessous.",
+        "acceptLabel": "J'accepte les conditions de service",
+        "validation": "Vous devez accepter les conditions de service",
+        "notConfiguredHeader": "Les conditions de service n'ont pas encore été configurées.",
+        "notConfiguredMessage": "Veuillez contacter votre administrateur !",
+        "loadError": "Impossible de récupérer les conditions de service.",
+        "loadingText": "Chargement des conditions de service..."
+      },
+      "review": {
+        "title": "Révision",
+        "templateSelected": "Modèle de bail sélectionné",
+        "budgetMax": "Budget maximum :",
+        "approvalRequired": "Nécessite une approbation",
+        "expires": "Expire :",
+        "noApprovalRequired": "Aucune approbation requise",
+        "errorLoading": "Erreur lors du chargement du modèle de bail :",
+        "unknownError": "Erreur inconnue",
+        "comments": {
+          "label": "Commentaires",
+          "description": "Commentaires optionnels pour votre demande"
+        }
+      },
+      "selectTemplate": {
+        "title": "Sélectionner un modèle",
+        "label": "Modèle de bail",
+        "validation": "Veuillez sélectionner un modèle de bail",
+        "loading": "Chargement des modèles de bail...",
+        "loadError": "Impossible de charger les modèles de bail pour le moment.",
+        "noTemplates": "Aucun modèle de bail configuré.",
+        "noTemplatesMessage": "Veuillez contacter votre administrateur système.",
+        "noMatching": "Aucun modèle correspondant",
+        "noMatchingMessage": "Aucun modèle de bail ne correspond à votre terme de recherche. Essayez une recherche différente.",
+        "maxBudget": "Budget max :",
+        "noMaxBudget": "Aucun budget maximum",
+        "expires": "Expire :",
+        "noExpiry": "Aucune expiration",
+        "expiresAfter": "après {{duration}}",
+        "approval": "Approbation :",
+        "requiresApproval": "Nécessite une approbation",
+        "noApprovalRequired": "Aucune approbation requise",
+        "pagination": {
+          "nextPage": "Page suivante",
+          "previousPage": "Page précédente",
+          "pageLabel": "Page {{current}} sur {{total}}"
+        }
+      }
+    },
+    "approval": {
+      "approve": "Approuver",
+      "reject": "Rejeter"
+    }
+  },
+  "thresholds": {
+    "title": "Seuil",
+    "description": "Quand ce seuil devrait-il être déclenché?",
+    "action": {
+      "title": "Action",
+      "description": "Que devrait-il se passer lorsque le seuil est déclenché?"
+    },
+    "when": "Quand",
+    "isConsumed": "est consommé",
+    "noThresholds": "Aucun seuil créé.",
+    "addThreshold": "Ajouter un seuil",
+    "durationThresholds": "Seuils de durée",
+    "durationDescription": "Déterminez ce qui se passe au fil du temps.",
+    "budgetThresholds": "Seuils budgétaires",
+    "budgetDescription": "Déterminez ce qui se passe lorsque les dépenses augmentent.",
+    "hoursRemain": "heures restantes",
+    "actions": {
+      "sendAlert": "Envoyer une alerte",
+      "freezeAccount": "Geler le compte",
+      "wipeAccount": "Effacer le compte"
+    }
+  },
+  "messages": {
+    "reviewTermsInstruction": "Avant de continuer, veuillez examiner les conditions de service ci-dessous.",
+    "loadingTermsOfService": "Chargement des conditions de service...",
+    "leaseTemplateLabel": "Modèle de bail sélectionné",
+    "maxBudgetLabel": "Budget maximum :",
+    "requiresApprovalLabel": "Nécessite une approbation"
+  }
+}

@@ -14,8 +14,10 @@ import { useNavigate } from "react-router-dom";
 import { ErrorPanel } from "@amzn/innovation-sandbox-frontend/components/ErrorPanel";
 import { Loader } from "@amzn/innovation-sandbox-frontend/components/Loader";
 import { useGetPendingApprovals } from "@amzn/innovation-sandbox-frontend/domains/leases/hooks";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 
 export const ApprovalsPanel = () => {
+  const { t } = useTranslation('approvals');
   const navigate = useNavigate();
   const {
     data: approvals,
@@ -29,15 +31,16 @@ export const ApprovalsPanel = () => {
     if (isFetching) {
       return (
         <Container>
-          <Loader label="Checking for approval requests..." />
+          <Loader label={t('widgets.approvals.loading', { ns: 'home' })} />
         </Container>
       );
     }
 
     if (isError || !approvals) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       return (
         <ErrorPanel
-          description="Approvals could not be loaded."
+          description={`Approvals can't be retrieved at the moment. Server error: ${errorMessage}`}
           retry={refetch}
           error={error as Error}
         />
@@ -46,25 +49,31 @@ export const ApprovalsPanel = () => {
 
     if (approvals.length === 0) {
       return (
-        <Alert type="success">No pending approvals. Nothing to review.</Alert>
+        <Alert type="success">
+          {t('widgets.approvals.noPending', { ns: 'home' })}
+        </Alert>
       );
     }
 
     return (
-      <Alert type="warning" header="Pending approvals">
+      <Alert type="warning" header={t('widgets.approvals.pendingTitle', { ns: 'home' })}>
         <Box margin={{ top: "xs" }}>
           {approvals.length === 1 ? (
-            <>
-              There is <strong>1</strong> pending approval.
-            </>
+            t('widgets.approvals.pendingSingle', { 
+              ns: 'home', 
+              replace: { count: approvals.length } 
+            })
           ) : (
-            <>
-              There are <strong>{approvals.length} pending approvals.</strong>
-            </>
+            t('widgets.approvals.pendingMultiple', { 
+              ns: 'home', 
+              replace: { count: approvals.length } 
+            })
           )}
         </Box>
         <Box margin={{ top: "s" }}>
-          <Button onClick={() => navigate("/approvals")}>View approvals</Button>
+          <Button onClick={() => navigate("/approvals")}>
+            {t('widgets.approvals.viewApprovals', { ns: 'home' })}
+          </Button>
         </Box>
       </Alert>
     );
@@ -77,13 +86,13 @@ export const ApprovalsPanel = () => {
         actions={
           <Button
             iconName="refresh"
-            ariaLabel="Refresh"
+            ariaLabel={t('actions.refresh', { ns: 'home' })}
             disabled={isFetching}
             onClick={() => refetch()}
           />
         }
       >
-        Approvals
+        {t('widgets.approvals.title', { ns: 'home' })}
       </Header>
       {body()}
     </SpaceBetween>

@@ -1033,7 +1033,7 @@ describe("Leases Handler", async () => {
       expect(await handler(event, mockAuthorizedContext(testEnv))).toEqual({
         statusCode: 403,
         body: createFailureResponseBody({
-          message: `Active user is not authorized to view leases of requested user.`,
+          message: `Active user is not authorized to view this lease.`,
         }),
         headers: responseHeaders,
       });

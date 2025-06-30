@@ -38,6 +38,11 @@ vi.mock(
         "/leases/{param}": {
           GET: ["User", "Manager", "Admin"],
         },
+        "/leases/{param}/users": {
+          GET: ["User", "Manager", "Admin"],
+          POST: ["Manager", "Admin"],
+          DELETE: ["Manager", "Admin"],
+        },
         "/leaseTemplates": {
           GET: ["Manager", "Admin"],
           POST: ["Admin"],
@@ -270,6 +275,66 @@ describe("authorization", () => {
     const testUser: IsbUser = {
       ...testUserBase,
       roles: ["Manager"],
+    };
+    const authorizationToken = jwt.sign({ user: testUser }, jwtSecret);
+    expect(
+      await isAuthorized({ methodArn, authorizationToken }, testContext),
+    ).toEqual(false);
+  });
+
+  it("should authorize GET /leases/{param}/users for User", async () => {
+    const methodArn = methodArnPrefix + "/GET/leases/lease123/users";
+    const testUser: IsbUser = {
+      ...testUserBase,
+      roles: ["User"],
+    };
+    const authorizationToken = jwt.sign({ user: testUser }, jwtSecret);
+    expect(
+      await isAuthorized({ methodArn, authorizationToken }, testContext),
+    ).toEqual(true);
+  });
+
+  it("should authorize POST /leases/{param}/users for Manager", async () => {
+    const methodArn = methodArnPrefix + "/POST/leases/lease123/users";
+    const testUser: IsbUser = {
+      ...testUserBase,
+      roles: ["Manager"],
+    };
+    const authorizationToken = jwt.sign({ user: testUser }, jwtSecret);
+    expect(
+      await isAuthorized({ methodArn, authorizationToken }, testContext),
+    ).toEqual(true);
+  });
+
+  it("should not authorize POST /leases/{param}/users for User", async () => {
+    const methodArn = methodArnPrefix + "/POST/leases/lease123/users";
+    const testUser: IsbUser = {
+      ...testUserBase,
+      roles: ["User"],
+    };
+    const authorizationToken = jwt.sign({ user: testUser }, jwtSecret);
+    expect(
+      await isAuthorized({ methodArn, authorizationToken }, testContext),
+    ).toEqual(false);
+  });
+
+  it("should authorize DELETE /leases/{param}/users for Admin", async () => {
+    const methodArn = methodArnPrefix + "/DELETE/leases/lease123/users";
+    const testUser: IsbUser = {
+      ...testUserBase,
+      roles: ["Admin"],
+    };
+    const authorizationToken = jwt.sign({ user: testUser }, jwtSecret);
+    expect(
+      await isAuthorized({ methodArn, authorizationToken }, testContext),
+    ).toEqual(true);
+  });
+
+  it("should not authorize DELETE /leases/{param}/users for User", async () => {
+    const methodArn = methodArnPrefix + "/DELETE/leases/lease123/users";
+    const testUser: IsbUser = {
+      ...testUserBase,
+      roles: ["User"],
     };
     const authorizationToken = jwt.sign({ user: testUser }, jwtSecret);
     expect(

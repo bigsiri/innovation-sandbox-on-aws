@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import ReactMarkdown, { Components } from "react-markdown";
 
 import { MarkdownLink } from "@amzn/innovation-sandbox-frontend/components/Markdown/MarkdownLink";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 
 interface MarkdownProps {
   file: string;
@@ -16,16 +17,28 @@ const markdownComponents: Components = {
 };
 
 export const Markdown = ({ file }: MarkdownProps) => {
+  const { i18n } = useTranslation();
   const [markdown, setMarkdown] = useState<any>();
 
   const init = async () => {
-    const md = await import(`../../markdown/${file}.md`);
-    setMarkdown(md);
+    const lang = i18n.language === 'fr-CA' ? 'fr' : 'en';
+    try {
+      const md = await import(`../../markdown/${lang}/${file}.md`);
+      setMarkdown(md);
+    } catch (error) {
+      // Fallback to English if French not available
+      try {
+        const md = await import(`../../markdown/en/${file}.md`);
+        setMarkdown(md);
+      } catch (fallbackError) {
+        console.error('Failed to load markdown file:', fallbackError);
+      }
+    }
   };
 
   useEffect(() => {
     init();
-  }, [file]);
+  }, [file, i18n.language]); // Re-run when language changes
 
   if (markdown) {
     return (

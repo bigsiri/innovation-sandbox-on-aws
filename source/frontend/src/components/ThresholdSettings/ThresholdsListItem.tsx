@@ -12,8 +12,9 @@ import { FaArrowRight } from "react-icons/fa";
 
 import { ThresholdAction } from "@amzn/innovation-sandbox-commons/data/lease-template/lease-template";
 import { NumberInput } from "@amzn/innovation-sandbox-frontend/components/NumberInput";
-import { ThresholdActionOptions } from "@amzn/innovation-sandbox-frontend/components/ThresholdSettings/constants";
+import { getTranslatedThresholdActionOptions } from "@amzn/innovation-sandbox-frontend/components/ThresholdSettings/constants";
 import { Threshold } from "@amzn/innovation-sandbox-frontend/components/ThresholdSettings/types";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 
 import styles from "./styles.module.scss";
 
@@ -38,11 +39,16 @@ export const ThresholdsListItem = ({
   onChange,
   onDelete,
 }: ThresholdsListItemProps) => {
+  const { t } = useTranslation();
+  const translatedActionOptions = getTranslatedThresholdActionOptions(t);
+  
+  // Reliable fallback for wipeAccount translation
+  
   return (
     <div className={styles.row}>
       <Box>
         <SpaceBetween size="xs" direction="horizontal" alignItems="start">
-          <div className={styles.cell}>When</div>
+          <div className={styles.cell}>{t('thresholds.when')}</div>
           <Box>
             <FormField errorText={valueError}>
               <SpaceBetween size="xs" direction="horizontal" alignItems="start">
@@ -70,16 +76,16 @@ export const ThresholdsListItem = ({
       <FormField errorText={actionError}>
         {isReadOnly && (
           <Select
-            selectedOption={{ value: "Wipe Account" }}
+            selectedOption={{ label: t('thresholds.actions.wipeAccount', { ns: 'leases' }), value: "WIPE_ACCOUNT" }}
             onChange={() => {}}
             readOnly
           />
         )}
         {!isReadOnly && (
           <Select
-            options={ThresholdActionOptions}
+            options={translatedActionOptions}
             selectedOption={
-              ThresholdActionOptions.find(
+              translatedActionOptions.find(
                 (x) => x.value === threshold.action,
               ) ?? null
             }

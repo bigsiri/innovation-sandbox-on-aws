@@ -7,6 +7,7 @@ import { LeaseTemplate } from "@amzn/innovation-sandbox-commons/data/lease-templ
 import { Form } from "@amzn/innovation-sandbox-frontend/components/Form";
 import { thresholdValidator } from "@amzn/innovation-sandbox-frontend/components/ThresholdSettings/validator";
 import { durationFields } from "@amzn/innovation-sandbox-frontend/domains/leaseTemplates/formFields/duration";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 
 type DurationFormProps = {
   leaseDurationInHours: LeaseTemplate["leaseDurationInHours"];
@@ -30,6 +31,7 @@ export const DurationForm = ({
   isUpdating,
   globalMaxDuration,
 }: DurationFormProps) => {
+  const { t } = useTranslation();
   return (
     <Form
       insideTab
@@ -58,13 +60,14 @@ export const DurationForm = ({
         }
       }}
       schema={{
-        submitLabel: "Update Duration Settings",
+        submitLabel: t('forms.duration.submitLabel', { ns: 'leaseTemplates' }),
         fields: [
           {
             component: componentTypes.SUB_FORM,
             ...durationFields({
               alwaysShowValidationErrors: true,
               globalMaxDuration,
+              t,
             }),
           },
         ],

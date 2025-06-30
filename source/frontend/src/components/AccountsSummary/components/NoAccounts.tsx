@@ -12,9 +12,11 @@ import { useNavigate } from "react-router-dom";
 
 import styles from "@amzn/innovation-sandbox-frontend/components/AccountsSummary/styles.module.scss";
 import Animate from "@amzn/innovation-sandbox-frontend/components/Animate";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 
 export const NoAccounts = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <Container>
@@ -23,13 +25,13 @@ export const NoAccounts = () => {
           <Animate>
             <SpaceBetween size="m" alignItems="center">
               <StatusIndicator type="warning">
-                It looks like there are no accounts in the account pool.
+                {t('noAccounts.title', { ns: 'accounts' })}
               </StatusIndicator>
               <Box>
-                Start adding accounts to get started with Innovation Sandbox.
+                {t('noAccounts.description', { ns: 'accounts' })}
               </Box>
               <Button onClick={() => navigate("/accounts/new")}>
-                Add accounts
+                {t('noAccounts.action', { ns: 'accounts' })}
               </Button>
             </SpaceBetween>
           </Animate>

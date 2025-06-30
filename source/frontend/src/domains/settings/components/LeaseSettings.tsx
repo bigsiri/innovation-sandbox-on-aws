@@ -7,8 +7,11 @@ import { ErrorPanel } from "@amzn/innovation-sandbox-frontend/components/ErrorPa
 import { Loader } from "@amzn/innovation-sandbox-frontend/components/Loader";
 import { SettingsContainer } from "@amzn/innovation-sandbox-frontend/domains/settings/components/SettingsContainer";
 import { useGetConfigurations } from "@amzn/innovation-sandbox-frontend/domains/settings/hooks";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
+import { formatCurrency } from "@amzn/innovation-sandbox-frontend/i18n/utils/numberLocalization";
 
 export const LeaseSettings = () => {
+  const { t, currentLanguage } = useTranslation();
   const {
     data: config,
     isLoading,
@@ -24,7 +27,7 @@ export const LeaseSettings = () => {
   if (loadingError || !config) {
     return (
       <ErrorPanel
-        description="There was a problem loading settings."
+        description={t('page.error', { ns: 'settings' })}
         retry={refetch}
         error={error as Error}
       />
@@ -38,38 +41,38 @@ export const LeaseSettings = () => {
         items={[
           {
             type: "group",
-            title: "Budget",
+            title: t('lease.budget.title', { ns: 'settings' }),
             items: [
               {
-                label: "Max Budget",
-                value: `$${config.leases.maxBudget} USD`,
+                label: t('lease.budget.maxBudget.label', { ns: 'settings' }),
+                value: formatCurrency(config.leases.maxBudget, { currency: 'USD' }, currentLanguage),
               },
               {
-                label: "Require Max Budget",
-                value: config.leases.requireMaxBudget.toString(),
+                label: t('lease.budget.requireMaxBudget.label', { ns: 'settings' }),
+                value: t(config.leases.requireMaxBudget ? 'yes' : 'no', { ns: 'common' }),
               },
             ],
           },
           {
             type: "group",
-            title: "Duration",
+            title: t('lease.duration.title', { ns: 'settings' }),
             items: [
               {
-                label: "Max Lease Duration",
-                value: `${config.leases.maxDurationHours} hours`,
+                label: t('lease.duration.maxDuration.label', { ns: 'settings' }),
+                value: `${config.leases.maxDurationHours} ${t('lease.duration.maxDuration.unit', { ns: 'settings' })}`,
               },
               {
-                label: "Require Max Lease Duration",
-                value: config.leases.requireMaxDuration.toString(),
+                label: t('lease.duration.requireMaxDuration.label', { ns: 'settings' }),
+                value: t(config.leases.requireMaxDuration ? 'yes' : 'no', { ns: 'common' }),
               },
             ],
           },
           {
             type: "group",
-            title: "User limits",
+            title: t('lease.userLimits.title', { ns: 'settings' }),
             items: [
               {
-                label: "Max leases per user",
+                label: t('lease.userLimits.maxLeasesPerUser.label', { ns: 'settings' }),
                 value: config.leases.maxLeasesPerUser,
               },
             ],

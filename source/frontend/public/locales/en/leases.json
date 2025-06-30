@@ -1,0 +1,292 @@
+{
+  "page": {
+    "title": "Loading terms of service...",
+    "description": "Before continuing, please review the terms of service below.",
+    "reviewTermsInstruction": "Before continuing, please review the terms of service below.",
+    "loadingTermsOfService": "Loading terms of service...",
+    "leaseTemplateLabel": "Lease Template Selected",
+    "maxBudgetLabel": "Max budget:",
+    "requiresApprovalLabel": "Requires approval"
+  },
+  "table": {
+    "title": "Leases",
+    "columns": {
+      "user": "User",
+      "leaseTemplate": "Lease Template",
+      "budget": "Budget",
+      "expiry": "Expiry",
+      "status": "Status",
+      "awsAccount": "AWS Account",
+      "access": "Access"
+    },
+    "noAccountAssignedYet": "No account assigned yet",
+    "noAccountAssigned": "No account assigned"
+  },
+  "filters": {
+    "title": "Filter Options",
+    "status": "Status",
+    "statusPlaceholder": "Select status",
+    "leaseTemplate": "Lease Template",
+    "leaseTemplatePlaceholder": "Select lease template",
+    "groups": {
+      "active": "Active",
+      "pending": "Pending",
+      "expired": "Expired"
+    }
+  },
+  "actions": {
+    "title": "Actions",
+    "requestLease": "Request Lease",
+    "terminate": "Terminate",
+    "freeze": "Freeze",
+    "update": "Update",
+    "refresh": "Refresh",
+    "chooseOptions": "Choose options",
+    "search": "Search",
+    "loading": "Loading...",
+    "noLeasesFound": "No leases found",
+    "description": "{{count}} lease(s) to {{action}}",
+    "modal": {
+      "terminate": {
+        "title": "Terminate Lease(s)",
+        "description": "{{count}} lease(s) to terminate"
+      },
+      "freeze": {
+        "title": "Freeze Lease(s)",
+        "description": "{{count}} lease(s) to freeze"
+      },
+      "cancel": "Cancel",
+      "submit": "Submit",
+      "retry": "Retry",
+      "status": "Status"
+    },
+    "success": {
+      "terminate": "Lease(s) were terminated successfully.",
+      "freeze": "Lease(s) were frozen successfully."
+    },
+    "error": {
+      "terminate": {
+        "message": "One or more leases failed to terminate, try resubmitting.",
+        "title": "Failed to terminate lease(s)"
+      },
+      "freeze": {
+        "message": "One or more leases failed to freeze, try resubmitting.",
+        "title": "Failed to freeze lease(s)"
+      }
+    }
+  },
+  "modal": {
+    "terminate": {
+      "title": "Terminate Lease(s)"
+    },
+    "freeze": {
+      "title": "Freeze Lease(s)"
+    }
+  },
+  "details": {
+    "updateSuccess": "Lease updated successfully.",
+    "tabs": {
+      "summary": "Summary",
+      "budget": "Budget",
+      "duration": "Duration",
+      "users": "Users"
+    },
+    "leaseId": "Lease ID",
+    "awsAccountId": "AWS Account ID",
+    "leaseTemplate": "Lease Template",
+    "requestedBy": "Requested By",
+    "approvedBy": "Approved By",
+    "autoApproved": "Auto Approved",
+    "status": "Status",
+    "maxBudget": "Max Budget",
+    "budgetStatus": "Budget Status",
+    "leaseStarted": "Lease Started",
+    "leaseExpiry": "Lease Expiry",
+    "lastMonitored": "Last Monitored",
+    "comments": "Comments",
+    "noAccountAssigned": "No account assigned yet",
+    "noComments": "No comments provided"
+  },
+  "summary": {
+    "title": "Lease Summary",
+    "copySuccess": {
+      "leaseId": "Lease ID copied to clipboard",
+      "accountId": "Account ID copied to clipboard"
+    },
+    "copyError": {
+      "leaseId": "Failed to copy Lease ID",
+      "accountId": "Failed to copy Account ID"
+    }
+  },
+  "budget": {
+    "title": "Budget",
+    "updateButton": "Update Budget Settings",
+    "maxBudgetLabel": "Maximum Budget",
+    "noBudgetOption": "Do not set a budget",
+    "setBudgetOption": "Set a max budget",
+    "selectOptionRequired": "Please select an option",
+    "noBudgetWarning": "If you don't set a max budget, there is a risk that these accounts may have cost overruns.",
+    "maxBudgetAmount": "Maximum Budget Amount",
+    "maxBudgetExceeded": "Maximum budget is ${{amount}}",
+    "thresholdsLabel": "Budget Thresholds",
+    "thresholdsDescription": "Determine what happens as budget is consumed.",
+    "maxSpendLabel": "Maximum Spend",
+    "enableBudgetLabel": "Enable Budget Limit",
+    "budgetDescription": "Set spending limits and notification thresholds for this lease"
+  },
+  "duration": {
+    "title": "Duration Settings",
+    "updateButton": "Update Duration Settings",
+    "expirationLabel": "Expiration Date",
+    "thresholdsLabel": "Duration Thresholds",
+    "enableExpirationLabel": "Enable Expiration Date",
+    "durationDescription": "Configure lease duration and notification thresholds",
+    "currentlyExpires": "This lease currently expires",
+    "noExpiration": "This lease currently does not expire",
+    "removeExpiry": "Remove expiry date",
+    "noExpiryOption": "Do not set an expiry date",
+    "setExpiryOption": "Set an expiry date",
+    "selectOptionRequired": "Please select an option",
+    "validDateRequired": "Please enter a valid date and time",
+    "futureDateRequired": "Please select a date and time at least 1 hour in the future"
+  },
+  "users": {
+    "title": "Lease Users",
+    "description": "Add users to share access to this AWS account",
+    "addUserButton": "Add User",
+    "removeUserButton": "Remove User",
+    "currentUser": "Current User",
+    "leaseOwner": "Lease Owner",
+    "addUserTitle": "Add User to Lease",
+    "removeUserTitle": "Remove User from Lease",
+    "userEmail": "User Email",
+    "userRole": "Role",
+    "addUserSuccess": "User added successfully",
+    "removeUserSuccess": "User removed successfully",
+    "addUserError": "Failed to add user",
+    "removeUserError": "Failed to remove user",
+    "noUsers": "No additional users added to this lease",
+    "noUsersDescription": "This lease is currently only accessible by the lease owner. Add users to share access to the AWS account.",
+    "leaseInactive": "Cannot modify users - lease is not active",
+    "loadingError": "There was a problem loading the users for this lease.",
+    "assignmentsFailed": "{{count}} user assignment{{count, plural, one {} other {s}}} failed",
+    "assignmentsFailedDescription": "Some user assignments failed. You can retry the assignments or remove the failed users."
+  },
+  "status": {
+    "active": "Active",
+    "frozen": "Lease Template Selected",
+    "frozenThresholdReached": "Frozen - threshold reached",
+    "pendingApproval": "Pending Approval",
+    "approvalDenied": "Approval Denied",
+    "expired": "Max budget:",
+    "budgetExceeded": "Budget Exceeded",
+    "manuallyTerminated": "Manually Terminated",
+    "accountQuarantined": "Account Quarantined",
+    "ejected": "Requires approval",
+    "noExpiry": "No expiry",
+    "noAccountAssigned": "No account assigned",
+    "unknown": "Unknown"
+  },
+  "breadcrumbs": {
+    "home": "Home",
+    "approvals": "Approvals",
+    "leases": "Leases",
+    "loading": "Loading...",
+    "error": "Error",
+    "request": "Request"
+  },
+  "forms": {
+    "request": {
+      "title": "Request Lease",
+      "description": "Request a new sandbox account lease",
+      "success": "Lease request submitted successfully",
+      "messages": {
+        "reviewInstruction": "Before continuing, please review the terms of service below.",
+        "loadingTerms": "Loading terms of service..."
+      },
+      "termsOfService": {
+        "title": "Terms of Service",
+        "acceptLabel": "I accept the terms of service",
+        "validation": "You must accept the terms of service",
+        "notConfiguredHeader": "Terms of Service have not been configured yet.",
+        "notConfiguredMessage": "Please contact your administrator!",
+        "loadError": "Could not retrieve terms of service.",
+        "reviewText": "Before continuing, please review the terms of service below.",
+        "loadingText": "Loading terms of service..."
+      },
+      "review": {
+        "title": "Review",
+        "expires": "Expires:",
+        "noApprovalRequired": "No approval required",
+        "errorLoading": "Error loading lease template:",
+        "unknownError": "Unknown error",
+        "comments": {
+          "label": "Comments",
+          "description": "Optional comments for your request"
+        },
+        "templateSelected": "Lease Template Selected",
+        "budget": "Max budget:",
+        "approval": "Requires approval",
+        "budgetMax": "Max budget:",
+        "approvalRequired": "Requires approval"
+      },
+      "selectTemplate": {
+        "title": "Select Template",
+        "label": "Lease Template",
+        "validation": "Please select a lease template",
+        "loading": "Loading lease templates...",
+        "loadError": "Could not load lease templates at the moment.",
+        "noTemplates": "No lease templates configured.",
+        "noTemplatesMessage": "Please contact your system administrator.",
+        "noMatching": "No matching templates",
+        "noMatchingMessage": "No lease templates match your search term. Try a different search.",
+        "maxBudget": "Max Budget:",
+        "noMaxBudget": "No max budget",
+        "expires": "Expires:",
+        "noExpiry": "No expiry",
+        "expiresAfter": "after {{duration}}",
+        "approval": "Approval:",
+        "requiresApproval": "Requires approval",
+        "noApprovalRequired": "No approval required",
+        "pagination": {
+          "nextPage": "Next page",
+          "previousPage": "Previous page",
+          "pageLabel": "Page {{current}} of {{total}}"
+        }
+      }
+    },
+    "approval": {
+      "approve": "Approve",
+      "reject": "Reject"
+    }
+  },
+  "thresholds": {
+    "title": "Threshold",
+    "description": "When should this threshold be triggered?",
+    "action": {
+      "title": "Action",
+      "description": "What should happen when the threshold is triggered?"
+    },
+    "when": "When",
+    "isConsumed": "is consumed",
+    "noThresholds": "No thresholds created.",
+    "addThreshold": "Add a threshold",
+    "durationThresholds": "Duration Thresholds",
+    "durationDescription": "Determine what happens as time passes.",
+    "budgetThresholds": "Budget Thresholds",
+    "budgetDescription": "Determine what happens as spending increases.",
+    "hoursRemain": "hours remain",
+    "actions": {
+      "sendAlert": "Send Alert",
+      "freezeAccount": "Freeze Account",
+      "wipeAccount": "Wipe Account"
+    }
+  },
+  "messages": {
+    "reviewTermsInstruction": "Before continuing, please review the terms of service below.",
+    "loadingTermsOfService": "Loading terms of service...",
+    "leaseTemplateLabel": "Lease Template Selected",
+    "maxBudgetLabel": "Max budget:",
+    "requiresApprovalLabel": "Requires approval"
+  }
+}

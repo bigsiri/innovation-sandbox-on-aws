@@ -9,7 +9,6 @@ import {
   Header,
   SpaceBetween,
 } from "@cloudscape-design/components";
-import moment from "moment";
 import { useEffect, useState } from "react";
 
 import { LeaseWithLeaseId as Lease } from "@amzn/innovation-sandbox-commons/data/lease/lease";
@@ -27,10 +26,12 @@ import {
 } from "@amzn/innovation-sandbox-frontend/domains/leases/hooks";
 import { useBreadcrumb } from "@amzn/innovation-sandbox-frontend/hooks/useBreadcrumb";
 import { useModal } from "@amzn/innovation-sandbox-frontend/hooks/useModal";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
+import { formatDistanceToNowLocalized } from "@amzn/innovation-sandbox-frontend/i18n/utils/dateLocalization";
 import { useAppLayoutContext } from "@aws-northstar/ui/components/AppLayout";
 
-const DateRequestedCell = ({ lease }: { lease: Lease }) => (
-  <>{moment(lease.meta?.createdTime).fromNow()}</>
+const DateRequestedCell = ({ lease, currentLanguage }: { lease: Lease; currentLanguage: string }) => (
+  <>{formatDistanceToNowLocalized(new Date(lease.meta?.createdTime || ''), currentLanguage as any)}</>
 );
 
 const CommentsCell = ({ lease }: { lease: Lease }) => <>{lease.comments}</>;
@@ -53,12 +54,14 @@ type ReviewModalContentProps = {
   selectedRequests: Lease[];
   mode: "approve" | "deny";
   reviewLease: (params: { leaseId: string; approve: boolean }) => Promise<any>;
+  t: any;
+  currentLanguage: string;
 };
 
-const createColumnDefinitions = (includeLinks: boolean) => [
+const createColumnDefinitions = (includeLinks: boolean, t: any, currentLanguage: string) => [
   {
     id: "requestor",
-    header: "Requested by",
+    header: t('table.columns.requestedBy'),
     sortingField: "requestor.name",
     cell: (
       lease: Lease, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
@@ -66,19 +69,19 @@ const createColumnDefinitions = (includeLinks: boolean) => [
   },
   {
     id: "originalLeaseTemplateName",
-    header: "Lease Template",
+    header: t('table.columns.leaseTemplate'),
     sortingField: "originalLeaseTemplateName",
     cell: (lease: Lease) => lease.originalLeaseTemplateName,
   },
   {
     id: "dateRequested",
-    header: "Requested",
+    header: t('table.columns.requested'),
     sortingField: "dateRequested",
-    cell: (lease: Lease) => <DateRequestedCell lease={lease} />, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
+    cell: (lease: Lease) => <DateRequestedCell lease={lease} currentLanguage={currentLanguage} />, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
   },
   {
     id: "comments",
-    header: "Comments",
+    header: t('table.columns.comments'),
     sortingField: "comments",
     cell: (lease: Lease) => <CommentsCell lease={lease} />, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
   },
@@ -88,12 +91,16 @@ const ReviewModalContent = ({
   selectedRequests,
   mode,
   reviewLease,
+  t,
+  currentLanguage,
 }: ReviewModalContentProps) => {
   return (
     <BatchActionReview
       items={selectedRequests}
-      description={`${selectedRequests.length} lease request(s) to review`}
-      columnDefinitions={createColumnDefinitions(false)}
+      description={t('review.description', { 
+        replace: { count: selectedRequests.length } 
+      })}
+      columnDefinitions={createColumnDefinitions(false, t, currentLanguage)}
       identifierKey="leaseId"
       onSubmit={async (lease: Lease) => {
         await reviewLease({
@@ -104,14 +111,14 @@ const ReviewModalContent = ({
       onSuccess={() => {
         showSuccessToast(
           mode === "approve"
-            ? "Lease request(s) were successfully approved."
-            : "Lease request(s) were successfully denied.",
+            ? t('review.success.approved')
+            : t('review.success.denied'),
         );
       }}
       onError={() =>
         showErrorToast(
-          "One or more lease requests failed to review, try resubmitting.",
-          "Failed to review lease requests",
+          t('review.error.message'),
+          t('review.error.title'),
         )
       }
     />
@@ -119,6 +126,8 @@ const ReviewModalContent = ({
 };
 
 export const ListApprovals = () => {
+  const { t, currentLanguage } = useTranslation('approvals');
+  
   // base ui hooks
   const setBreadcrumb = useBreadcrumb();
   const { setTools } = useAppLayoutContext();
@@ -135,8 +144,8 @@ export const ListApprovals = () => {
 
   const init = async () => {
     setBreadcrumb([
-      { text: "Home", href: "/" },
-      { text: "Approvals", href: "/approvals" },
+      { text: t('breadcrumbs.home', { ns: 'navigation' }), href: "/" },
+      { text: t('breadcrumbs.approvals', { ns: 'navigation' }), href: "/approvals" },
     ]);
     setTools(<Markdown file="approvals" />);
   };
@@ -147,12 +156,16 @@ export const ListApprovals = () => {
 
   const showReviewModal = (mode: "approve" | "deny") => {
     showModal({
-      header: mode === "approve" ? "Approve request(s)" : "Deny request(s)",
+      header: mode === "approve" 
+        ? t('modal.approve.title')
+        : t('modal.deny.title'),
       content: (
         <ReviewModalContent
           selectedRequests={selectedRequests}
           mode={mode}
           reviewLease={reviewLease}
+          t={t}
+          currentLanguage={currentLanguage}
         />
       ),
       size: "max",
@@ -170,22 +183,26 @@ export const ListApprovals = () => {
         <Header
           variant="h1"
           info={<InfoLink markdown="approvals" />}
-          description="Manage requests to lease sandbox accounts"
+          description={t('page.description')}
         >
-          Approvals
+          {t('page.title')}
         </Header>
       }
     >
       <Table
         stripedRows
         trackBy="leaseId"
-        columnDefinitions={createColumnDefinitions(true)}
-        header="Approvals"
+        columnDefinitions={createColumnDefinitions(true, t, currentLanguage)}
+        header={t('table.title')}
         totalItemsCount={(requests || []).length}
         items={requests || []}
         selectedItems={selectedRequests}
         onSelectionChange={handleSelectionChange}
         loading={isFetching}
+        loadingText={t('actions.loading', { ns: 'common' })}
+        empty={t('actions.noItemsFound', { ns: 'common' })}
+        // Force re-render with key to ensure translation updates
+        key={`table-${currentLanguage}`}
         actions={
           <SpaceBetween direction="horizontal" size="s">
             <Button
@@ -196,14 +213,20 @@ export const ListApprovals = () => {
             <ButtonDropdown
               disabled={selectedRequests.length === 0}
               items={[
-                { text: "Approve request(s)", id: "approve" },
-                { text: "Deny request(s)", id: "deny" },
+                { 
+                  text: t('actions.approve'), 
+                  id: "approve" 
+                },
+                { 
+                  text: t('actions.deny'), 
+                  id: "deny" 
+                },
               ]}
               onItemClick={({ detail }) => {
                 showReviewModal(detail.id === "approve" ? "approve" : "deny");
               }}
             >
-              Actions
+              {t('actions.title')}
             </ButtonDropdown>
           </SpaceBetween>
         }

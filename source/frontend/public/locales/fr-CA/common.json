@@ -1,0 +1,75 @@
+{
+  "status": {
+    "loading": "Chargement",
+    "success": "Succès",
+    "failed": "Échec",
+    "authenticating": "Authentification...",
+    "redirecting": "Redirection..."
+  },
+  "actions": {
+    "cancel": "Annuler",
+    "submit": "Soumettre",
+    "retry": "Réessayer",
+    "refresh": "Actualiser",
+    "chooseOptions": "Choisir les options",
+    "title": "Actions",
+    "search": "Rechercher",
+    "loading": "Chargement...",
+    "noItemsFound": "Aucun élément trouvé",
+    "next": "Suivant"
+  },
+  "yes": "Oui",
+  "no": "Non",
+  "common": {
+    "yes": "Oui",
+    "no": "Non"
+  },
+  "summary": {
+    "count": "Nombre",
+    "accountPoolTitle": "Résumé du pool de comptes"
+  },
+  "duration": {
+    "expiringSoon": "Expire bientôt",
+    "popover": {
+      "expired": "Expiré le {{date}}",
+      "willExpire": "Expirera le {{date}}"
+    }
+  },
+  "languageSwitcher": {
+    "ariaLabel": "Changer de langue",
+    "english": "EN",
+    "frenchCanadian": "FR",
+    "languageChanged": "Langue changée pour {{language}}",
+    "switchingLanguage": "Changement de langue..."
+  },
+  "accountLogin": {
+    "loginToAccount": "Se connecter au compte"
+  },
+  "thresholds": {
+    "when": "Quand"
+  },
+  "validation": {
+    "required": "Ce champ est requis",
+    "invalidNumber": "Veuillez entrer un nombre valide.",
+    "numberGreaterThanZero": "Veuillez entrer un nombre supérieur à 0",
+    "selectAction": "Veuillez sélectionner une action",
+    "invalidEmail": "Veuillez entrer une adresse e-mail valide",
+    "minLength": "Doit contenir au moins {{min}} caractères",
+    "maxLength": "Ne peut pas dépasser {{max}} caractères"
+  },
+  "loading": {
+    "default": "Chargement...",
+    "saving": "Sauvegarde...",
+    "processing": "Traitement...",
+    "uploading": "Téléchargement...",
+    "downloading": "Téléchargement...",
+    "validating": "Validation...",
+    "authenticating": "Authentification...",
+    "connecting": "Connexion...",
+    "initializing": "Initialisation...",
+    "refreshing": "Actualisation...",
+    "searching": "Recherche...",
+    "filtering": "Filtrage...",
+    "sorting": "Tri..."
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "menu": {
+    "home": "Accueil",
+    "leases": "Baux",
+    "accounts": "Comptes",
+    "settings": "Paramètres",
+    "users": "Utilisateurs",
+    "dashboard": "Tableau de bord",
+    "profile": "Profil",
+    "logout": "Déconnexion",
+    "approvals": "Approbations",
+    "leaseTemplates": "Modèles de bail",
+    "documentation": "Documentation",
+    "administration": "Administration"
+  },
+  "pages": {
+    "home": {
+      "title": "Accueil",
+      "breadcrumb": "Accueil"
+    },
+    "leases": {
+      "title": "Baux",
+      "breadcrumb": "Baux"
+    },
+    "accounts": {
+      "title": "Comptes",
+      "breadcrumb": "Comptes"
+    },
+    "settings": {
+      "title": "Paramètres",
+      "breadcrumb": "Paramètres"
+    },
+    "users": {
+      "title": "Utilisateurs",
+      "breadcrumb": "Utilisateurs"
+    },
+    "approvals": {
+      "title": "Approbations",
+      "breadcrumb": "Approbations"
+    },
+    "leaseTemplates": {
+      "title": "Modèles de bail",
+      "breadcrumb": "Modèles de bail"
+    },
+    "administration": {
+      "title": "Administration",
+      "breadcrumb": "Administration"
+    }
+  },
+  "header": {
+    "title": "Bac à sable d'innovation sur AWS",
+    "overflowMenuTitle": "Bac à sable d'innovation sur AWS",
+    "settings": {
+      "ariaLabel": "Paramètres",
+      "theme": "Thème",
+      "themeLight": "Clair",
+      "themeDark": "Sombre",
+      "density": "Densité",
+      "densityComfortable": "Confortable",
+      "densityCompact": "Compact"
+    },
+    "info": {
+      "ariaLabel": "Information"
+    },
+    "user": {
+      "exit": "Quitter"
+    }
+  },
+  "loading": {
+    "signingOut": "Déconnexion en cours..."
+  },
+  "breadcrumbs": {
+    "home": "Accueil",
+    "approvals": "Approbations",
+    "leases": "Baux",
+    "leaseTemplates": "Modèles de bail",
+    "accounts": "Comptes"
+  }
+}

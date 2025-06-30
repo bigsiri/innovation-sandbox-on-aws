@@ -26,8 +26,10 @@ import {
 } from "@amzn/innovation-sandbox-frontend/domains/leaseTemplates/components/BudgetForm";
 import { useGetConfigurations } from "@amzn/innovation-sandbox-frontend/domains/settings/hooks";
 import { useBreadcrumb } from "@amzn/innovation-sandbox-frontend/hooks/useBreadcrumb";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 
 export const UpdateLease = () => {
+  const { t } = useTranslation('leases');
   const { leaseId } = useParams();
   const navigate = useNavigate();
   const setBreadcrumb = useBreadcrumb();
@@ -92,7 +94,7 @@ export const UpdateLease = () => {
     };
 
     await updateLease(leasePatchRequest);
-    showSuccessToast("Lease updated successfully.");
+    showSuccessToast(t('details.updateSuccess'));
   };
 
   // call api to update lease duration fields
@@ -109,7 +111,7 @@ export const UpdateLease = () => {
     };
 
     await updateLease(leasePatchRequest);
-    showSuccessToast("Lease updated successfully.");
+    showSuccessToast(t('details.updateSuccess'));
   };
 
   const onCancel = () => {
@@ -126,12 +128,12 @@ export const UpdateLease = () => {
       <Tabs
         tabs={[
           {
-            label: "Summary",
+            label: t('details.tabs.summary'),
             id: "summary",
             content: <LeaseSummary lease={lease} />,
           },
           {
-            label: "Budget",
+            label: t('details.tabs.budget'),
             id: "budget",
             content: (
               <BudgetForm
@@ -145,7 +147,7 @@ export const UpdateLease = () => {
             ),
           },
           {
-            label: "Duration",
+            label: t('details.tabs.duration'),
             id: "duration",
             content: (
               <LeaseDurationForm

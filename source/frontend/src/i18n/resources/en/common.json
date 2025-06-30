@@ -1,0 +1,42 @@
+{
+  "status": {
+    "loading": "Loading",
+    "success": "Success",
+    "failed": "Failed",
+    "authenticating": "Authenticating...",
+    "redirecting": "Redirecting..."
+  },
+  "actions": {
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "retry": "Retry",
+    "refresh": "Refresh",
+    "chooseOptions": "Choose options",
+    "title": "Actions",
+    "search": "Search",
+    "loading": "Loading...",
+    "noItemsFound": "No items found",
+    "next": "Next"
+  },
+  "summary": {
+    "count": "Count",
+    "accountPoolTitle": "Account Pool Summary"
+  },
+  "duration": {
+    "expiringSoon": "Expiring soon",
+    "popover": {
+      "expired": "Expired on {{date}}",
+      "willExpire": "Will expire on {{date}}"
+    }
+  },
+  "languageSwitcher": {
+    "ariaLabel": "Change language",
+    "english": "EN",
+    "frenchCanadian": "FR",
+    "languageChanged": "Language changed to {{language}}",
+    "switchingLanguage": "Switching language..."
+  },
+  "accountLogin": {
+    "loginToAccount": "Login to Account"
+  }
+}

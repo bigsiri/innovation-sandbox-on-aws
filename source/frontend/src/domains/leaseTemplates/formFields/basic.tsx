@@ -3,33 +3,34 @@
 
 import { componentTypes, validatorTypes } from "@aws-northstar/ui";
 import { Alert, Box } from "@cloudscape-design/components";
+import { TranslationFunction } from "@amzn/innovation-sandbox-frontend/i18n/types";
 
-export const basicFormFields = () => ({
+export const basicFormFields = (t?: TranslationFunction) => ({
   name: "basic",
-  title: "Basic Details",
+  title: t ? t('forms.basic.title', { ns: 'leaseTemplates' }) : "Basic Details",
   fields: [
     {
       component: componentTypes.TEXT_FIELD,
       name: "name",
-      label: "Name",
+      label: t ? t('forms.basic.name.label', { ns: 'leaseTemplates' }) : "Name",
       isRequired: true,
       validate: [
         {
           type: validatorTypes.REQUIRED,
-          message: "Please enter a name for this lease template",
+          message: t ? t('forms.basic.name.required', { ns: 'leaseTemplates' }) : "Name is required",
         },
       ],
     },
     {
       component: componentTypes.TEXTAREA,
       name: "description",
-      label: "Description",
-      description: "Optional",
+      label: t ? t('forms.basic.description.label', { ns: 'leaseTemplates' }) : "Description",
+      description: t ? t('forms.basic.description.description', { ns: 'leaseTemplates' }) : "Optional description for this lease template",
     },
     {
       component: componentTypes.SWITCH,
       name: "requiresApproval",
-      label: "Approval required",
+      label: t ? t('forms.basic.approval.label', { ns: 'leaseTemplates' }) : "Requires Approval",
     },
     {
       component: componentTypes.PLAIN_TEXT,
@@ -37,9 +38,7 @@ export const basicFormFields = () => ({
       label: (
         <Box data-inline-block>
           <Alert type="warning">
-            When a user requests this lease template, an account will
-            automatically be provided to the user if one is available in the
-            account pool.
+            Auto-provisioning is enabled. Leases will be created immediately without approval.
           </Alert>
         </Box>
       ),

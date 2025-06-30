@@ -52,22 +52,36 @@ export const App = () => {
     },
   });
 
-  return (
-    <Authenticator>
-      <Router>
-        <QueryClientProvider client={queryClient}>
-          <ModalProvider>
-            <AppLayout>
-              <Routes>
-                {routes.map(({ path, Element }) => (
-                  <Route key={path} path={path} element={<Element />} />
-                ))}
-              </Routes>
-            </AppLayout>
-          </ModalProvider>
-        </QueryClientProvider>
-      </Router>
-      <ToastContainer />
-    </Authenticator>
-  );
+  try {
+    return (
+      <Authenticator>
+        <Router>
+          <QueryClientProvider client={queryClient}>
+            <ModalProvider>
+              <AppLayout>
+                <Routes>
+                  {routes.map(({ path, Element }) => {
+                    return <Route key={path} path={path} element={<Element />} />;
+                  })}
+                </Routes>
+              </AppLayout>
+            </ModalProvider>
+          </QueryClientProvider>
+        </Router>
+        <ToastContainer />
+      </Authenticator>
+    );
+  } catch (error) {
+    console.error('App.tsx - Error in App component:', error);
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center', color: 'red' }}>
+        <h1>Application Loading Error</h1>
+        <p>There was an error loading the application. Please refresh the page to try again.</p>
+        <details>
+          <summary>Error Details</summary>
+          <pre>{error?.toString()}</pre>
+        </details>
+      </div>
+    );
+  }
 };

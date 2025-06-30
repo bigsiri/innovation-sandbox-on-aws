@@ -15,6 +15,7 @@ import {
   getColor,
 } from "@amzn/innovation-sandbox-frontend/components/AccountsSummary/helpers";
 import styles from "@amzn/innovation-sandbox-frontend/components/AccountsSummary/styles.module.scss";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 
 interface AccountsSummaryTableProps {
   accounts: SandboxAccount[];
@@ -96,14 +97,19 @@ export const AccountsSummaryTable = ({
   filter,
   onClick,
 }: AccountsSummaryTableProps) => {
+  const { t } = useTranslation();
+
   // memoise summary
   const summary = useMemo(() => {
-    const summary = convertAccountsToSummary(accounts);
+    const summary = convertAccountsToSummary(accounts, t);
 
     // add footer row to show total accounts
-    summary.push({ title: "Total", value: accounts?.length ?? 0 });
+    summary.push({ 
+      title: t('summary.totalAccounts', { ns: 'accounts' }), 
+      value: accounts?.length ?? 0 
+    });
     return summary;
-  }, [accounts]);
+  }, [accounts, t]);
 
   const handleClick = (item: AccountStatusDatum) => {
     if (filter === item.status) {
@@ -119,10 +125,11 @@ export const AccountsSummaryTable = ({
       sortingDisabled
       trackBy="name"
       items={summary}
+      empty={t('actions.noItemsFound', { ns: 'common' })}
       columnDefinitions={[
         {
           id: "name",
-          header: "Account Status",
+          header: t('columns.status', { ns: 'accounts' }),
           sortingField: "name",
           // prettier-ignore
           cell: (item) => ( // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
@@ -131,7 +138,7 @@ export const AccountsSummaryTable = ({
         },
         {
           id: "value",
-          header: <HeaderCell>Count</HeaderCell>,
+          header: <HeaderCell>{t('summary.count', { ns: 'common' })}</HeaderCell>,
           sortingField: "value",
           // prettier-ignore
           cell: (item) => ( // NOSONAR typescript:S6478 - the way the table component works requires defining component during render

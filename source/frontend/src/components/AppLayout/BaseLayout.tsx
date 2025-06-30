@@ -4,7 +4,7 @@
 import AppLayoutBase from "@aws-northstar/ui/components/AppLayout";
 import { BreadcrumbGroup } from "@cloudscape-design/components";
 import { useQueryClient } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { IsbUser } from "@amzn/innovation-sandbox-commons/types/isb-types";
@@ -12,18 +12,21 @@ import logo from "@amzn/innovation-sandbox-frontend/assets/images/logo.png";
 import { useAppContext } from "@amzn/innovation-sandbox-frontend/components/AppContext/context";
 import { AppLayoutProps } from "@amzn/innovation-sandbox-frontend/components/AppLayout";
 import {
-  adminNavItems,
-  commonNavItems,
-  managerNavItems,
-  userNavItems,
+  getAdminNavItems,
+  getCommonNavItems,
+  getManagerNavItems,
+  getUserNavItems,
 } from "@amzn/innovation-sandbox-frontend/components/AppLayout/constants";
 import { NavHeader } from "@amzn/innovation-sandbox-frontend/components/AppLayout/NavHeader";
 import { FullPageLoader } from "@amzn/innovation-sandbox-frontend/components/FullPageLoader";
 import { MaintenanceBanner } from "@amzn/innovation-sandbox-frontend/components/MaintenanceBanner";
 import { AuthService } from "@amzn/innovation-sandbox-frontend/helpers/AuthService";
 import { useInit } from "@amzn/innovation-sandbox-frontend/hooks/useInit";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
+import { SupportedLanguages } from "@amzn/innovation-sandbox-frontend/i18n/types";
 
 export const BaseLayout = ({ children }: AppLayoutProps) => {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { breadcrumb } = useAppContext();
@@ -36,6 +39,16 @@ export const BaseLayout = ({ children }: AppLayoutProps) => {
     AuthService.logout();
   };
 
+  // Handle language changes
+  const handleLanguageChange = useCallback((language: SupportedLanguages) => {
+    // Language change is handled by the LanguageSwitcher component
+    // We can add additional logic here if needed, such as:
+    // - Analytics tracking
+    // - User preference saving to backend
+    // - Custom notifications
+    console.log(`Language changed to: ${language}`);
+  }, []);
+
   useInit(async () => {
     const currentUser = await AuthService.getCurrentUser();
     setUser(currentUser);
@@ -43,18 +56,18 @@ export const BaseLayout = ({ children }: AppLayoutProps) => {
 
   const navigationItems = useMemo(() => {
     if (user?.roles?.includes("Admin")) {
-      return [...adminNavItems, ...commonNavItems];
+      return [...getAdminNavItems(t), ...getCommonNavItems(t)];
     }
 
     if (user?.roles?.includes("Manager")) {
-      return [...managerNavItems, ...commonNavItems];
+      return [...getManagerNavItems(t), ...getCommonNavItems(t)];
     }
 
-    return [...userNavItems, ...commonNavItems];
-  }, [user?.roles]);
+    return [...getUserNavItems(t), ...getCommonNavItems(t)];
+  }, [user?.roles, t]);
 
   if (isLoggingOut) {
-    return <FullPageLoader label="Signing out..." />;
+    return <FullPageLoader label={t('loading.signingOut', { ns: 'navigation' })} />;
   }
 
   return (
@@ -62,13 +75,14 @@ export const BaseLayout = ({ children }: AppLayoutProps) => {
       headerSelector="#app-header"
       header={
         <NavHeader
-          title="Innovation Sandbox on AWS"
           logo={logo}
           user={user}
           onExit={onExit}
+          onLanguageChange={handleLanguageChange}
+          showLanguageSwitcher={true}
         />
       }
-      title="Innovation Sandbox on AWS"
+      title={t('header.title', { ns: 'navigation' })}
       navigationItems={navigationItems}
       navigationOpen={window.innerWidth > 688}
       breadcrumbGroup={

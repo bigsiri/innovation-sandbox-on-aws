@@ -6,8 +6,10 @@ import { useNavigate } from "react-router-dom";
 
 import { AccountsSummary } from "@amzn/innovation-sandbox-frontend/components/AccountsSummary";
 import { useGetAccounts } from "@amzn/innovation-sandbox-frontend/domains/accounts/hooks";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 
 export const AccountsPanel = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { data: accounts, isFetching, refetch } = useGetAccounts();
 
@@ -19,17 +21,17 @@ export const AccountsPanel = () => {
           <SpaceBetween size="xs" direction="horizontal">
             <Button
               iconName="refresh"
-              ariaLabel="Refresh"
+              ariaLabel={t('actions.refresh', { ns: 'home' })}
               disabled={isFetching}
               onClick={() => refetch()}
             />
             <Button onClick={() => navigate("/accounts")}>
-              Manage accounts
+              {t('widgets.accounts.manageAccounts', { ns: 'home' })}
             </Button>
           </SpaceBetween>
         }
       >
-        Administration
+        {t('widgets.accounts.title', { ns: 'home' })}
       </Header>
       <AccountsSummary accounts={accounts} isLoading={isFetching} />
     </SpaceBetween>

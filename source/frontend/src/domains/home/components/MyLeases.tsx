@@ -16,10 +16,12 @@ import { InfoPanel } from "@amzn/innovation-sandbox-frontend/components/InfoPane
 import { Loader } from "@amzn/innovation-sandbox-frontend/components/Loader";
 import { LeasePanel } from "@amzn/innovation-sandbox-frontend/domains/home/components/LeasePanel";
 import { getLeasesForCurrentUser } from "@amzn/innovation-sandbox-frontend/domains/leases/hooks";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 import moment from "moment";
 import { useMemo } from "react";
 
 export const MyLeases = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const {
     data: leases,
@@ -73,13 +75,14 @@ export const MyLeases = () => {
 
   const body = () => {
     if (isFetching) {
-      return <Loader label="Loading your leases..." />;
+      return <Loader label={t('widgets.myLeases.loading', { ns: 'home' })} />;
     }
 
     if (isError) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       return (
         <ErrorPanel
-          description="Your leases can't be retrieved at the moment."
+          description={`Your leases can't be retrieved at the moment. Server error: ${errorMessage}`}
           retry={refetch}
           error={error as Error}
         />
@@ -89,9 +92,9 @@ export const MyLeases = () => {
     if ((filteredLeases || []).length === 0) {
       return (
         <InfoPanel
-          header="You currently don't have any leases."
-          description="To get started, click below to request a new lease."
-          actionLabel="Request a new lease"
+          header={t('widgets.myLeases.noLeases.title', { ns: 'home' })}
+          description={t('widgets.myLeases.noLeases.description', { ns: 'home' })}
+          actionLabel={t('widgets.myLeases.noLeases.action', { ns: 'home' })}
           action={() => navigate("/request")}
         />
       );
@@ -108,7 +111,14 @@ export const MyLeases = () => {
 
   const count = () => {
     if (!isFetching && !isError) {
-      return <span data-counter>({(filteredLeases || []).length})</span>;
+      return (
+        <span data-counter>
+          ({t('widgets.myLeases.count', { 
+            ns: 'home', 
+            replace: { count: (filteredLeases || []).length } 
+          })})
+        </span>
+      );
     }
   };
 
@@ -116,17 +126,17 @@ export const MyLeases = () => {
     <SpaceBetween size="m">
       <Header
         variant="h2"
-        description="View a list of your leases"
+        description={t('widgets.myLeases.description', { ns: 'home' })}
         actions={
           <Button
             iconName="refresh"
-            ariaLabel="Refresh"
+            ariaLabel={t('actions.refresh', { ns: 'home' })}
             disabled={isFetching}
             onClick={() => refetch()}
           />
         }
       >
-        My Leases {count()}
+        {t('widgets.myLeases.title', { ns: 'home' })} {count()}
       </Header>
       {body()}
     </SpaceBetween>

@@ -1,0 +1,79 @@
+{
+  "page": {
+    "title": "Lease Templates",
+    "description": "Manage the available templates to request leases from",
+    "addNew": "Add new lease template"
+  },
+  "table": {
+    "title": "Lease Templates",
+    "columns": {
+      "name": "Name",
+      "createdBy": "Created by",
+      "maxBudget": "Max Budget",
+      "expiry": "Expiry",
+      "lastUpdated": "Last Updated"
+    },
+    "noMaxBudget": "No max budget",
+    "noExpiry": "No expiry",
+    "expiresAfter": "after {{duration}}",
+    "deleteSuccess": "Lease template(s) deleted.",
+    "loadError": "Could not load lease templates. Please try again."
+  },
+  "actions": {
+    "delete": "Delete",
+    "refresh": "Refresh",
+    "add": "Add",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "confirmations": {
+    "deleteTitle": "Remove lease templates",
+    "deleteMessage": "Are you sure you want to remove these lease template(s)?",
+    "deleteError": "An error occurred. Please try again."
+  },
+  "search": {
+    "placeholder": "Search by template name",
+    "ariaLabel": "Search lease templates"
+  },
+  "forms": {
+    "basic": {
+      "title": "Basic Details",
+      "name": {
+        "label": "Name",
+        "required": "Please enter a name for this lease template"
+      },
+      "description": {
+        "label": "Description",
+        "description": "Optional"
+      },
+      "approval": {
+        "label": "Approval required"
+      }
+    },
+    "duration": {
+      "title": "Lease Duration",
+      "maxDuration": {
+        "label": "Maximum Duration",
+        "none": "Do not set a maximum duration",
+        "set": "Set a maximum duration",
+        "required": "Please select an option"
+      },
+      "hours": {
+        "label": "Maximum Lease Duration (in hours)",
+        "validation": "Maximum lease duration is {{max}} hours"
+      }
+    }
+  },
+  "thresholds": {
+    "durationThresholds": "Duration Thresholds",
+    "durationDescription": "Determine what happens as time passes.",
+    "budgetThresholds": "Budget Thresholds", 
+    "budgetDescription": "Determine what happens as spending increases.",
+    "actions": {
+      "sendAlert": "Send Alert",
+      "freezeAccount": "Freeze Account",
+      "wipeAccount": "Wipe Account"
+    }
+  }
+}

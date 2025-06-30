@@ -1,0 +1,9 @@
+{
+  "forms": {
+    "addUser": {
+      "emailPlaceholder": "utilisateur@exemple.com",
+      "emailDescription": "Entrez l'adresse e-mail de l'utilisateur à ajouter à ce bail. L'utilisateur doit exister dans AWS Identity Center et être assigné à un groupe Innovation Sandbox (Utilisateur, Gestionnaire ou Administrateur)."
+    }
+  },
+  "noUsersFound": "Aucun utilisateur trouvé"
+}

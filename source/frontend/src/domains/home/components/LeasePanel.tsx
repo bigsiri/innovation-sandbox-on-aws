@@ -22,12 +22,15 @@ import { BudgetProgressBar } from "@amzn/innovation-sandbox-frontend/components/
 import { Divider } from "@amzn/innovation-sandbox-frontend/components/Divider";
 import { DurationStatus } from "@amzn/innovation-sandbox-frontend/components/DurationStatus";
 import { LeaseStatusBadge } from "@amzn/innovation-sandbox-frontend/domains/leases/components/LeaseStatusBadge";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 
 interface LeasePanelProps {
   lease: LeaseWithLeaseId;
 }
 
 export const LeasePanel = ({ lease }: LeasePanelProps) => {
+  const { t } = useTranslation();
+
   return (
     <Container data-shadow>
       <SpaceBetween size="l">
@@ -44,7 +47,7 @@ export const LeasePanel = ({ lease }: LeasePanelProps) => {
 
               {lease.status === "PendingApproval" && (
                 <StatusIndicator type="info">
-                  Your account is pending approval
+                  {t('leasePanel.pendingApproval', { ns: 'home' })}
                 </StatusIndicator>
               )}
             </>
@@ -56,19 +59,21 @@ export const LeasePanel = ({ lease }: LeasePanelProps) => {
         <Divider marginBottom="s" />
         <ColumnLayout columns={4} variant="text-grid">
           <Box>
-            <FormField label="AWS Account ID" />
+            <FormField label={t('leasePanel.awsAccountId', { ns: 'home' })} />
             {isMonitoredLease(lease) ? (
               lease.awsAccountId
             ) : (
               <StatusIndicator type="warning">
-                No account assigned{" "}
-                {lease.status === "PendingApproval" && "yet"}
+                {lease.status === "PendingApproval" 
+                  ? t('leasePanel.noAccountAssignedYet', { ns: 'home' })
+                  : t('leasePanel.noAccountAssigned', { ns: 'home' })
+                }
               </StatusIndicator>
             )}
           </Box>
 
           <Box>
-            <FormField label="Expiry" />
+            <FormField label={t('leasePanel.expiry', { ns: 'home' })} />
             <DurationStatus
               date={(lease as MonitoredLease).expirationDate}
               durationInHours={lease.leaseDurationInHours}
@@ -76,7 +81,7 @@ export const LeasePanel = ({ lease }: LeasePanelProps) => {
           </Box>
 
           <Box>
-            <FormField label="Budget" />
+            <FormField label={t('leasePanel.budget', { ns: 'home' })} />
             <SpaceBetween size="m">
               <BudgetProgressBar
                 currentValue={

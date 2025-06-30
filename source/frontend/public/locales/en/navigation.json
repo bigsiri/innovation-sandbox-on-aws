@@ -1,0 +1,79 @@
+{
+  "menu": {
+    "home": "Home",
+    "leases": "Leases",
+    "accounts": "Accounts",
+    "settings": "Settings",
+    "users": "Users",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "logout": "Logout",
+    "approvals": "Approvals",
+    "leaseTemplates": "Lease Templates",
+    "documentation": "Documentation",
+    "administration": "Administration"
+  },
+  "pages": {
+    "home": {
+      "title": "Home",
+      "breadcrumb": "Home"
+    },
+    "leases": {
+      "title": "Leases",
+      "breadcrumb": "Leases"
+    },
+    "accounts": {
+      "title": "Accounts",
+      "breadcrumb": "Accounts"
+    },
+    "settings": {
+      "title": "Settings",
+      "breadcrumb": "Settings"
+    },
+    "users": {
+      "title": "Users",
+      "breadcrumb": "Users"
+    },
+    "approvals": {
+      "title": "Approvals",
+      "breadcrumb": "Approvals"
+    },
+    "leaseTemplates": {
+      "title": "Lease Templates",
+      "breadcrumb": "Lease Templates"
+    },
+    "administration": {
+      "title": "Administration",
+      "breadcrumb": "Administration"
+    }
+  },
+  "header": {
+    "title": "Innovation Sandbox on AWS",
+    "overflowMenuTitle": "Innovation Sandbox on AWS",
+    "settings": {
+      "ariaLabel": "Settings",
+      "theme": "Theme",
+      "themeLight": "Light",
+      "themeDark": "Dark",
+      "density": "Density",
+      "densityComfortable": "Comfortable",
+      "densityCompact": "Compact"
+    },
+    "info": {
+      "ariaLabel": "Information"
+    },
+    "user": {
+      "exit": "Exit"
+    }
+  },
+  "loading": {
+    "signingOut": "Signing out..."
+  },
+  "breadcrumbs": {
+    "home": "Home",
+    "approvals": "Approvals",
+    "leases": "Leases",
+    "leaseTemplates": "Lease Templates",
+    "accounts": "Accounts"
+  }
+}

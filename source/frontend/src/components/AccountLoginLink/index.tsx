@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 import { showErrorToast } from "@amzn/innovation-sandbox-frontend/components/Toast";
 import { useGetConfigurations } from "@amzn/innovation-sandbox-frontend/domains/settings/hooks";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 
 interface AccountLoginLinkProps {
   variant?: ButtonProps.Variant;
@@ -16,6 +17,7 @@ export const AccountLoginLink = ({
   variant = "inline-link",
   accountId,
 }: AccountLoginLinkProps) => {
+  const { t } = useTranslation();
   const [clicked, setClicked] = useState(false);
   const [baseUrl, setBaseUrl] = useState<string>();
 
@@ -35,7 +37,7 @@ export const AccountLoginLink = ({
   const openLink = (authBaseUrl = baseUrl) => {
     if (isError) {
       return showErrorToast(
-        "Failed to retrieve AWS Access Portal URL. Please contact your administrator.",
+        t('accountLogin.errors.failedToRetrieveUrl', { ns: 'common' }),
       );
     }
 
@@ -46,14 +48,14 @@ export const AccountLoginLink = ({
     // show error when base url is not set in config
     if (!authBaseUrl) {
       return showErrorToast(
-        "AWS Access Portal URL is not configured. Please contact your administrator.",
+        t('accountLogin.errors.urlNotConfigured', { ns: 'common' }),
       );
     }
 
     // show error when base url is not valid (e.g. when app config is first deployed with dummy values)
     if (!authBaseUrl.startsWith("https://")) {
       return showErrorToast(
-        "AWS Access Portal URL is not a valid URL. Please contact your administrator.",
+        t('accountLogin.errors.invalidUrl', { ns: 'common' }),
       );
     }
 
@@ -78,14 +80,14 @@ export const AccountLoginLink = ({
   if (clicked && isFetching) {
     return (
       <Button disabled={true} iconName="external" variant={variant} loading>
-        Loading, please wait..
+        {t('accountLogin.loading', { ns: 'common' })}
       </Button>
     );
   }
 
   return (
     <Button onClick={onClick} iconName="external" variant={variant}>
-      Login to account
+      {t('accountLogin.loginToAccount', { ns: 'common' })}
     </Button>
   );
 };

@@ -1,0 +1,104 @@
+{
+  "page": {
+    "title": "Modèles de bail",
+    "description": "Gérer les modèles disponibles pour demander des baux",
+    "addNew": "Ajouter un nouveau modèle de bail",
+    "updateWarning": {
+      "header": "Veuillez noter",
+      "message": "Les modifications apportées à ce modèle de bail n'affecteront que les nouveaux baux. Les baux existants utilisant ce modèle de bail ne seront pas affectés."
+    }
+  },
+  "table": {
+    "title": "Modèles de bail",
+    "columns": {
+      "name": "Nom",
+      "createdBy": "Créé par",
+      "maxBudget": "Budget maximum",
+      "expiry": "Expiration",
+      "lastUpdated": "Dernière mise à jour"
+    },
+    "noMaxBudget": "Aucun budget maximum",
+    "noExpiry": "Aucune expiration",
+    "expiresAfter": "{{duration}}",
+    "deleteSuccess": "Modèle(s) de bail supprimé(s).",
+    "loadError": "Impossible de charger les modèles de bail. Veuillez réessayer."
+  },
+  "actions": {
+    "delete": "Supprimer",
+    "refresh": "Actualiser",
+    "add": "Ajouter",
+    "edit": "Modifier",
+    "save": "Enregistrer",
+    "cancel": "Annuler"
+  },
+  "confirmations": {
+    "deleteTitle": "Supprimer les modèles de bail",
+    "deleteMessage": "Êtes-vous sûr de vouloir supprimer ces modèle(s) de bail?",
+    "deleteError": "Une erreur s'est produite. Veuillez réessayer."
+  },
+  "search": {
+    "placeholder": "Rechercher par nom de modèle",
+    "ariaLabel": "Rechercher des modèles de bail"
+  },
+  "forms": {
+    "basic": {
+      "title": "Détails de base",
+      "submitLabel": "Mettre à jour les détails de base",
+      "name": {
+        "label": "Nom",
+        "required": "Veuillez entrer un nom pour ce modèle de bail"
+      },
+      "description": {
+        "label": "Description",
+        "description": "Optionnel"
+      },
+      "approval": {
+        "label": "Approbation requise"
+      }
+    },
+    "duration": {
+      "title": "Durée du bail",
+      "submitLabel": "Mettre à jour les paramètres de durée",
+      "maxDuration": {
+        "label": "Durée maximale",
+        "none": "Ne pas définir de durée maximale",
+        "set": "Définir une durée maximale",
+        "required": "Veuillez sélectionner une option"
+      },
+      "hours": {
+        "label": "Durée maximale du bail (en heures)",
+        "validation": "La durée maximale du bail est de {{max}} heures"
+      }
+    },
+    "budget": {
+      "title": "Paramètres de budget",
+      "submitLabel": "Mettre à jour les paramètres de budget",
+      "maxBudgetLabel": "Limite de budget",
+      "noBudgetOption": "Aucune limite de budget",
+      "setBudgetOption": "Définir une limite de budget",
+      "maxBudgetAmount": "Montant maximum du budget",
+      "thresholdsLabel": "Seuils de budget"
+    }
+  },
+  "thresholds": {
+    "durationThresholds": "Seuils de durée",
+    "durationDescription": "Déterminez ce qui se passe au fil du temps.",
+    "budgetThresholds": "Seuils budgétaires",
+    "budgetDescription": "Déterminez ce qui se passe lorsque les dépenses augmentent.",
+    "when": "Quand",
+    "actions": {
+      "sendAlert": "Envoyer une alerte",
+      "freezeAccount": "Geler le compte",
+      "wipeAccount": "Effacer le compte"
+    }
+  },
+  "updateNotice": {
+    "title": "Veuillez noter",
+    "description": "Les modifications apportées à ce modèle de bail n'affecteront que les nouveaux baux. Les baux existants utilisant ce modèle de bail ne seront pas affectés."
+  },
+  "tabs": {
+    "basicDetails": "Détails de base",
+    "budget": "Budget",
+    "duration": "Durée"
+  }
+}

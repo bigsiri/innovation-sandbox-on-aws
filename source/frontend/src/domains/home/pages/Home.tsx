@@ -20,16 +20,18 @@ import { MyLeases } from "@amzn/innovation-sandbox-frontend/domains/home/compone
 import { AuthService } from "@amzn/innovation-sandbox-frontend/helpers/AuthService";
 import { useBreadcrumb } from "@amzn/innovation-sandbox-frontend/hooks/useBreadcrumb";
 import { useInit } from "@amzn/innovation-sandbox-frontend/hooks/useInit";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 import { useAppLayoutContext } from "@aws-northstar/ui/components/AppLayout";
 
 export const Home = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const setBreadcrumb = useBreadcrumb();
   const [user, setUser] = useState<IsbUser>();
   const { setTools } = useAppLayoutContext();
 
   useInit(async () => {
-    setBreadcrumb([{ text: "Home", href: "/" }]);
+    setBreadcrumb([{ text: t('breadcrumbs.home', { ns: 'home' }), href: "/" }]);
     setTools(<Markdown file={"home"} />);
 
     // get user details
@@ -77,12 +79,12 @@ export const Home = () => {
           variant="h1"
           actions={
             <Button onClick={() => navigate("/request")} variant="primary">
-              Request a new lease
+              {t('actions.requestLease', { ns: 'home' })}
             </Button>
           }
           info={<InfoLink markdown="home" />}
         >
-          Welcome to Innovation Sandbox on AWS
+          {t('welcome.title', { ns: 'home' })}
         </Header>
       }
     >

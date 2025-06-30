@@ -8,6 +8,7 @@ import {
   SandboxAccountStatus,
 } from "@amzn/innovation-sandbox-commons/data/sandbox-account/sandbox-account";
 import { convertAccountsToSummary } from "@amzn/innovation-sandbox-frontend/components/AccountsSummary/helpers";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 import { PieChart } from "@cloudscape-design/components";
 
 interface AccountsPieChartProps {
@@ -17,16 +18,18 @@ interface AccountsPieChartProps {
 }
 
 export const AccountsPieChart = ({ accounts }: AccountsPieChartProps) => {
+  const { t } = useTranslation();
+  
   const summary = useMemo(() => {
-    return convertAccountsToSummary(accounts).filter((item) => item.value > 0);
-  }, [accounts]);
+    return convertAccountsToSummary(accounts, t).filter((item) => item.value > 0);
+  }, [accounts, t]);
 
   return (
     <PieChart
       data={summary}
       variant="donut"
       segmentDescription={(datum, sum) =>
-        `${datum.value} accounts, ${((datum.value / sum) * 100).toFixed(0)}%`
+        `${datum.value} ${t('summary.accounts', { ns: 'accounts' })}, ${((datum.value / sum) * 100).toFixed(0)}%`
       }
       hideFilter={true}
       hideLegend

@@ -1,0 +1,279 @@
+{
+  "page": {
+    "title": "Paramètres",
+    "description": "Gérer les paramètres globaux ici.",
+    "loading": "Chargement des paramètres...",
+    "error": "Un problème est survenu lors du chargement des paramètres.",
+    "retry": "Réessayer",
+    "noData": "Aucune donnée de paramètres disponible"
+  },
+  "tabs": {
+    "general": "Paramètres généraux",
+    "preferences": "Préférences utilisateur",
+    "lease": "Paramètres de bail",
+    "cleanup": "Paramètres de nettoyage",
+    "security": "Paramètres de sécurité",
+    "notifications": "Paramètres de notification",
+    "advanced": "Paramètres avancés"
+  },
+  "general": {
+    "title": "Configuration générale",
+    "description": "Configuration système de base et paramètres de maintenance",
+    "maintenanceMode": {
+      "label": "Mode maintenance",
+      "on": "Le mode maintenance est ACTIVÉ",
+      "off": "Le mode maintenance est DÉSACTIVÉ",
+      "description": "Lorsqu'activé, le système sera en mode maintenance et les utilisateurs ne pourront pas accéder à certaines fonctionnalités",
+      "help": "Utilisez le mode maintenance pour effectuer des mises à jour ou des tâches de maintenance du système"
+    },
+    "regions": {
+      "label": "Régions gérées par Innovation Sandbox",
+      "notSet": "Non défini",
+      "description": "Régions AWS gérées par la solution Innovation Sandbox",
+      "help": "Ce sont les régions où les comptes bac à sable peuvent être créés et gérés"
+    },
+    "termsOfService": {
+      "label": "Conditions d'utilisation",
+      "description": "Conditions d'utilisation que les utilisateurs doivent accepter",
+      "help": "Termes et conditions légaux pour l'utilisation d'Innovation Sandbox"
+    },
+    "appConfig": {
+      "info": "Pour modifier ces paramètres, veuillez aller à",
+      "link": "AWS AppConfig",
+      "description": "Les paramètres sont gérés via AWS AppConfig pour une gestion centralisée de la configuration"
+    }
+  },
+  "lease": {
+    "title": "Configuration des baux",
+    "description": "Paramètres pour la gestion des baux et les limites utilisateur",
+    "budget": {
+      "title": "Budget",
+      "maxBudget": {
+        "label": "Budget maximum",
+        "description": "Budget maximum autorisé pour un seul bail",
+        "help": "C'est la limite supérieure pour les budgets de bail que les utilisateurs peuvent demander",
+        "unit": "USD"
+      },
+      "requireMaxBudget": {
+        "label": "Exiger un budget maximum",
+        "description": "Si les utilisateurs doivent spécifier un budget maximum pour leur bail",
+        "help": "Lorsqu'activé, les utilisateurs ne peuvent pas créer de baux sans spécifier une limite budgétaire"
+      }
+    },
+    "duration": {
+      "title": "Durée",
+      "maxDuration": {
+        "label": "Durée maximale du bail",
+        "description": "Durée maximale autorisée pour un seul bail",
+        "help": "C'est la limite supérieure pour la durée de bail que les utilisateurs peuvent demander",
+        "unit": "heures"
+      },
+      "requireMaxDuration": {
+        "label": "Exiger une durée maximale",
+        "description": "Si les utilisateurs doivent spécifier une durée maximale pour leur bail",
+        "help": "Lorsqu'activé, les utilisateurs ne peuvent pas créer de baux sans spécifier une limite de durée"
+      }
+    },
+    "userLimits": {
+      "title": "Limites utilisateur",
+      "maxLeasesPerUser": {
+        "label": "Baux maximum par utilisateur",
+        "description": "Nombre maximum de baux actifs qu'un seul utilisateur peut avoir",
+        "help": "Ceci empêche les utilisateurs de créer trop de baux simultanés"
+      }
+    }
+  },
+  "cleanup": {
+    "title": "Configuration du nettoyage",
+    "description": "Paramètres pour les processus de nettoyage de compte et la logique de nouvelle tentative",
+    "waitBeforeRerun": {
+      "label": "Attendre avant de relancer une tentative réussie",
+      "description": "Temps d'attente avant de relancer une tentative de nettoyage réussie",
+      "help": "Ceci empêche les processus de nettoyage de s'exécuter trop fréquemment",
+      "unit": "secondes",
+      "notSet": "Non défini"
+    },
+    "failedAttempts": {
+      "label": "Nombre de tentatives échouées pour annuler le nettoyage",
+      "description": "Combien de tentatives échouées avant d'annuler le processus de nettoyage",
+      "help": "Ceci empêche les boucles de nouvelle tentative infinies pour les opérations de nettoyage échouées",
+      "notSet": "Non défini"
+    },
+    "waitBeforeRetry": {
+      "label": "Attendre avant de réessayer une tentative échouée",
+      "description": "Temps d'attente avant de réessayer une tentative de nettoyage échouée",
+      "help": "Ceci donne aux problèmes temporaires le temps de se résoudre avant de réessayer",
+      "unit": "secondes",
+      "notSet": "Non défini"
+    },
+    "successfulAttempts": {
+      "label": "Nombre de tentatives réussies pour terminer le nettoyage",
+      "description": "Combien de tentatives réussies nécessaires pour considérer le nettoyage terminé",
+      "help": "Ceci assure que le nettoyage est complètement terminé avant d'être marqué comme fait",
+      "notSet": "Non défini"
+    }
+  },
+  "security": {
+    "title": "Configuration de sécurité",
+    "description": "Paramètres de sécurité et contrôles d'accès",
+    "authentication": {
+      "title": "Authentification",
+      "ssoEnabled": {
+        "label": "Authentification unique (SSO) activée",
+        "description": "Si l'authentification SSO est activée",
+        "help": "Le SSO fournit une authentification centralisée via le fournisseur d'identité de votre organisation"
+      },
+      "mfaRequired": {
+        "label": "Authentification multifacteur requise",
+        "description": "Si l'AMF est requise pour tous les utilisateurs",
+        "help": "L'AMF ajoute une couche de sécurité supplémentaire en exigeant une seconde forme d'authentification"
+      }
+    },
+    "access": {
+      "title": "Contrôle d'accès",
+      "sessionTimeout": {
+        "label": "Délai d'expiration de session",
+        "description": "Combien de temps les sessions utilisateur restent actives sans activité",
+        "help": "Des délais plus courts améliorent la sécurité mais peuvent impacter l'expérience utilisateur",
+        "unit": "minutes"
+      },
+      "maxConcurrentSessions": {
+        "label": "Sessions simultanées maximum",
+        "description": "Nombre maximum de sessions simultanées par utilisateur",
+        "help": "Limiter les sessions simultanées aide à prévenir le partage de compte"
+      }
+    }
+  },
+  "notifications": {
+    "title": "Configuration des notifications",
+    "description": "Paramètres pour les notifications système et les alertes",
+    "email": {
+      "title": "Notifications par courriel",
+      "enabled": {
+        "label": "Notifications par courriel activées",
+        "description": "Si les notifications par courriel sont envoyées aux utilisateurs",
+        "help": "Les notifications par courriel tiennent les utilisateurs informés des événements importants"
+      },
+      "fromAddress": {
+        "label": "Adresse courriel d'expéditeur",
+        "description": "Adresse courriel utilisée comme expéditeur pour les notifications",
+        "help": "Ceci devrait être une adresse courriel surveillée de votre organisation"
+      }
+    },
+    "alerts": {
+      "title": "Alertes système",
+      "budgetThreshold": {
+        "label": "Seuil d'alerte budgétaire",
+        "description": "Pourcentage du budget utilisé avant d'envoyer des alertes",
+        "help": "Les alertes aident les utilisateurs à gérer leurs dépenses avant d'atteindre les limites",
+        "unit": "%"
+      },
+      "expirationWarning": {
+        "label": "Avertissement d'expiration de bail",
+        "description": "Combien d'heures avant l'expiration pour envoyer un avertissement",
+        "help": "Les avertissements donnent aux utilisateurs le temps de prolonger ou sauvegarder le travail avant l'expiration",
+        "unit": "heures"
+      }
+    }
+  },
+  "advanced": {
+    "title": "Configuration avancée",
+    "description": "Paramètres système avancés et options de débogage",
+    "logging": {
+      "title": "Journalisation",
+      "level": {
+        "label": "Niveau de journal",
+        "description": "Niveau minimum des journaux à enregistrer",
+        "help": "Des niveaux plus élevés fournissent plus de détails mais peuvent impacter les performances",
+        "options": {
+          "error": "Erreur",
+          "warn": "Avertissement",
+          "info": "Information",
+          "debug": "Débogage"
+        }
+      },
+      "retention": {
+        "label": "Période de rétention des journaux",
+        "description": "Combien de temps conserver les fichiers journaux",
+        "help": "Une rétention plus longue aide au dépannage mais utilise plus de stockage",
+        "unit": "jours"
+      }
+    },
+    "performance": {
+      "title": "Performance",
+      "cacheTimeout": {
+        "label": "Délai d'expiration du cache",
+        "description": "Combien de temps mettre en cache les données fréquemment accédées",
+        "help": "Des temps de cache plus longs améliorent les performances mais peuvent montrer des données obsolètes",
+        "unit": "minutes"
+      },
+      "maxConcurrentOperations": {
+        "label": "Opérations simultanées maximum",
+        "description": "Nombre maximum d'opérations pouvant s'exécuter simultanément",
+        "help": "Des limites plus élevées améliorent le débit mais peuvent impacter la stabilité du système"
+      }
+    }
+  },
+  "actions": {
+    "save": "Enregistrer les paramètres",
+    "cancel": "Annuler",
+    "reset": "Réinitialiser aux valeurs par défaut",
+    "export": "Exporter la configuration",
+    "import": "Importer la configuration",
+    "validate": "Valider les paramètres",
+    "apply": "Appliquer les modifications",
+    "revert": "Annuler les modifications"
+  },
+  "validation": {
+    "required": "Ce paramètre est obligatoire",
+    "invalidNumber": "Veuillez saisir un nombre valide",
+    "invalidEmail": "Veuillez saisir une adresse courriel valide",
+    "invalidUrl": "Veuillez saisir une URL valide",
+    "outOfRange": "La valeur doit être entre {{min}} et {{max}}",
+    "tooLow": "La valeur est trop basse (minimum : {{min}})",
+    "tooHigh": "La valeur est trop élevée (maximum : {{max}})",
+    "invalidFormat": "Format invalide",
+    "conflictingSettings": "Ce paramètre entre en conflit avec une autre configuration"
+  },
+  "messages": {
+    "saveSuccess": "Paramètres enregistrés avec succès",
+    "saveError": "Échec de l'enregistrement des paramètres",
+    "loadError": "Échec du chargement des paramètres",
+    "validateSuccess": "Validation des paramètres réussie",
+    "validateError": "Validation des paramètres échouée",
+    "resetSuccess": "Paramètres réinitialisés aux valeurs par défaut",
+    "resetError": "Échec de la réinitialisation des paramètres",
+    "exportSuccess": "Configuration exportée avec succès",
+    "exportError": "Échec de l'exportation de la configuration",
+    "importSuccess": "Configuration importée avec succès",
+    "importError": "Échec de l'importation de la configuration",
+    "unsavedChanges": "Vous avez des modifications non enregistrées. Êtes-vous sûr de vouloir partir ?",
+    "confirmReset": "Êtes-vous sûr de vouloir réinitialiser tous les paramètres à leurs valeurs par défaut ?",
+    "confirmImport": "Êtes-vous sûr de vouloir importer cette configuration ? Ceci écrasera les paramètres actuels.",
+    "restartRequired": "Certaines modifications nécessitent un redémarrage du système pour prendre effet",
+    "configurationValid": "La configuration est valide",
+    "configurationInvalid": "La configuration contient des erreurs"
+  },
+  "help": {
+    "general": "Les paramètres généraux contrôlent le comportement système de base et les options de maintenance",
+    "lease": "Les paramètres de bail définissent les limites et exigences pour les demandes de bail utilisateur",
+    "cleanup": "Les paramètres de nettoyage contrôlent comment les comptes sont nettoyés et recyclés",
+    "security": "Les paramètres de sécurité gèrent l'authentification et les contrôles d'accès",
+    "notifications": "Les paramètres de notification contrôlent comment les utilisateurs sont informés des événements système",
+    "advanced": "Les paramètres avancés sont pour les administrateurs système et le débogage"
+  },
+  "breadcrumbs": {
+    "home": "Accueil",
+    "settings": "Paramètres"
+  },
+  "userPreferences": {
+    "title": "Préférences utilisateur",
+    "description": "Personnalisez votre expérience avec Innovation Sandbox. Les modifications sont sauvegardées automatiquement et persisteront entre les sessions.",
+    "language": {
+      "label": "Langue de l'interface",
+      "description": "Sélectionnez votre langue préférée pour l'interface utilisateur. Ce paramètre sera mémorisé pour les sessions futures.",
+      "ariaLabel": "Sélectionner la préférence de langue de l'interface"
+    },
+    "currentLanguage": "Langue actuelle : {{language}}"
+  }
+}

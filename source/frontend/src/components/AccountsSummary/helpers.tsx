@@ -13,6 +13,7 @@ import {
   colorChartsStatusLow,
   colorChartsStatusPositive,
 } from "@cloudscape-design/design-tokens";
+import { TranslationFunction } from "@amzn/innovation-sandbox-frontend/i18n/types";
 
 export type AccountStatusDatum = PieChartProps.Datum & {
   status?: SandboxAccountStatus;
@@ -33,7 +34,24 @@ export const getColor = (status?: SandboxAccountStatus) => {
   }
 };
 
-export const convertAccountsToSummary = (accounts: SandboxAccount[]) => {
+export const getStatusTitle = (status: SandboxAccountStatus, t: TranslationFunction): string => {
+  switch (status) {
+    case "Available":
+      return t('status.available', { ns: 'accounts' });
+    case "Active":
+      return t('status.active', { ns: 'accounts' });
+    case "Frozen":
+      return t('status.frozen', { ns: 'accounts' });
+    case "CleanUp":
+      return t('status.cleanup', { ns: 'accounts' });
+    case "Quarantine":
+      return t('status.quarantine', { ns: 'accounts' });
+    default:
+      return status;
+  }
+};
+
+export const convertAccountsToSummary = (accounts: SandboxAccount[], t: TranslationFunction) => {
   return Object.values(
     accounts.reduce(
       (summary, account) => {
@@ -42,31 +60,31 @@ export const convertAccountsToSummary = (accounts: SandboxAccount[]) => {
       },
       {
         Available: {
-          title: "Available",
+          title: getStatusTitle("Available", t),
           status: "Available",
           value: 0,
           color: getColor("Available"),
         },
         Active: {
-          title: "Active",
+          title: getStatusTitle("Active", t),
           status: "Active",
           value: 0,
           color: getColor("Active"),
         },
         Frozen: {
-          title: "Frozen",
+          title: getStatusTitle("Frozen", t),
           status: "Frozen",
           value: 0,
           color: getColor("Frozen"),
         },
         CleanUp: {
-          title: "Clean Up",
+          title: getStatusTitle("CleanUp", t),
           status: "CleanUp",
           value: 0,
           color: getColor("CleanUp"),
         },
         Quarantine: {
-          title: "Quarantine",
+          title: getStatusTitle("Quarantine", t),
           status: "Quarantine",
           value: 0,
           color: getColor("Quarantine"),

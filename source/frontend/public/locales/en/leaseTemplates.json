@@ -1,0 +1,95 @@
+{
+  "page": {
+    "title": "Lease Templates",
+    "description": "Manage the available templates to request leases from",
+    "addNew": "Add new lease template",
+    "addTitle": "Add a New Lease Template",
+    "addDescription": "Give your users a new way to access a temporary AWS account.",
+    "addSuccess": "New lease template added successfully.",
+    "loadingConfig": "Loading configuration...",
+    "configError": "There was a problem loading global configuration settings.",
+    "autoProvisionWarning": "When a user requests this lease template, an account will automatically be provided to the user if one is available in the account pool.",
+    "errorLoadingTemplate": "There was a problem loading this lease template.",
+    "errorLoadingConfig": "There was a problem loading global configuration settings.",
+    "updateNotice": {
+      "title": "Please Note",
+      "description": "Making changes to this lease template will only affect new leases. Existing leases using this lease template will not be affected."
+    }
+  },
+  "table": {
+    "title": "Lease Templates",
+    "columns": {
+      "name": "Name",
+      "createdBy": "Created by",
+      "maxBudget": "Max Budget",
+      "expiry": "Expiry",
+      "lastUpdated": "Last Updated"
+    },
+    "noMaxBudget": "No max budget",
+    "noExpiry": "No expiry",
+    "expiresAfter": "after {{duration}}",
+    "deleteSuccess": "Lease template(s) deleted.",
+    "loadError": "Could not load lease templates. Please try again."
+  },
+  "actions": {
+    "delete": "Delete",
+    "refresh": "Refresh",
+    "add": "Add",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "confirmations": {
+    "deleteTitle": "Remove lease templates",
+    "deleteMessage": "Are you sure you want to remove these lease template(s)?",
+    "deleteError": "An error occurred. Please try again."
+  },
+  "search": {
+    "placeholder": "Search by template name",
+    "ariaLabel": "Search lease templates"
+  },
+  "forms": {
+    "basic": {
+      "title": "Basic Details",
+      "name": {
+        "label": "Name",
+        "required": "Please enter a name for this lease template"
+      },
+      "description": {
+        "label": "Description",
+        "description": "Optional"
+      },
+      "approval": {
+        "label": "Approval required"
+      }
+    },
+    "duration": {
+      "title": "Lease Duration",
+      "maxDuration": {
+        "label": "Maximum Duration",
+        "none": "Do not set a maximum duration",
+        "set": "Set a maximum duration",
+        "required": "Please select an option"
+      },
+      "hours": {
+        "label": "Maximum Lease Duration (in hours)",
+        "validation": "Maximum lease duration is {{max}} hours"
+      }
+    },
+    "budget": {
+      "title": "Budget",
+      "maxBudgetLabel": "Maximum Budget",
+      "noBudgetOption": "Do not set a budget",
+      "setBudgetOption": "Set a max budget",
+      "selectOptionRequired": "Please select an option",
+      "noBudgetWarning": "If you don't set a max budget, there is a risk that these accounts may have cost overruns.",
+      "maxBudgetAmount": "Maximum Budget Amount",
+      "maxBudgetExceeded": "Maximum budget is ${{amount}}"
+    }
+  },
+  "tabs": {
+    "basicDetails": "Basic Details",
+    "budget": "Budget",
+    "duration": "Duration"
+  }
+}

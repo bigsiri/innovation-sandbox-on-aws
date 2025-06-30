@@ -14,12 +14,15 @@ import { BudgetStatus } from "@amzn/innovation-sandbox-frontend/components/Budge
 import { DurationStatus } from "@amzn/innovation-sandbox-frontend/components/DurationStatus";
 import { Loader } from "@amzn/innovation-sandbox-frontend/components/Loader";
 import { useGetLeaseTemplateById } from "@amzn/innovation-sandbox-frontend/domains/leaseTemplates/hooks";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 
 type ReviewTemplateProps = {
   data: { leaseTemplateUuid: string };
 };
 
 export const ReviewTemplate = (props: ReviewTemplateProps) => {
+  const { t } = useTranslation();
+
   const {
     data: leaseTemplate,
     isLoading,
@@ -34,8 +37,8 @@ export const ReviewTemplate = (props: ReviewTemplateProps) => {
   if (isError) {
     return (
       <Alert type="error">
-        Error loading lease template:{" "}
-        {error instanceof Error ? error.message : "Unknown error"}
+        {t('forms.request.review.errorLoading', { ns: 'leases' })}{" "}
+        {error instanceof Error ? error.message : t('forms.request.review.unknownError', { ns: 'leases' })}
       </Alert>
     );
   }
@@ -47,7 +50,7 @@ export const ReviewTemplate = (props: ReviewTemplateProps) => {
   return (
     <SpaceBetween size="s">
       <KeyValuePair
-        label="Lease Template Selected"
+        label={t('forms.request.review.templateSelected', { ns: 'leases' })}
         value={
           <Box margin={{ top: "xs" }}>
             <Container>
@@ -62,23 +65,23 @@ export const ReviewTemplate = (props: ReviewTemplateProps) => {
                 </Box>
 
                 <Box data-muted>
-                  <strong>Expires: </strong>
+                  <strong>{t('forms.request.review.expires', { ns: 'leases' })} </strong>
                   <DurationStatus
                     durationInHours={leaseTemplate.leaseDurationInHours}
                   />
                 </Box>
                 <Box data-muted>
-                  <strong>Max budget: </strong>
+                  <strong>{t('forms.request.review.budgetMax', { ns: 'leases' })} </strong>
                   <BudgetStatus maxSpend={leaseTemplate.maxSpend} />
                 </Box>
                 <Box>
                   {!leaseTemplate.requiresApproval ? (
                     <StatusIndicator type="success">
-                      No approval required
+                      {t('forms.request.review.noApprovalRequired', { ns: 'leases' })}
                     </StatusIndicator>
                   ) : (
                     <StatusIndicator type="warning">
-                      Requires approval
+                      {t('forms.request.review.approvalRequired', { ns: 'leases' })}
                     </StatusIndicator>
                   )}
                 </Box>

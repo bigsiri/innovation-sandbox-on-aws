@@ -12,6 +12,7 @@ import { basicFormFields } from "@amzn/innovation-sandbox-frontend/domains/lease
 import { budgetFields } from "@amzn/innovation-sandbox-frontend/domains/leaseTemplates/formFields/budget";
 import { durationFields } from "@amzn/innovation-sandbox-frontend/domains/leaseTemplates/formFields/duration";
 import { useAddLeaseTemplate } from "@amzn/innovation-sandbox-frontend/domains/leaseTemplates/hooks";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 import {
   LeaseTemplateFormData,
   NewLeaseTemplate,
@@ -21,6 +22,7 @@ import { useBreadcrumb } from "@amzn/innovation-sandbox-frontend/hooks/useBreadc
 import { useInit } from "@amzn/innovation-sandbox-frontend/hooks/useInit";
 
 export const AddLeaseTemplate = () => {
+  const { t } = useTranslation('leaseTemplates');
   const navigate = useNavigate();
   const setBreadcrumb = useBreadcrumb();
 
@@ -38,9 +40,9 @@ export const AddLeaseTemplate = () => {
 
   useInit(() => {
     setBreadcrumb([
-      { text: "Home", href: "/" },
-      { text: "Lease Templates", href: "/lease_templates" },
-      { text: "Add a New Lease Template", href: "/lease_templates/new" },
+      { text: t('breadcrumbs.home', { ns: 'navigation' }), href: "/" },
+      { text: t('breadcrumbs.leaseTemplates', { ns: 'navigation' }), href: "/lease_templates" },
+      { text: t('page.addTitle', { ns: 'leaseTemplates' }), href: "/lease_templates/new" },
     ]);
   });
 
@@ -62,7 +64,7 @@ export const AddLeaseTemplate = () => {
     };
 
     await addLeaseTemplate(leaseTemplate);
-    showSuccessToast("New lease template added successfully.");
+    showSuccessToast(t('page.addSuccess', { ns: 'leaseTemplates' }));
     navigate("/lease_templates");
   };
 
@@ -71,13 +73,13 @@ export const AddLeaseTemplate = () => {
   };
 
   if (isLoadingConfig) {
-    return <Loader />;
+    return <Loader label={t('page.loadingConfig', { ns: 'leaseTemplates' })} />;
   }
 
   if (isConfigError) {
     return (
       <ErrorPanel
-        description="There was a problem loading global configuration settings."
+        description={t('page.configError', { ns: 'leaseTemplates' })}
         retry={refetchConfig}
         error={error as Error}
       />
@@ -95,23 +97,31 @@ export const AddLeaseTemplate = () => {
         maxDurationEnabled: true,
       }}
       schema={{
-        header: "Add a New Lease Template",
-        description:
-          "Give your users a new way to access a temporary AWS account.",
+        header: t('page.addTitle', { ns: 'leaseTemplates' }),
+        description: t('page.addDescription', { ns: 'leaseTemplates' }),
         fields: [
           {
             component: componentTypes.WIZARD,
             name: "wizard",
             allowSkipTo: true,
+            i18nStrings: {
+              stepNumberLabel: (stepNumber: number) => t('wizard.step', { ns: 'common', replace: { number: stepNumber } })
+            },
             fields: [
-              { ...basicFormFields() },
+              { 
+                ...basicFormFields(),
+                title: basicFormFields().title
+              },
               {
                 ...budgetFields({ globalMaxBudget: config?.leases.maxBudget }),
+                title: budgetFields({ globalMaxBudget: config?.leases.maxBudget }).title
               },
               {
                 ...durationFields({
                   globalMaxDuration: config?.leases.maxDurationHours,
+                  t,
                 }),
+                title: durationFields({ globalMaxDuration: config?.leases.maxDurationHours, t }).title
               },
             ],
           },

@@ -12,6 +12,7 @@ import { AccountsPieChart } from "@amzn/innovation-sandbox-frontend/components/A
 import { AccountsSummaryTable } from "@amzn/innovation-sandbox-frontend/components/AccountsSummary/components/AccountsSummaryTable";
 import { NoAccounts } from "@amzn/innovation-sandbox-frontend/components/AccountsSummary/components/NoAccounts";
 import Animate from "@amzn/innovation-sandbox-frontend/components/Animate";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 
 interface AccountsSummaryProps {
   accounts?: SandboxAccount[];
@@ -26,6 +27,8 @@ export const AccountsSummary = ({
   isLoading = false,
   onFilterUpdated,
 }: AccountsSummaryProps) => {
+  const { t } = useTranslation();
+
   if (isLoading) {
     return <AccountsLoading />;
   }
@@ -43,7 +46,7 @@ export const AccountsSummary = ({
         ]}
       >
         <Container
-          header={<Header variant="h3">Account Pool Summary</Header>}
+          header={<Header variant="h3">{t('summary.accountPoolTitle', { ns: 'common' })}</Header>}
           fitHeight
         >
           <AccountsSummaryTable

@@ -1,0 +1,259 @@
+{
+  "page": {
+    "title": "Bienvenue dans Innovation Sandbox sur AWS",
+    "description": "Votre centre de contrôle pour gérer les comptes bac à sable AWS et les baux",
+    "loading": "Chargement du tableau de bord...",
+    "error": "Échec du chargement du tableau de bord",
+    "retry": "Réessayer"
+  },
+  "welcome": {
+    "title": "Bienvenue dans Innovation Sandbox sur AWS",
+    "subtitle": "Commencez avec votre environnement bac à sable AWS",
+    "description": "Innovation Sandbox fournit des comptes AWS sécurisés et temporaires pour l'expérimentation et l'apprentissage",
+    "getStarted": "Commencer",
+    "learnMore": "En savoir plus",
+    "quickStart": "Guide de démarrage rapide",
+    "documentation": "Documentation"
+  },
+  "actions": {
+    "requestLease": "Demander un nouveau bail",
+    "viewLeases": "Voir tous les baux",
+    "manageAccounts": "Gérer les comptes",
+    "viewApprovals": "Voir les approbations",
+    "viewSettings": "Paramètres",
+    "refresh": "Actualiser",
+    "getHelp": "Obtenir de l'aide"
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "overview": "Aperçu",
+    "quickActions": "Actions rapides",
+    "recentActivity": "Activité récente",
+    "statistics": "Statistiques",
+    "summary": "Résumé"
+  },
+  "widgets": {
+    "myLeases": {
+      "title": "Mes baux",
+      "description": "Voir la liste de vos baux",
+      "count": "{{count}} bail/baux",
+      "noLeases": {
+        "title": "Vous n'avez actuellement aucun bail.",
+        "description": "Pour commencer, cliquez ci-dessous pour demander un nouveau bail.",
+        "action": "Demander un nouveau bail"
+      },
+      "loading": "Chargement de vos baux...",
+      "error": "Vos baux ne peuvent pas être récupérés pour le moment.",
+      "retry": "Réessayer le chargement des baux"
+    },
+    "approvals": {
+      "title": "Approbations",
+      "description": "Réviser les demandes d'approbation de bail en attente",
+      "noPending": "Aucune approbation en attente. Rien à réviser.",
+      "pendingTitle": "Approbations en attente",
+      "pendingSingle": "Il y a {{count}} approbation en attente.",
+      "pendingMultiple": "Il y a {{count}} approbations en attente.",
+      "viewApprovals": "Voir les approbations",
+      "loading": "Vérification des demandes d'approbation...",
+      "error": "Les approbations n'ont pas pu être chargées.",
+      "retry": "Réessayer le chargement des approbations"
+    },
+    "accounts": {
+      "title": "Administration",
+      "description": "Gérer les comptes bac à sable AWS",
+      "manageAccounts": "Gérer les comptes",
+      "addAccounts": "Ajouter des comptes",
+      "viewSummary": "Voir le résumé",
+      "loading": "Chargement des informations de compte...",
+      "error": "Les informations de compte n'ont pas pu être chargées.",
+      "retry": "Réessayer le chargement des comptes"
+    },
+    "sharedLeases": {
+      "title": "Baux partagés",
+      "description": "Voir les baux partagés avec vous par d'autres utilisateurs",
+      "noShared": "Aucun bail partagé disponible",
+      "viewAll": "Voir tous les baux partagés",
+      "loading": "Chargement des baux partagés...",
+      "error": "Les baux partagés n'ont pas pu être chargés."
+    }
+  },
+  "leasePanel": {
+    "title": "Détails du bail",
+    "awsAccountId": "ID du compte AWS",
+    "expiry": "Expiration",
+    "budget": "Budget",
+    "status": "Statut",
+    "template": "Modèle",
+    "duration": "Durée",
+    "cost": "Coût actuel",
+    "remaining": "Restant",
+    "noAccountAssigned": "Aucun compte assigné",
+    "noAccountAssignedYet": "Aucun compte assigné pour le moment",
+    "pendingApproval": "Votre compte est en attente d'approbation",
+    "loginToAccount": "Se connecter au compte",
+    "viewDetails": "Voir les détails",
+    "extendLease": "Prolonger le bail",
+    "terminateLease": "Terminer le bail"
+  },
+  "statistics": {
+    "totalLeases": "Total des baux",
+    "activeLeases": "Baux actifs",
+    "pendingLeases": "Baux en attente",
+    "expiredLeases": "Baux expirés",
+    "totalAccounts": "Total des comptes",
+    "availableAccounts": "Comptes disponibles",
+    "utilizationRate": "Taux d'utilisation",
+    "averageCost": "Coût moyen",
+    "totalSpend": "Dépense totale",
+    "budgetUsage": "Utilisation du budget",
+    "successRate": "Taux de succès",
+    "approvalRate": "Taux d'approbation"
+  },
+  "status": {
+    "healthy": "Sain",
+    "warning": "Avertissement",
+    "critical": "Critique",
+    "maintenance": "Maintenance",
+    "operational": "Opérationnel",
+    "degraded": "Dégradé",
+    "outage": "Panne"
+  },
+  "timeframes": {
+    "today": "Aujourd'hui",
+    "thisWeek": "Cette semaine",
+    "thisMonth": "Ce mois-ci",
+    "last7Days": "7 derniers jours",
+    "last30Days": "30 derniers jours",
+    "last90Days": "90 derniers jours",
+    "allTime": "Tout le temps"
+  },
+  "filters": {
+    "all": "Tout",
+    "active": "Actif",
+    "pending": "En attente",
+    "expired": "Expiré",
+    "approved": "Approuvé",
+    "denied": "Refusé",
+    "myItems": "Mes éléments",
+    "shared": "Partagé",
+    "recent": "Récent"
+  },
+  "navigation": {
+    "dashboard": "Tableau de bord",
+    "leases": "Baux",
+    "accounts": "Comptes",
+    "approvals": "Approbations",
+    "settings": "Paramètres",
+    "help": "Aide",
+    "profile": "Profil"
+  },
+  "messages": {
+    "welcomeBack": "Bon retour !",
+    "goodMorning": "Bonjour",
+    "goodAfternoon": "Bon après-midi",
+    "goodEvening": "Bonsoir",
+    "lastLogin": "Dernière connexion : {{date}}",
+    "systemStatus": "Statut du système : {{status}}",
+    "maintenanceNotice": "Maintenance programmée : {{date}}",
+    "newFeatures": "Nouvelles fonctionnalités disponibles",
+    "updateAvailable": "Mise à jour disponible",
+    "noNotifications": "Aucune nouvelle notification",
+    "dataRefreshed": "Données actualisées à {{time}}",
+    "autoRefresh": "Actualisation automatique activée",
+    "offlineMode": "Vous êtes actuellement hors ligne"
+  },
+  "help": {
+    "gettingStarted": "Commencer",
+    "userGuide": "Guide utilisateur",
+    "faq": "Questions fréquemment posées",
+    "support": "Contacter le support",
+    "documentation": "Documentation",
+    "tutorials": "Tutoriels",
+    "bestPractices": "Meilleures pratiques",
+    "troubleshooting": "Dépannage",
+    "whatsNew": "Quoi de neuf",
+    "feedback": "Fournir des commentaires"
+  },
+  "accessibility": {
+    "skipToContent": "Aller au contenu principal",
+    "skipToNavigation": "Aller à la navigation",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "expandSection": "Développer la section",
+    "collapseSection": "Réduire la section",
+    "sortAscending": "Trier par ordre croissant",
+    "sortDescending": "Trier par ordre décroissant",
+    "filterResults": "Filtrer les résultats",
+    "searchResults": "Résultats de recherche",
+    "loadingContent": "Chargement du contenu",
+    "errorMessage": "Message d'erreur",
+    "successMessage": "Message de succès"
+  },
+  "breadcrumbs": {
+    "home": "Accueil"
+  },
+  "widgets": {
+    "myLeases": {
+      "title": "Mes baux",
+      "description": "Vos demandes de bail actuelles et récentes",
+      "loading": "Chargement de vos baux...",
+      "error": "Vos baux ne peuvent pas être récupérés pour le moment.",
+      "count": "{{count}}",
+      "noLeases": {
+        "title": "Aucun bail actif",
+        "description": "Vous n'avez aucun bail actif pour le moment. Demandez un nouveau bail pour commencer.",
+        "action": "Demander un bail"
+      }
+    },
+    "approvals": {
+      "title": "Approbations",
+      "loading": "Chargement des approbations...",
+      "error": "Les approbations ne peuvent pas être récupérées pour le moment.",
+      "noPending": "Aucune approbation en attente pour le moment.",
+      "pendingTitle": "Approbations en attente",
+      "pendingSingle": "Il y a {{count}} demande de bail en attente d'approbation.",
+      "pendingMultiple": "Il y a {{count}} demandes de bail en attente d'approbation.",
+      "viewApprovals": "Voir les approbations"
+    },
+    "accounts": {
+      "title": "Comptes",
+      "loading": "Chargement des informations de compte...",
+      "manageAccounts": "Gérer les comptes"
+    },
+    "sharedLeases": {
+      "title": "Partagé avec moi",
+      "description": "Baux qui ont été partagés avec vous par d'autres utilisateurs",
+      "loading": "Chargement des baux partagés...",
+      "error": "Les baux partagés ne peuvent pas être récupérés pour le moment.",
+      "refresh": "Actualiser les baux partagés",
+      "count": "{{count}}",
+      "defaultTitle": "Bail partagé",
+      "leaseTitle": "Bail {{id}}",
+      "accountLabel": "Compte",
+      "sharedByLabel": "Partagé par",
+      "notYetAssigned": "Pas encore assigné",
+      "notAssigned": "Non assigné",
+      "unknownUser": "Utilisateur inconnu",
+      "status": {
+        "active": "Actif",
+        "pendingApproval": "En attente d'approbation",
+        "frozen": "Gelé",
+        "expired": "Expiré",
+        "budgetExceeded": "Budget dépassé",
+        "terminated": "Terminé",
+        "unknown": "Inconnu"
+      },
+      "tabs": {
+        "all": "Tous",
+        "active": "Actifs",
+        "pending": "En attente",
+        "frozen": "Gelés"
+      },
+      "noLeases": {
+        "all": "Aucun bail n'a encore été partagé avec vous.",
+        "filtered": "Aucun bail partagé {{status}} trouvé.",
+        "description": "Lorsque quelqu'un partage un bail avec vous, il apparaîtra ici."
+      }
+    }
+  }
+}

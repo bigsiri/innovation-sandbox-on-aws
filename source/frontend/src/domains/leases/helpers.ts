@@ -7,6 +7,7 @@ import {
   Lease,
   LeaseStatus,
 } from "@amzn/innovation-sandbox-commons/data/lease/lease";
+import { TranslationFunction } from "@amzn/innovation-sandbox-frontend/i18n/types";
 
 // helper function to turn labels like "PendingApproval" into "Pending Approval"
 const splitCamelCase = (str: string): string => {
@@ -15,7 +16,42 @@ const splitCamelCase = (str: string): string => {
     .replace(/([A-Z])([A-Z][a-z])/g, "$1 $2");
 };
 
-export const getLeaseStatusDisplayName = (status: LeaseStatus): string => {
+// Translation-aware status display function
+export const getLeaseStatusDisplayName = (
+  status: LeaseStatus, 
+  t?: TranslationFunction
+): string => {
+  if (!t) {
+    // Fallback to original behavior for backward compatibility
+    return getLeaseStatusDisplayNameLegacy(status);
+  }
+
+  switch (status) {
+    case "Active":
+      return t('status.active', { ns: 'leases' });
+    case "Frozen":
+      return t('status.frozen', { ns: 'leases' });
+    case "PendingApproval":
+      return t('status.pendingApproval', { ns: 'leases' });
+    case "ApprovalDenied":
+      return t('status.approvalDenied', { ns: 'leases' });
+    case "Expired":
+      return t('status.expired', { ns: 'leases' });
+    case "BudgetExceeded":
+      return t('status.budgetExceeded', { ns: 'leases' });
+    case "ManuallyTerminated":
+      return t('status.manuallyTerminated', { ns: 'leases' });
+    case "AccountQuarantined":
+      return t('status.accountQuarantined', { ns: 'leases' });
+    case "Ejected":
+      return t('status.ejected', { ns: 'leases' });
+    default:
+      return t('status.unknown', { ns: 'leases' });
+  }
+};
+
+// Legacy function for backward compatibility
+export const getLeaseStatusDisplayNameLegacy = (status: LeaseStatus): string => {
   switch (status) {
     case "Active":
       return "Active";
@@ -40,27 +76,44 @@ export const getLeaseStatusDisplayName = (status: LeaseStatus): string => {
   }
 };
 
+// Translation-aware breadcrumb generation
 export const generateBreadcrumb = (
   query: UseQueryResult<Lease | undefined, unknown>,
+  t?: TranslationFunction,
   isApprovalPage?: boolean,
 ) => {
   const { data: lease, isLoading, isError } = query;
 
-  const breadcrumbItems = [{ text: "Home", href: "/" }];
+  const breadcrumbItems = [{ 
+    text: t ? t('breadcrumbs.home') : "Home", 
+    href: "/" 
+  }];
 
   if (isApprovalPage) {
-    breadcrumbItems.push({ text: "Approvals", href: "/approvals" });
+    breadcrumbItems.push({ 
+      text: t ? t('breadcrumbs.approvals') : "Approvals", 
+      href: "/approvals" 
+    });
   } else {
-    breadcrumbItems.push({ text: "Leases", href: "/leases" });
+    breadcrumbItems.push({ 
+      text: t ? t('breadcrumbs.leases') : "Leases", 
+      href: "/leases" 
+    });
   }
 
   if (isLoading) {
-    breadcrumbItems.push({ text: "Loading...", href: "#" });
+    breadcrumbItems.push({ 
+      text: t ? t('breadcrumbs.loading') : "Loading...", 
+      href: "#" 
+    });
     return breadcrumbItems;
   }
 
   if (isError || !lease) {
-    breadcrumbItems.push({ text: "Error", href: "#" });
+    breadcrumbItems.push({ 
+      text: t ? t('breadcrumbs.error') : "Error", 
+      href: "#" 
+    });
     return breadcrumbItems;
   }
 

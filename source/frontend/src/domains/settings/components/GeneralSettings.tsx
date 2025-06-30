@@ -11,8 +11,10 @@ import { ErrorPanel } from "@amzn/innovation-sandbox-frontend/components/ErrorPa
 import { Loader } from "@amzn/innovation-sandbox-frontend/components/Loader";
 import { SettingsContainer } from "@amzn/innovation-sandbox-frontend/domains/settings/components/SettingsContainer";
 import { useGetConfigurations } from "@amzn/innovation-sandbox-frontend/domains/settings/hooks";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 
 export const GeneralSettings = () => {
+  const { t } = useTranslation();
   const {
     data: config,
     isLoading,
@@ -28,7 +30,7 @@ export const GeneralSettings = () => {
   if (loadingError || !config) {
     return (
       <ErrorPanel
-        description="There was a problem loading settings."
+        description={t('page.error', { ns: 'settings' })}
         retry={refetch}
         error={error as Error}
       />
@@ -40,19 +42,19 @@ export const GeneralSettings = () => {
       <KeyValuePairs
         items={[
           {
-            label: "Maintenance Mode",
+            label: t('general.maintenanceMode.label', { ns: 'settings' }),
             value: config.maintenanceMode ? (
               <StatusIndicator type="warning">
-                Maintenance mode is ON
+                {t('general.maintenanceMode.on', { ns: 'settings' })}
               </StatusIndicator>
             ) : (
               <StatusIndicator type="success">
-                Maintenance mode is OFF
+                {t('general.maintenanceMode.off', { ns: 'settings' })}
               </StatusIndicator>
             ),
           },
           {
-            label: "Innovation Sandbox Managed Regions",
+            label: t('general.regions.label', { ns: 'settings' }),
             value:
               (config.isbManagedRegions || []).length > 0 ? (
                 <ul data-list>
@@ -61,11 +63,13 @@ export const GeneralSettings = () => {
                   ))}
                 </ul>
               ) : (
-                <StatusIndicator type="warning">Not set</StatusIndicator>
+                <StatusIndicator type="warning">
+                  {t('general.regions.notSet', { ns: 'settings' })}
+                </StatusIndicator>
               ),
           },
           {
-            label: "Terms of Service",
+            label: t('general.termsOfService.label', { ns: 'settings' }),
             value: (
               <Container>
                 <pre>{config.termsOfService}</pre>

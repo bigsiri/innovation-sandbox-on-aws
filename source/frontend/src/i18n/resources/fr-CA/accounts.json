@@ -1,0 +1,288 @@
+{
+  "noAccounts": {
+    "title": "Il semble qu'il n'y ait aucun compte dans le pool de comptes.",
+    "description": "Commencez par ajouter des comptes pour débuter avec Innovation Sandbox.",
+    "action": "Ajouter des comptes"
+  },
+  "page": {
+    "title": "Comptes",
+    "description": "Gérer les comptes AWS dans le pool de comptes sandbox",
+    "addAccounts": "Ajouter des comptes"
+  },
+  "table": {
+    "title": "Comptes",
+    "columns": {
+      "accountId": "ID du compte",
+      "status": "Statut",
+      "added": "Ajouté",
+      "lastModified": "Dernière modification",
+      "name": "Nom",
+      "email": "Courriel",
+      "access": "Accès"
+    }
+  },
+  "forms": {
+    "add": {
+      "title": "Ajouter des comptes",
+      "description": "Enregistrer de nouveaux comptes AWS avec la solution",
+      "register": "Enregistrer",
+      "refresh": "Actualiser",
+      "reviewTitle": "Réviser les comptes à enregistrer",
+      "reviewDescription": "{{count}} compte(s) seront ajoutés au pool de comptes",
+      "warning": {
+        "title": "Avertissement",
+        "message": "Les comptes listés ci-dessus seront nettoyés, ce qui signifie que toutes les ressources du compte seront supprimées définitivement.",
+        "disclaimer": "Cette action ne peut pas être annulée !"
+      },
+      "success": "Les comptes ont été enregistrés avec succès avec la solution et sont maintenant en cours de nettoyage.",
+      "error": "Un ou plusieurs comptes ont échoué à s'enregistrer, essayez de soumettre à nouveau l'enregistrement.",
+      "errorTitle": "Échec de l'enregistrement des comptes"
+    },
+    "manage": {
+      "title": "Gérer le compte",
+      "description": "Gérer les paramètres et la configuration du compte",
+      "save": "Enregistrer les modifications",
+      "cancel": "Annuler",
+      "success": "Compte mis à jour avec succès",
+      "error": "Échec de la mise à jour du compte"
+    }
+  },
+  "status": {
+    "available": "Disponible",
+    "active": "Actif",
+    "frozen": "Gelé",
+    "cleanup": "Nettoyage",
+    "quarantine": "Quarantaine",
+    "unknown": "Inconnu",
+    "messages": {
+      "cleanup": "Ce compte est en cours de nettoyage et sera bientôt prêt à utiliser.",
+      "cleanupStuck": "Le processus de nettoyage peut être bloqué, veuillez réessayer.",
+      "cleanupInitiated": "Nettoyage initié :"
+    }
+  },
+  "actions": {
+    "add": "Ajouter un compte",
+    "register": "Enregistrer",
+    "cleanup": "Nettoyer",
+    "eject": "Éjecter",
+    "freeze": "Geler",
+    "unfreeze": "Dégeler",
+    "quarantine": "Mettre en quarantaine",
+    "release": "Libérer",
+    "view": "Voir les détails",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "refresh": "Actualiser",
+    "retry": "Réessayer",
+    "login": "Se connecter au compte",
+    "console": "Console AWS",
+    "manage": "Gérer",
+    "monitor": "Surveiller",
+    "audit": "Auditer"
+  },
+  "details": {
+    "accountId": "ID du compte AWS",
+    "accountName": "Nom du compte",
+    "accountEmail": "Courriel du compte",
+    "status": "Statut",
+    "createdDate": "Date de création",
+    "lastUpdated": "Dernière mise à jour",
+    "lastCleanup": "Dernier nettoyage",
+    "nextCleanup": "Prochain nettoyage",
+    "owner": "Propriétaire",
+    "region": "Région",
+    "organizationUnit": "Unité organisationnelle",
+    "tags": "Étiquettes",
+    "resources": "Ressources",
+    "costs": "Coûts",
+    "usage": "Utilisation",
+    "limits": "Limites",
+    "quotas": "Quotas"
+  },
+  "list": {
+    "title": "Comptes",
+    "description": "Gérer les comptes bac à sable AWS",
+    "noAccounts": "Aucun compte trouvé",
+    "loadingAccounts": "Chargement des comptes...",
+    "searchPlaceholder": "Rechercher des comptes...",
+    "filterByStatus": "Filtrer par statut",
+    "filterByOwner": "Filtrer par propriétaire",
+    "sortBy": "Trier par",
+    "sortByDate": "Date",
+    "sortByStatus": "Statut",
+    "sortByName": "Nom",
+    "sortById": "ID du compte",
+    "selectedCount": "{{count}} compte(s) sélectionné(s)",
+    "totalCount": "{{count}} comptes au total"
+  },
+  "summary": {
+    "title": "Résumé des comptes",
+    "totalAccounts": "Total",
+    "availableAccounts": "Comptes disponibles",
+    "activeAccounts": "Comptes actifs",
+    "frozenAccounts": "Comptes gelés",
+    "cleanupAccounts": "Comptes en nettoyage",
+    "quarantineAccounts": "Comptes en quarantaine",
+    "utilizationRate": "Taux d'utilisation",
+    "averageUsage": "Utilisation moyenne",
+    "costSummary": "Résumé des coûts",
+    "resourceSummary": "Résumé des ressources",
+    "accounts": "comptes"
+  },
+  "columns": {
+    "accountId": "ID du compte AWS",
+    "name": "Nom",
+    "email": "Courriel",
+    "status": "Statut",
+    "owner": "Propriétaire",
+    "createdDate": "Créé",
+    "lastUpdated": "Dernière mise à jour",
+    "actions": "Actions"
+  },
+  "validation": {
+    "accountIdRequired": "L'ID du compte est obligatoire",
+    "accountIdInvalid": "Veuillez saisir un ID de compte AWS valide",
+    "accountNameRequired": "Le nom du compte est obligatoire",
+    "accountEmailRequired": "Le courriel du compte est obligatoire",
+    "accountEmailInvalid": "Veuillez saisir une adresse courriel valide",
+    "selectionRequired": "Veuillez sélectionner au moins un compte",
+    "confirmationRequired": "Veuillez confirmer cette action"
+  },
+  "messages": {
+    "addSuccess": "Compte ajouté avec succès",
+    "addError": "Échec de l'ajout du compte",
+    "updateSuccess": "Compte mis à jour avec succès",
+    "updateError": "Échec de la mise à jour du compte",
+    "deleteSuccess": "Compte supprimé avec succès",
+    "deleteError": "Échec de la suppression du compte",
+    "cleanupSuccess": "Nettoyage du compte initié avec succès",
+    "cleanupError": "Échec de l'initiation du nettoyage du compte",
+    "ejectSuccess": "Compte éjecté avec succès",
+    "ejectError": "Échec de l'éjection du compte",
+    "freezeSuccess": "Compte gelé avec succès",
+    "freezeError": "Échec du gel du compte",
+    "unfreezeSuccess": "Compte dégelé avec succès",
+    "unfreezeError": "Échec du dégel du compte",
+    "quarantineSuccess": "Compte mis en quarantaine avec succès",
+    "quarantineError": "Échec de la mise en quarantaine du compte",
+    "releaseSuccess": "Compte libéré de la quarantaine avec succès",
+    "releaseError": "Échec de la libération du compte de la quarantaine",
+    "confirmCleanup": "Êtes-vous sûr de vouloir nettoyer ce compte ? Toutes les ressources seront supprimées.",
+    "confirmEject": "Êtes-vous sûr de vouloir éjecter ce compte ?",
+    "confirmFreeze": "Êtes-vous sûr de vouloir geler ce compte ?",
+    "confirmUnfreeze": "Êtes-vous sûr de vouloir dégeler ce compte ?",
+    "confirmQuarantine": "Êtes-vous sûr de vouloir mettre ce compte en quarantaine ?",
+    "confirmRelease": "Êtes-vous sûr de vouloir libérer ce compte de la quarantaine ?",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce compte ?",
+    "unsavedChanges": "Vous avez des modifications non enregistrées. Êtes-vous sûr de vouloir partir ?",
+    "loadingError": "Échec du chargement des informations du compte",
+    "networkError": "Erreur réseau. Veuillez réessayer.",
+    "permissionDenied": "Vous n'avez pas la permission d'effectuer cette action",
+    "operationInProgress": "Opération en cours...",
+    "operationCompleted": "Opération terminée avec succès",
+    "operationFailed": "Opération échouée"
+  },
+  "breadcrumbs": {
+    "home": "Accueil",
+    "accounts": "Comptes",
+    "addAccounts": "Ajouter des comptes",
+    "manageAccount": "Gérer le compte",
+    "accountDetails": "Détails du compte",
+    "loading": "Chargement...",
+    "error": "Erreur"
+  },
+  "filters": {
+    "all": "Tous les comptes",
+    "available": "Disponible",
+    "active": "Actif",
+    "frozen": "Gelé",
+    "cleanup": "En nettoyage",
+    "quarantine": "En quarantaine",
+    "myAccounts": "Mes comptes",
+    "recentlyUsed": "Récemment utilisés",
+    "neverUsed": "Jamais utilisés"
+  },
+  "batch": {
+    "actions": "Actions par lot",
+    "cleanup": "Nettoyer la sélection",
+    "eject": "Éjecter la sélection",
+    "freeze": "Geler la sélection",
+    "unfreeze": "Dégeler la sélection",
+    "quarantine": "Mettre en quarantaine la sélection",
+    "release": "Libérer la sélection",
+    "confirmBatchAction": "Êtes-vous sûr de vouloir effectuer cette action sur {{count}} compte(s) ?",
+    "batchSuccess": "Opération par lot terminée avec succès",
+    "batchError": "Certaines opérations ont échoué. Veuillez vérifier le statut de chaque compte.",
+    "batchInProgress": "Traitement de {{current}} sur {{total}} comptes..."
+  },
+  "metrics": {
+    "title": "Métriques des comptes",
+    "uptime": "Temps de fonctionnement",
+    "downtime": "Temps d'arrêt",
+    "utilization": "Utilisation",
+    "performance": "Performance",
+    "availability": "Disponibilité",
+    "reliability": "Fiabilité",
+    "costEfficiency": "Efficacité des coûts",
+    "resourceUsage": "Utilisation des ressources",
+    "errorRate": "Taux d'erreur",
+    "responseTime": "Temps de réponse"
+  },
+  "notifications": {
+    "accountAvailable": "Le compte est maintenant disponible",
+    "accountActive": "Le compte est maintenant actif",
+    "accountFrozen": "Le compte a été gelé",
+    "accountCleaned": "Nettoyage du compte terminé",
+    "accountQuarantined": "Le compte a été mis en quarantaine",
+    "cleanupStarted": "Nettoyage du compte commencé",
+    "cleanupFailed": "Nettoyage du compte échoué",
+    "maintenanceScheduled": "Maintenance programmée pour ce compte",
+    "quotaExceeded": "Quota du compte dépassé",
+    "costThresholdReached": "Seuil de coût atteint pour ce compte"
+  },
+  "page": {
+    "title": "Comptes",
+    "description": "Gérer les comptes sandbox dans le pool de comptes",
+    "addAccounts": "Ajouter des comptes"
+  },
+  "table": {
+    "title": "Comptes",
+    "columns": {
+      "accountId": "ID de compte",
+      "status": "Statut",
+      "added": "Ajouté",
+      "lastModified": "Dernière modification",
+      "name": "Nom",
+      "email": "Courriel",
+      "access": "Accès"
+    }
+  },
+  "actions": {
+    "title": "Actions",
+    "eject": "Éjecter le/les compte(s)",
+    "cleanup": "Nettoyer le/les compte(s)",
+    "description": "{{count}} compte(s) à {{action}}",
+    "success": {
+      "eject": "Le/les compte(s) ont été éjectés avec succès.",
+      "cleanup": "Le nettoyage du/des compte(s) a été initié avec succès."
+    },
+    "error": {
+      "eject": {
+        "message": "Un ou plusieurs comptes ont échoué à être éjectés, essayez de les soumettre à nouveau.",
+        "title": "Échec de l'éjection du/des compte(s)"
+      },
+      "cleanup": {
+        "message": "Un ou plusieurs comptes ont échoué au nettoyage, essayez de les soumettre à nouveau.",
+        "title": "Échec du nettoyage du/des compte(s)"
+      }
+    }
+  },
+  "modal": {
+    "eject": {
+      "title": "Éjecter le/les compte(s)"
+    },
+    "cleanup": {
+      "title": "Nettoyer le/les compte(s)"
+    }
+  }
+}

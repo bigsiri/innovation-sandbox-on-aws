@@ -22,6 +22,7 @@ import {
   getThresholdValue,
   validateThreshold,
 } from "@amzn/innovation-sandbox-frontend/components/ThresholdSettings/validator";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 
 interface ThresholdSettingsProps {
   input: FieldInputProps<(BudgetThreshold | DurationThreshold)[]>;
@@ -44,7 +45,22 @@ export const ThresholdSettings = ({
   thresholdType,
   meta: { error, submitFailed },
 }: ThresholdSettingsProps) => {
+  const { t } = useTranslation('leases');
   const type = ThresholdTypes[thresholdType];
+
+  // Get translated label based on threshold type
+  const getThresholdLabel = (thresholdType: string) => {
+    switch (thresholdType) {
+      case 'budget':
+        return t('thresholds.isConsumed');
+      case 'duration':
+        return t('thresholds.hoursRemain');
+      default:
+        return type.label;
+    }
+  };
+
+  const translatedLabel = getThresholdLabel(thresholdType);
 
   // get max value from other form field
   const {
@@ -96,7 +112,7 @@ export const ThresholdSettings = ({
       </Header>
       {(() => {
         if (thresholds.length === 0 && !maxValue) {
-          return <Alert type="info">No thresholds created.</Alert>;
+          return <Alert type="info">{t('thresholds.noThresholds')}</Alert>;
         }
 
         return (
@@ -104,7 +120,7 @@ export const ThresholdSettings = ({
             {(thresholds || []).map((threshold, index) => (
               <ThresholdsListItem
                 key={index} // NOSONAR javascript:S6479 - the thresholds array is generated in the form and is rerendered anyways on update
-                label={type.label}
+                label={translatedLabel}
                 threshold={{
                   action: threshold.action,
                   value: getThresholdValue(threshold),
@@ -121,7 +137,7 @@ export const ThresholdSettings = ({
             {maxValue && (
               <ThresholdsListItem
                 isReadOnly
-                label={type.label}
+                label={translatedLabel}
                 threshold={{
                   value: type.lastThresholdIsZero ? 0 : maxValue,
                 }}
@@ -133,7 +149,7 @@ export const ThresholdSettings = ({
       })()}
 
       <Button iconName="add-plus" onClick={onAdd}>
-        Add a threshold
+        {t('thresholds.addThreshold')}
       </Button>
     </SpaceBetween>
   );

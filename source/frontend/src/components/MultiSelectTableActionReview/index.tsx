@@ -10,6 +10,7 @@ import {
   TableProps,
 } from "@cloudscape-design/components";
 
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 import { useModal } from "@amzn/innovation-sandbox-frontend/hooks/useModal";
 import { Table } from "@aws-northstar/ui";
 import { ReactNode, useState } from "react";
@@ -39,11 +40,13 @@ const StatusCell = <T extends Record<string, any>>({
 }: {
   item: ItemWithRequest<T>;
 }) => {
+  const { t } = useTranslation('common');
+  
   switch (item.request?.status) {
     case "loading":
-      return <StatusIndicator type="loading">Loading</StatusIndicator>;
+      return <StatusIndicator type="loading">{t('status.loading')}</StatusIndicator>;
     case "success":
-      return <StatusIndicator type="success">Success</StatusIndicator>;
+      return <StatusIndicator type="success">{t('status.success')}</StatusIndicator>;
     case "error":
       return (
         <StatusIndicator type="error">
@@ -52,7 +55,7 @@ const StatusCell = <T extends Record<string, any>>({
             dismissButton={false}
             position="top"
           >
-            Failed
+            {t('status.failed')}
           </Popover>
         </StatusIndicator>
       );
@@ -71,11 +74,12 @@ export const BatchActionReview = <T extends Record<string, any>>({
   onSuccess,
   onError,
 }: BatchActionReviewProps<T>) => {
+  const { t } = useTranslation('common');
   const { hideModal } = useModal();
   const [requests, setRequests] = useState<Record<string, RequestStatus>>({});
   const [submissionIsLoading, setSubmissionIsLoading] =
     useState<boolean>(false);
-  const [submitButtonText, setSubmitButtonText] = useState<string>("Submit");
+  const [submitButtonText, setSubmitButtonText] = useState<string>(t('actions.submit'));
 
   const itemsWithRequests = items.map(
     (item): ItemWithRequest<T> => ({
@@ -122,7 +126,7 @@ export const BatchActionReview = <T extends Record<string, any>>({
       onSuccess();
     } catch (error) {
       setSubmissionIsLoading(false);
-      setSubmitButtonText("Retry");
+      setSubmitButtonText(t('actions.retry'));
       onError(error);
     }
   };
@@ -158,7 +162,7 @@ export const BatchActionReview = <T extends Record<string, any>>({
         {footer && <Box>{footer}</Box>}
         <Box float="right">
           <Button variant="link" onClick={hideModal}>
-            Cancel
+            {t('actions.cancel')}
           </Button>
           <Button
             variant="primary"

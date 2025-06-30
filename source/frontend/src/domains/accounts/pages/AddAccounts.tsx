@@ -16,10 +16,12 @@ import {
 import { UnregisteredAccount } from "@amzn/innovation-sandbox-frontend/domains/accounts/types";
 import { useBreadcrumb } from "@amzn/innovation-sandbox-frontend/hooks/useBreadcrumb";
 import { useModal } from "@amzn/innovation-sandbox-frontend/hooks/useModal";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 import { Table } from "@aws-northstar/ui";
 import { useNavigate } from "react-router-dom";
 
 export const AddAccounts = () => {
+  const { t } = useTranslation();
   const setBreadcrumb = useBreadcrumb();
   const navigate = useNavigate();
   const {
@@ -39,27 +41,29 @@ export const AddAccounts = () => {
 
   useEffect(() => {
     setBreadcrumb([
-      { text: "Home", href: "/" },
-      { text: "Accounts", href: "/accounts" },
-      { text: "Add Accounts", href: "/accounts/new" },
+      { text: t('breadcrumbs.home', { ns: 'accounts' }), href: "/" },
+      { text: t('breadcrumbs.accounts', { ns: 'accounts' }), href: "/accounts" },
+      { text: t('breadcrumbs.addAccounts', { ns: 'accounts' }), href: "/accounts/new" },
     ]);
-  }, []);
+  }, [t]);
 
   const showRegisterModal = () =>
     showModal({
-      header: "Review Accounts to Register",
+      header: t('forms.add.reviewTitle', { ns: 'accounts' }),
       content: (
         <BatchActionReview
           items={selectedAccounts}
-          description={`${selectedAccounts.length} account(s) will be added to the account pool`}
+          description={t('forms.add.reviewDescription', { 
+            ns: 'accounts', 
+            replace: { count: selectedAccounts.length } 
+          })}
           columnDefinitions={columnDefinitions}
           identifierKey="Id"
           footer={
-            <Alert type="warning" header="Warning">
-              The accounts listed above will be nuked meaning all resources in
-              the account will be deleted permanently.
+            <Alert type="warning" header={t('forms.add.warning.title', { ns: 'accounts' })}>
+              {t('forms.add.warning.message', { ns: 'accounts' })}
               <br />
-              This action cannot be undone!
+              {t('forms.add.warning.disclaimer', { ns: 'accounts' })}
             </Alert>
           }
           onSubmit={async (account: UnregisteredAccount) => {
@@ -67,14 +71,12 @@ export const AddAccounts = () => {
           }}
           onSuccess={() => {
             navigate("/accounts");
-            showSuccessToast(
-              "Accounts were successfully registered with the solution and are now in cleanup.",
-            );
+            showSuccessToast(t('forms.add.success', { ns: 'accounts' }));
           }}
           onError={() =>
             showErrorToast(
-              "One or more accounts failed to register, try resubmitting registration.",
-              "Failed to register accounts",
+              t('forms.add.error', { ns: 'accounts' }),
+              t('forms.add.errorTitle', { ns: 'accounts' }),
             )
           }
         />
@@ -85,37 +87,39 @@ export const AddAccounts = () => {
   const columnDefinitions = [
     {
       cell: (account: UnregisteredAccount) => account.Id,
-      header: "AWS Account ID",
+      header: t('columns.accountId', { ns: 'accounts' }),
       id: "Id",
     },
     {
       cell: (account: UnregisteredAccount) => account.Email,
-      header: "Email",
+      header: t('columns.email', { ns: 'accounts' }),
       id: "Email",
     },
     {
       cell: (account: UnregisteredAccount) => account.Name,
-      header: "Name",
+      header: t('columns.name', { ns: 'accounts' }),
       id: "Name",
     },
   ];
 
   return (
     <Table
-      header="Add Accounts"
+      header={t('forms.add.title', { ns: 'accounts' })}
       actions={
         <SpaceBetween direction="horizontal" size="xs">
           <Button
             iconName="refresh"
             onClick={() => refetch()}
             disabled={getUnregisteredAccountsIsLoading}
-          />
+          >
+            {t('actions.refresh', { ns: 'accounts' })}
+          </Button>
           <Button
             variant="primary"
             onClick={showRegisterModal}
             disabled={selectedAccounts.length === 0}
           >
-            Register
+            {t('actions.register', { ns: 'accounts' })}
           </Button>
         </SpaceBetween>
       }

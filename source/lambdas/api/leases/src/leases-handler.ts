@@ -372,13 +372,21 @@ async function getLeaseByIdHandler(
       },
     });
   }
-  if (isUserNotAllowedByEmail(context.user, lease.userEmail)) {
+  
+  // Check if user is authorized to view this lease
+  // Users can view leases if:
+  // 1. They are Admin/Manager (can view all leases)
+  // 2. They own the lease (lease.userEmail === user.email)
+  const isOwner = context.user.email === lease.userEmail;
+  const hasAdminAccess = !isUserNotAllowedByAll(context.user);
+  
+  if (!isOwner && !hasAdminAccess) {
     throw createHttpJSendError({
       statusCode: 403,
       data: {
         errors: [
           {
-            message: `Active user is not authorized to view leases of requested user.`,
+            message: `Active user is not authorized to view this lease.`,
           },
         ],
       },

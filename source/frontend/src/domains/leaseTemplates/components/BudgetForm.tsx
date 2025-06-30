@@ -7,6 +7,7 @@ import { LeaseTemplate } from "@amzn/innovation-sandbox-commons/data/lease-templ
 import { Form } from "@amzn/innovation-sandbox-frontend/components/Form";
 import { thresholdValidator } from "@amzn/innovation-sandbox-frontend/components/ThresholdSettings/validator";
 import { budgetFields } from "@amzn/innovation-sandbox-frontend/domains/leaseTemplates/formFields/budget";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 
 type BudgetFormProps = {
   maxSpend: LeaseTemplate["maxSpend"];
@@ -31,6 +32,8 @@ export const BudgetForm = ({
   isUpdating,
   globalMaxBudget,
 }: BudgetFormProps) => {
+  const { t } = useTranslation();
+
   return (
     <Form
       insideTab
@@ -58,13 +61,14 @@ export const BudgetForm = ({
         }
       }}
       schema={{
-        submitLabel: "Update Budget Settings",
+        submitLabel: t('forms.budget.submitLabel', { ns: 'leaseTemplates' }),
         fields: [
           {
             component: componentTypes.SUB_FORM,
             ...budgetFields({
               alwaysShowValidationErrors: true,
               globalMaxBudget,
+              t,
             }),
           },
         ],

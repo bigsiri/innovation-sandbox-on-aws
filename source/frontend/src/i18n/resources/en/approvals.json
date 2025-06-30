@@ -1,0 +1,52 @@
+{
+  "page": {
+    "title": "Approvals",
+    "description": "Manage requests to lease sandbox accounts"
+  },
+  "table": {
+    "title": "Approvals",
+    "columns": {
+      "requestedBy": "Requested by",
+      "leaseTemplate": "Lease Template",
+      "requested": "Requested",
+      "comments": "Comments"
+    }
+  },
+  "actions": {
+    "title": "Actions",
+    "approve": "Approve request(s)",
+    "deny": "Deny request(s)"
+  },
+  "modal": {
+    "approve": {
+      "title": "Approve request(s)"
+    },
+    "deny": {
+      "title": "Deny request(s)"
+    }
+  },
+  "review": {
+    "description": "{{count}} lease request(s) to review",
+    "success": {
+      "approved": "Lease request(s) were successfully approved.",
+      "denied": "Lease request(s) were successfully denied."
+    },
+    "error": {
+      "message": "One or more lease requests failed to review, try resubmitting.",
+      "title": "Failed to review lease requests"
+    }
+  },
+  "breadcrumbs": {
+    "home": "Home",
+    "approvals": "Approvals",
+    "leases": "Leases",
+    "loading": "Loading...",
+    "error": "Error"
+  },
+  "forms": {
+    "approval": {
+      "approve": "Approve",
+      "reject": "Reject"
+    }
+  }
+}

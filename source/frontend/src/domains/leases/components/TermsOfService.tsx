@@ -11,8 +11,11 @@ import {
 import { ErrorPanel } from "@amzn/innovation-sandbox-frontend/components/ErrorPanel";
 import { Loader } from "@amzn/innovation-sandbox-frontend/components/Loader";
 import { useGetConfigurations } from "@amzn/innovation-sandbox-frontend/domains/settings/hooks";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 
 export const TermsOfService = () => {
+  const { t } = useTranslation();
+
   const {
     data: config,
     isLoading,
@@ -22,13 +25,13 @@ export const TermsOfService = () => {
   } = useGetConfigurations();
 
   if (isLoading) {
-    return <Loader label="Loading terms of service..." />;
+    return <Loader label={t('forms.request.termsOfService.loadingText', { ns: 'leases' })} />;
   }
 
   if (isError) {
     return (
       <ErrorPanel
-        description="Could not retrieve terms of service."
+        description={t('forms.request.termsOfService.loadError', { ns: 'leases' })}
         retry={refetch}
         error={error as Error}
       />
@@ -38,7 +41,7 @@ export const TermsOfService = () => {
   return (
     <SpaceBetween size="s">
       <Box variant="strong">
-        Before continuing, please review the terms of service below.
+        {t('forms.request.termsOfService.reviewText', { ns: 'leases' })}
       </Box>
       <Container>
         {config?.termsOfService ? (
@@ -46,9 +49,9 @@ export const TermsOfService = () => {
         ) : (
           <Alert
             type="warning"
-            header="Terms of Service have not been configured yet."
+            header={t('forms.request.termsOfService.notConfiguredHeader', { ns: 'leases' })}
           >
-            Please contact your administrator!
+            {t('forms.request.termsOfService.notConfiguredMessage', { ns: 'leases' })}
           </Alert>
         )}
       </Container>

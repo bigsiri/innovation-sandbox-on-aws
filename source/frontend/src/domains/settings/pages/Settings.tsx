@@ -8,18 +8,21 @@ import { Markdown } from "@amzn/innovation-sandbox-frontend/components/Markdown"
 import { CleanupSettings } from "@amzn/innovation-sandbox-frontend/domains/settings/components/CleanupSettings";
 import { GeneralSettings } from "@amzn/innovation-sandbox-frontend/domains/settings/components/GeneralSettings";
 import { LeaseSettings } from "@amzn/innovation-sandbox-frontend/domains/settings/components/LeaseSettings";
+import { UserPreferences } from "@amzn/innovation-sandbox-frontend/domains/settings/components/UserPreferences";
 import { useBreadcrumb } from "@amzn/innovation-sandbox-frontend/hooks/useBreadcrumb";
 import { useInit } from "@amzn/innovation-sandbox-frontend/hooks/useInit";
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 import { useAppLayoutContext } from "@aws-northstar/ui/components/AppLayout";
 
 export const Settings = () => {
+  const { t } = useTranslation();
   const setBreadcrumb = useBreadcrumb();
   const { setTools } = useAppLayoutContext();
 
   useInit(() => {
     setBreadcrumb([
-      { text: "Home", href: "/" },
-      { text: "Settings", href: "/settings" },
+      { text: t('breadcrumbs.home', { ns: 'settings' }), href: "/" },
+      { text: t('breadcrumbs.settings', { ns: 'settings' }), href: "/settings" },
     ]);
     setTools(<Markdown file="settings" />);
   });
@@ -30,26 +33,31 @@ export const Settings = () => {
         <Header
           variant="h1"
           info={<InfoLink markdown="settings" />}
-          description="Manage global settings here."
+          description={t('page.description', { ns: 'settings' })}
         >
-          Settings
+          {t('page.title', { ns: 'settings' })}
         </Header>
       }
     >
       <Tabs
         tabs={[
           {
-            label: "General Settings",
+            label: t('tabs.general', { ns: 'settings' }),
             id: "general",
             content: <GeneralSettings />,
           },
           {
-            label: "Lease Settings",
+            label: t('tabs.preferences', { ns: 'settings' }),
+            id: "preferences",
+            content: <UserPreferences />,
+          },
+          {
+            label: t('tabs.lease', { ns: 'settings' }),
             id: "lease",
             content: <LeaseSettings />,
           },
           {
-            label: "Clean Up Settings",
+            label: t('tabs.cleanup', { ns: 'settings' }),
             id: "clean",
             content: <CleanupSettings />,
           },

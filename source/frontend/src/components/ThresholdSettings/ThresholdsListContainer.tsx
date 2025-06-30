@@ -3,6 +3,7 @@
 
 import { Box } from "@cloudscape-design/components";
 
+import { useTranslation } from "@amzn/innovation-sandbox-frontend/i18n/hooks/useTranslation";
 import styles from "./styles.module.scss";
 
 interface ThresholdListContainerProps {
@@ -12,25 +13,27 @@ interface ThresholdListContainerProps {
 export const ThresholdListContainer = ({
   children,
 }: ThresholdListContainerProps) => {
+  const { t } = useTranslation('leases');
+  
   return (
     <div className={styles.container}>
       <div className={styles.row}>
         <Box>
           <Box>
-            <strong>Threshold</strong>
+            <strong>{t('thresholds.title')}</strong>
           </Box>
           <Box>
-            <small data-muted>When should this threshold be triggered?</small>
+            <small data-muted>{t('thresholds.description')}</small>
           </Box>
         </Box>
         <Box />
         <Box>
           <Box>
-            <strong>Action</strong>
+            <strong>{t('thresholds.action.title')}</strong>
           </Box>
           <Box>
             <small data-muted>
-              What should happen when the threshold is triggered?
+              {t('thresholds.action.description')}
             </small>
           </Box>
         </Box>

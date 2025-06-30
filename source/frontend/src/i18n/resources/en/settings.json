@@ -1,0 +1,268 @@
+{
+  "page": {
+    "title": "Settings",
+    "description": "Manage global settings here.",
+    "loading": "Loading settings...",
+    "error": "There was a problem loading settings.",
+    "retry": "Retry",
+    "noData": "No settings data available"
+  },
+  "tabs": {
+    "general": "General Settings",
+    "lease": "Lease Settings", 
+    "cleanup": "Clean Up Settings",
+    "security": "Security Settings",
+    "notifications": "Notification Settings",
+    "advanced": "Advanced Settings"
+  },
+  "general": {
+    "title": "General Configuration",
+    "description": "Basic system configuration and maintenance settings",
+    "maintenanceMode": {
+      "label": "Maintenance Mode",
+      "on": "Maintenance mode is ON",
+      "off": "Maintenance mode is OFF",
+      "description": "When enabled, the system will be in maintenance mode and users will not be able to access certain features",
+      "help": "Use maintenance mode to perform system updates or maintenance tasks"
+    },
+    "regions": {
+      "label": "Innovation Sandbox Managed Regions",
+      "notSet": "Not set",
+      "description": "AWS regions managed by the Innovation Sandbox solution",
+      "help": "These are the regions where sandbox accounts can be created and managed"
+    },
+    "termsOfService": {
+      "label": "Terms of Service",
+      "description": "Terms of service that users must accept",
+      "help": "Legal terms and conditions for using the Innovation Sandbox"
+    },
+    "appConfig": {
+      "info": "To change these settings, please go to",
+      "link": "AWS AppConfig",
+      "description": "Settings are managed through AWS AppConfig for centralized configuration management"
+    }
+  },
+  "lease": {
+    "title": "Lease Configuration",
+    "description": "Settings for lease management and user limits",
+    "budget": {
+      "title": "Budget",
+      "maxBudget": {
+        "label": "Max Budget",
+        "description": "Maximum budget allowed for a single lease",
+        "help": "This is the upper limit for lease budgets that users can request",
+        "unit": "USD"
+      },
+      "requireMaxBudget": {
+        "label": "Require Max Budget",
+        "description": "Whether users must specify a maximum budget for their lease",
+        "help": "When enabled, users cannot create leases without specifying a budget limit"
+      }
+    },
+    "duration": {
+      "title": "Duration",
+      "maxDuration": {
+        "label": "Max Lease Duration",
+        "description": "Maximum duration allowed for a single lease",
+        "help": "This is the upper limit for lease duration that users can request",
+        "unit": "hours"
+      },
+      "requireMaxDuration": {
+        "label": "Require Max Lease Duration",
+        "description": "Whether users must specify a maximum duration for their lease",
+        "help": "When enabled, users cannot create leases without specifying a duration limit"
+      }
+    },
+    "userLimits": {
+      "title": "User limits",
+      "maxLeasesPerUser": {
+        "label": "Max leases per user",
+        "description": "Maximum number of active leases a single user can have",
+        "help": "This prevents users from creating too many concurrent leases"
+      }
+    }
+  },
+  "cleanup": {
+    "title": "Cleanup Configuration",
+    "description": "Settings for account cleanup processes and retry logic",
+    "waitBeforeRerun": {
+      "label": "Wait before Rerun Successful Attempt",
+      "description": "Time to wait before rerunning a successful cleanup attempt",
+      "help": "This prevents cleanup processes from running too frequently",
+      "unit": "seconds",
+      "notSet": "Not set"
+    },
+    "failedAttempts": {
+      "label": "Number of failed attempts to cancel cleanup",
+      "description": "How many failed attempts before canceling the cleanup process",
+      "help": "This prevents infinite retry loops for failed cleanup operations",
+      "notSet": "Not set"
+    },
+    "waitBeforeRetry": {
+      "label": "Wait before retrying failed attempt",
+      "description": "Time to wait before retrying a failed cleanup attempt",
+      "help": "This gives temporary issues time to resolve before retrying",
+      "unit": "seconds",
+      "notSet": "Not set"
+    },
+    "successfulAttempts": {
+      "label": "Number of successful attempts to finish cleanup",
+      "description": "How many successful attempts needed to consider cleanup complete",
+      "help": "This ensures cleanup is thoroughly completed before marking as done",
+      "notSet": "Not set"
+    }
+  },
+  "security": {
+    "title": "Security Configuration",
+    "description": "Security settings and access controls",
+    "authentication": {
+      "title": "Authentication",
+      "ssoEnabled": {
+        "label": "Single Sign-On (SSO) Enabled",
+        "description": "Whether SSO authentication is enabled",
+        "help": "SSO provides centralized authentication through your organization's identity provider"
+      },
+      "mfaRequired": {
+        "label": "Multi-Factor Authentication Required",
+        "description": "Whether MFA is required for all users",
+        "help": "MFA adds an extra layer of security by requiring a second form of authentication"
+      }
+    },
+    "access": {
+      "title": "Access Control",
+      "sessionTimeout": {
+        "label": "Session Timeout",
+        "description": "How long user sessions remain active without activity",
+        "help": "Shorter timeouts improve security but may impact user experience",
+        "unit": "minutes"
+      },
+      "maxConcurrentSessions": {
+        "label": "Max Concurrent Sessions",
+        "description": "Maximum number of concurrent sessions per user",
+        "help": "Limiting concurrent sessions helps prevent account sharing"
+      }
+    }
+  },
+  "notifications": {
+    "title": "Notification Configuration",
+    "description": "Settings for system notifications and alerts",
+    "email": {
+      "title": "Email Notifications",
+      "enabled": {
+        "label": "Email Notifications Enabled",
+        "description": "Whether email notifications are sent to users",
+        "help": "Email notifications keep users informed about important events"
+      },
+      "fromAddress": {
+        "label": "From Email Address",
+        "description": "Email address used as sender for notifications",
+        "help": "This should be a monitored email address from your organization"
+      }
+    },
+    "alerts": {
+      "title": "System Alerts",
+      "budgetThreshold": {
+        "label": "Budget Alert Threshold",
+        "description": "Percentage of budget used before sending alerts",
+        "help": "Alerts help users manage their spending before reaching limits",
+        "unit": "%"
+      },
+      "expirationWarning": {
+        "label": "Lease Expiration Warning",
+        "description": "How many hours before expiration to send warning",
+        "help": "Warnings give users time to extend or save work before expiration",
+        "unit": "hours"
+      }
+    }
+  },
+  "advanced": {
+    "title": "Advanced Configuration",
+    "description": "Advanced system settings and debugging options",
+    "logging": {
+      "title": "Logging",
+      "level": {
+        "label": "Log Level",
+        "description": "Minimum level of logs to record",
+        "help": "Higher levels provide more detail but may impact performance",
+        "options": {
+          "error": "Error",
+          "warn": "Warning", 
+          "info": "Information",
+          "debug": "Debug"
+        }
+      },
+      "retention": {
+        "label": "Log Retention Period",
+        "description": "How long to keep log files",
+        "help": "Longer retention helps with troubleshooting but uses more storage",
+        "unit": "days"
+      }
+    },
+    "performance": {
+      "title": "Performance",
+      "cacheTimeout": {
+        "label": "Cache Timeout",
+        "description": "How long to cache frequently accessed data",
+        "help": "Longer cache times improve performance but may show stale data",
+        "unit": "minutes"
+      },
+      "maxConcurrentOperations": {
+        "label": "Max Concurrent Operations",
+        "description": "Maximum number of operations that can run simultaneously",
+        "help": "Higher limits improve throughput but may impact system stability"
+      }
+    }
+  },
+  "actions": {
+    "save": "Save Settings",
+    "cancel": "Cancel",
+    "reset": "Reset to Defaults",
+    "export": "Export Configuration",
+    "import": "Import Configuration",
+    "validate": "Validate Settings",
+    "apply": "Apply Changes",
+    "revert": "Revert Changes"
+  },
+  "validation": {
+    "required": "This setting is required",
+    "invalidNumber": "Please enter a valid number",
+    "invalidEmail": "Please enter a valid email address",
+    "invalidUrl": "Please enter a valid URL",
+    "outOfRange": "Value must be between {{min}} and {{max}}",
+    "tooLow": "Value is too low (minimum: {{min}})",
+    "tooHigh": "Value is too high (maximum: {{max}})",
+    "invalidFormat": "Invalid format",
+    "conflictingSettings": "This setting conflicts with another configuration"
+  },
+  "messages": {
+    "saveSuccess": "Settings saved successfully",
+    "saveError": "Failed to save settings",
+    "loadError": "Failed to load settings",
+    "validateSuccess": "Settings validation passed",
+    "validateError": "Settings validation failed",
+    "resetSuccess": "Settings reset to defaults",
+    "resetError": "Failed to reset settings",
+    "exportSuccess": "Configuration exported successfully",
+    "exportError": "Failed to export configuration",
+    "importSuccess": "Configuration imported successfully",
+    "importError": "Failed to import configuration",
+    "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?",
+    "confirmReset": "Are you sure you want to reset all settings to their default values?",
+    "confirmImport": "Are you sure you want to import this configuration? This will overwrite current settings.",
+    "restartRequired": "Some changes require a system restart to take effect",
+    "configurationValid": "Configuration is valid",
+    "configurationInvalid": "Configuration contains errors"
+  },
+  "help": {
+    "general": "General settings control basic system behavior and maintenance options",
+    "lease": "Lease settings define limits and requirements for user lease requests",
+    "cleanup": "Cleanup settings control how accounts are cleaned and recycled",
+    "security": "Security settings manage authentication and access controls",
+    "notifications": "Notification settings control how users are informed of system events",
+    "advanced": "Advanced settings are for system administrators and debugging"
+  },
+  "breadcrumbs": {
+    "home": "Home",
+    "settings": "Settings"
+  }
+}

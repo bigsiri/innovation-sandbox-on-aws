@@ -9,6 +9,7 @@ import React, { ReactNode } from "react";
 import { afterAll, afterEach, beforeAll, vi } from "vitest";
 
 import { server } from "@amzn/innovation-sandbox-frontend/mocks/server";
+import { cleanupI18n } from "./test/i18n-test-utils";
 
 // Create a single QueryClient instance
 const queryClient = new QueryClient({
@@ -22,6 +23,7 @@ const queryClient = new QueryClient({
 beforeAll(() => server.listen());
 afterEach(() => {
   cleanup();
+  cleanupI18n(); // Clean up i18n state between tests
   server.resetHandlers();
   queryClient.clear();
 });
@@ -69,6 +71,37 @@ Object.defineProperty(window, "scrollTo", {
   value: vi.fn(),
 });
 
+// Mock localStorage for i18n testing
+const localStorageMock = {
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
+  clear: vi.fn(),
+};
+Object.defineProperty(window, 'localStorage', {
+  value: localStorageMock,
+  writable: true,
+});
+
 // Adding global mocks
 global.fetch = vi.fn();
 global.URL.createObjectURL = vi.fn();
+
+// Global i18n test configuration
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string) => key,
+    i18n: {
+      language: 'en',
+      changeLanguage: vi.fn(),
+    },
+  }),
+  I18nextProvider: ({ children }: { children: ReactNode }) => children,
+  initReactI18next: {
+    type: '3rdParty',
+    init: vi.fn(),
+  },
+}));
+
+// Export localStorage mock for use in tests
+export { localStorageMock };
