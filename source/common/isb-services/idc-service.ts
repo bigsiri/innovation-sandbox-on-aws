@@ -210,7 +210,7 @@ export class IdcService {
    *  "identitystore:ListGroupMembershipsForMember"
    */
   public async getUserFromEmail(email: string): Promise<IsbUser | undefined> {
-    return this.getUserFromUniqueAttr("emails.value", email);
+    return this.getUserByEmail(email);
   }
 
   /**
@@ -223,6 +223,10 @@ export class IdcService {
     userName: string,
   ): Promise<IsbUser | undefined> {
     return this.getUserFromUniqueAttr("userName", userName);
+  }
+
+  private async getUserByEmail(email: string): Promise<IsbUser | undefined> {
+    return this.getUserFromUniqueAttr("emails.value", email);
   }
 
   private async getUserFromUniqueAttr(
@@ -314,10 +318,122 @@ export class IdcService {
   }
 
   /**
+   * Grant users access to an AWS account with appropriate permission sets
    * requires actions
    *  "sso:CreateAccountAssignment",
+   */
+  public async assignUserToAccount(
+    accountId: string, 
+    userEmails: string[]
+  ): Promise<{ userEmail: string; success: boolean; message?: string; permissionSetArn?: string }[]> {
+    const results = [];
+    const config = await this.getIdcConfig();
+
+    for (const userEmail of userEmails) {
+      try {
+        const isbUser = await this.getUserByEmail(userEmail);
+        if (!isbUser) {
+          results.push({ 
+            userEmail, 
+            success: false, 
+            message: `User ${userEmail} not found in Identity Center` 
+          });
+          continue;
+        }
+
+        // Determine permission set based on user's role
+        let permissionSetArn: string;
+        if (isbUser.roles?.includes('Admin')) {
+          permissionSetArn = config.adminPermissionSetArn;
+        } else if (isbUser.roles?.includes('Manager')) {
+          permissionSetArn = config.managerPermissionSetArn;
+        } else {
+          permissionSetArn = config.userPermissionSetArn;
+        }
+
+        const command = new CreateAccountAssignmentCommand({
+          InstanceArn: config.ssoInstanceArn,
+          PermissionSetArn: permissionSetArn,
+          PrincipalId: isbUser.userId,
+          PrincipalType: PrincipalType.USER,
+          TargetId: accountId,
+          TargetType: TargetType.AWS_ACCOUNT,
+        });
+        
+        await this.ssoAdminClient.send(command);
+        results.push({ userEmail, success: true, permissionSetArn });
+      } catch (error) {
+        results.push({ 
+          userEmail,
+          success: false, 
+          message: error instanceof Error ? error.message : 'Unknown error occurred' 
+        });
+      }
+    }
+
+    return results;
+  }
+
+  /**
+   * Revoke users access from an AWS account
+   * requires actions
    *  "sso:DeleteAccountAssignment",
    */
+  public async removeUserFromAccount(
+    accountId: string, 
+    userEmails: string[],
+    permissionSetArns?: string[]
+  ): Promise<{ userEmail: string; success: boolean; message?: string }[]> {
+    const results = [];
+    const config = await this.getIdcConfig();
+
+    for (let i = 0; i < userEmails.length; i++) {
+      const userEmail = userEmails[i] as string;
+      try {
+        const isbUser = await this.getUserByEmail(userEmail);
+        if (!isbUser) {
+          results.push({ 
+            userEmail, 
+            success: false, 
+            message: `User ${userEmail} not found in Identity Center` 
+          });
+          continue;
+        }
+
+        // Use provided permission set or determine from user's role
+        let targetPermissionSetArn = permissionSetArns?.[i];
+        if (!targetPermissionSetArn) {
+          if (isbUser.roles?.includes('Admin')) {
+            targetPermissionSetArn = config.adminPermissionSetArn;
+          } else if (isbUser.roles?.includes('Manager')) {
+            targetPermissionSetArn = config.managerPermissionSetArn;
+          } else {
+            targetPermissionSetArn = config.userPermissionSetArn;
+          }
+        }
+
+        const command = new DeleteAccountAssignmentCommand({
+          InstanceArn: config.ssoInstanceArn,
+          PermissionSetArn: targetPermissionSetArn,
+          PrincipalId: isbUser.userId,
+          PrincipalType: PrincipalType.USER,
+          TargetId: accountId,
+          TargetType: TargetType.AWS_ACCOUNT,
+        });
+        
+        await this.ssoAdminClient.send(command);
+        results.push({ userEmail, success: true });
+      } catch (error) {
+        results.push({ 
+          userEmail,
+          success: false, 
+          message: error instanceof Error ? error.message : 'Unknown error occurred' 
+        });
+      }
+    }
+
+    return results;
+  }
   public transactionalGrantUserAccess(accountId: string, isbUser: IsbUser) {
     return new Transaction({
       beginTransaction: () => this.grantUserAccess(accountId, isbUser),

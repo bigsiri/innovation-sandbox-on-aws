@@ -235,6 +235,73 @@ export class DynamoLeaseStore extends LeaseStore {
     };
   }
 
+  public override async findSharedLeases(props: {
+    userEmail: EmailAddress;
+    includeOwned?: boolean;
+    status?: LeaseStatus;
+    pageSize?: number;
+    pageIdentifier?: string;
+  }): Promise<PaginatedQueryResult<Lease>> {
+    const { userEmail, includeOwned = false, status, pageSize = 50, pageIdentifier } = props;
+
+    // Since we can't efficiently filter complex nested arrays in DynamoDB,
+    // we'll scan leases with users and do minimal application filtering
+    let filterExpression = "attribute_exists(#users) AND size(#users) > :zero";
+    const expressionAttributeNames: Record<string, string> = {
+      "#users": "users",
+    };
+    const expressionAttributeValues: Record<string, any> = {
+      ":zero": 0,
+    };
+
+    // Add status filter if provided
+    if (status) {
+      filterExpression = `(${filterExpression}) AND #status = :status`;
+      expressionAttributeNames["#status"] = "status";
+      expressionAttributeValues[":status"] = status;
+    }
+
+    // If includeOwned is true, also include leases owned by the user
+    if (includeOwned) {
+      filterExpression = `(${filterExpression}) OR #userEmail = :ownerEmail`;
+      expressionAttributeNames["#userEmail"] = "userEmail";
+      expressionAttributeValues[":ownerEmail"] = userEmail;
+    }
+
+    const result = await this.ddbClient.send(
+      new ScanCommand({
+        TableName: this.tableName,
+        FilterExpression: filterExpression,
+        ExpressionAttributeNames: expressionAttributeNames,
+        ExpressionAttributeValues: expressionAttributeValues,
+        ExclusiveStartKey: base64DecodeCompositeKey(pageIdentifier),
+        Limit: pageSize * 2, // Get more items to account for user filtering
+      }),
+    );
+
+    const parsedResults = parseResults(result.Items, LeaseSchema);
+    
+    // Filter for leases where user is in the users array or is the owner
+    const filteredLeases = parsedResults.result.filter(lease => {
+      const isOwner = lease.userEmail === userEmail;
+      const isSharedUser = lease.users?.some(user => user.userEmail === userEmail) || false;
+      
+      if (includeOwned) {
+        return isOwner || isSharedUser;
+      } else {
+        // Only include leases where user is shared but NOT the owner
+        return isSharedUser && !isOwner;
+      }
+    }).slice(0, pageSize);
+
+    return {
+      result: filteredLeases,
+      error: parsedResults.error,
+      nextPageIdentifier: filteredLeases.length === pageSize ? 
+        base64EncodeCompositeKey(result.LastEvaluatedKey) : null,
+    };
+  }
+
   public override async findByUserEmail(props: {
     userEmail: EmailAddress;
     pageIdentifier?: string;

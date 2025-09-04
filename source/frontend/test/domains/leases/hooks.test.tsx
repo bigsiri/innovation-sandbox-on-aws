@@ -6,7 +6,7 @@ import { http, HttpResponse } from "msw";
 import { describe, expect, it, vi } from "vitest";
 
 import {
-  getLeasesForCurrentUser,
+  useGetLeasesForCurrentUser,
   useRequestNewLease,
 } from "@amzn/innovation-sandbox-frontend/domains/leases/hooks";
 import { NewLeaseRequest } from "@amzn/innovation-sandbox-frontend/domains/leases/types";
@@ -34,7 +34,7 @@ describe("Lease hooks", () => {
         }),
       );
 
-      const { result } = renderHook(() => getLeasesForCurrentUser(), {
+      const { result } = renderHook(() => useGetLeasesForCurrentUser(), {
         wrapper: createQueryClientWrapper(),
       });
 
@@ -53,7 +53,7 @@ describe("Lease hooks", () => {
         }),
       );
 
-      const { result } = renderHook(() => getLeasesForCurrentUser(), {
+      const { result } = renderHook(() => useGetLeasesForCurrentUser(), {
         wrapper: createQueryClientWrapper(),
       });
 

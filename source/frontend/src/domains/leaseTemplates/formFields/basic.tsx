@@ -32,6 +32,13 @@ export const basicFormFields = () => ({
       label: "Approval required",
     },
     {
+      component: componentTypes.SWITCH,
+      name: "allowOwnerUserManagement",
+      label: "Allow lease owners to manage users",
+      description: "When enabled, lease owners can add and remove users from their leases. Disabled by default for security.",
+      initialValue: false,
+    },
+    {
       component: componentTypes.PLAIN_TEXT,
       name: "warning",
       label: (

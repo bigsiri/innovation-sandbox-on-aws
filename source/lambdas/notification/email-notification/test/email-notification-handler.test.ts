@@ -15,6 +15,8 @@ import { LeaseExpirationAlertEventSchema } from "@amzn/innovation-sandbox-common
 import { LeaseFrozenEventSchema } from "@amzn/innovation-sandbox-commons/events/lease-frozen-event.js";
 import { LeaseRequestedEventSchema } from "@amzn/innovation-sandbox-commons/events/lease-requested-event.js";
 import { LeaseTerminatedEventSchema } from "@amzn/innovation-sandbox-commons/events/lease-terminated-event.js";
+import { UserAddedToLeaseEventSchema } from "@amzn/innovation-sandbox-commons/events/user-added-to-lease-event.js";
+import { UserRemovedFromLeaseEventSchema } from "@amzn/innovation-sandbox-commons/events/user-removed-from-lease-event.js";
 import { EmailEventName } from "@amzn/innovation-sandbox-commons/isb-services/notification/email-events.js";
 import { EmailService } from "@amzn/innovation-sandbox-commons/isb-services/notification/email-service.js";
 import {
@@ -120,6 +122,14 @@ describe("email-notification-handler", () => {
     [EventDetailTypes.LeaseDurationThresholdBreachedAlert]: {
       eventName: EventDetailTypes.LeaseDurationThresholdBreachedAlert,
       schema: LeaseExpirationAlertEventSchema,
+    },
+    [EventDetailTypes.UserAddedToLease]: {
+      eventName: EventDetailTypes.UserAddedToLease,
+      schema: UserAddedToLeaseEventSchema,
+    },
+    [EventDetailTypes.UserRemovedFromLease]: {
+      eventName: EventDetailTypes.UserRemovedFromLease,
+      schema: UserRemovedFromLeaseEventSchema,
     },
   };
 

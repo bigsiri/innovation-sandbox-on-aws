@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 import { retryAsync } from "ts-retry/lib/esm/index.js";
-import { beforeAll, describe, expect, inject, it } from "vitest";
+import { beforeAll, beforeEach, describe, expect, inject, it } from "vitest";
 
 import { base64EncodeCompositeKey } from "@amzn/innovation-sandbox-commons/data/encoding.js";
 import { LeaseTemplateStore } from "@amzn/innovation-sandbox-commons/data/lease-template/lease-template-store.js";
@@ -10,6 +10,7 @@ import { LeaseStore } from "@amzn/innovation-sandbox-commons/data/lease/lease-st
 import {
   Lease,
   LeaseKeySchema,
+  MonitoredLease,
   MonitoredLeaseSchema,
   PendingLeaseSchema,
 } from "@amzn/innovation-sandbox-commons/data/lease/lease.js";
@@ -262,5 +263,109 @@ describe("leases api", () => {
     expect(jsonResponseBody.data).toMatchObject(updatedLeaseTerms);
 
     await leaseStore.delete({ userEmail: lease.userEmail, uuid: lease.uuid });
+  });
+
+  describe("User Management", () => {
+    let testLease: MonitoredLease;
+    let leaseId: string;
+
+    beforeEach(async () => {
+      // Create a lease template that allows user management
+      const leaseTemplate = generateSchemaData(LeaseTemplateSchema);
+      leaseTemplate.allowOwnerUserManagement = true;
+      await leaseTemplateStore.create(leaseTemplate);
+
+      // Create a monitored lease
+      testLease = generateSchemaData(MonitoredLeaseSchema);
+      testLease.originalLeaseTemplateUuid = leaseTemplate.uuid;
+      await leaseStore.create(testLease);
+
+      leaseId = base64EncodeCompositeKey({
+        userEmail: testLease.userEmail,
+        uuid: testLease.uuid,
+      })!;
+    });
+
+    describe("POST /leases/{leaseId}/users", () => {
+      it("should add users to lease", async () => {
+        const response = await fetch(`${apiBaseUrl}/leases/${leaseId}/users`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            "User-Agent": userAgentHeader,
+          },
+          body: JSON.stringify({
+            userEmails: ["newuser@example.com"],
+          }),
+        });
+
+        expect(response.status).toBe(200);
+        const responseBody: any = await response.json();
+        expect(responseBody.status).toBe("success");
+        expect(responseBody.data.results).toHaveLength(1);
+      });
+
+      it("should return 403 when user management is disabled", async () => {
+        // Create lease template with user management disabled
+        const restrictedTemplate = generateSchemaData(LeaseTemplateSchema);
+        restrictedTemplate.allowOwnerUserManagement = false;
+        await leaseTemplateStore.create(restrictedTemplate);
+
+        const restrictedLease = generateSchemaData(MonitoredLeaseSchema);
+        restrictedLease.originalLeaseTemplateUuid = restrictedTemplate.uuid;
+        await leaseStore.create(restrictedLease);
+
+        const restrictedLeaseId = base64EncodeCompositeKey({
+          userEmail: restrictedLease.userEmail,
+          uuid: restrictedLease.uuid,
+        })!;
+
+        const response = await fetch(`${apiBaseUrl}/leases/${restrictedLeaseId}/users`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            "User-Agent": userAgentHeader,
+          },
+          body: JSON.stringify({
+            userEmails: ["newuser@example.com"],
+          }),
+        });
+
+        expect(response.status).toBe(403);
+      });
+    });
+
+    describe("GET /leases/shared", () => {
+      beforeEach(async () => {
+        // Create a lease where test user is added
+        const sharedLease = generateSchemaData(MonitoredLeaseSchema);
+        sharedLease.userEmail = "owner@example.com";
+        sharedLease.users = [
+          {
+            userEmail: testIsbUser.email,
+            addedBy: "owner@example.com",
+            addedDate: new Date().toISOString(),
+            assignmentStatus: { status: "SUCCEEDED" as const, lastUpdated: new Date().toISOString() }
+          }
+        ];
+        await leaseStore.create(sharedLease);
+      });
+
+      it("should return shared leases for user", async () => {
+        const response = await fetch(`${apiBaseUrl}/leases/shared`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "User-Agent": userAgentHeader,
+          },
+        });
+
+        expect(response.status).toBe(200);
+        const responseBody: any = await response.json();
+        expect(responseBody.status).toBe("success");
+        expect(responseBody.data.leases.length).toBeGreaterThan(0);
+      });
+    });
   });
 });

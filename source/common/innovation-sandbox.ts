@@ -30,6 +30,8 @@ import { AccountQuarantinedEvent } from "@amzn/innovation-sandbox-commons/events
 import { CleanAccountRequest } from "@amzn/innovation-sandbox-commons/events/clean-account-request.js";
 import { LeaseApprovedEvent } from "@amzn/innovation-sandbox-commons/events/lease-approved-event.js";
 import { LeaseDeniedEvent } from "@amzn/innovation-sandbox-commons/events/lease-denied-event.js";
+import { UserAddedToLeaseEvent } from "@amzn/innovation-sandbox-commons/events/user-added-to-lease-event.js";
+import { UserRemovedFromLeaseEvent } from "@amzn/innovation-sandbox-commons/events/user-removed-from-lease-event.js";
 import {
   LeaseFrozenEvent,
   LeaseFrozenReason,
@@ -803,6 +805,315 @@ export class InnovationSandbox {
         "No new sandbox accounts are currently available.",
       );
     }
+  }
+
+  @logErrors
+  public static async addUsersToLease(
+    props: {
+      lease: MonitoredLease;
+      userEmails: string[];
+      addedBy: IsbUser;
+    },
+    context: IsbContext<{
+      leaseStore: LeaseStore;
+      idcService: IdcService;
+      isbEventBridgeClient: IsbEventBridgeClient;
+    }>,
+  ) {
+    const { lease, userEmails, addedBy } = props;
+    const { logger, tracer, leaseStore, idcService, isbEventBridgeClient } = context;
+
+    addCorrelationContext(logger, searchableLeaseProperties(lease));
+
+    const existingUsers = lease.users || [];
+    const results: Array<{
+      userEmail: string;
+      success: boolean;
+      message: string;
+      user?: any;
+    }> = [];
+
+    // Filter out duplicates and lease owner
+    const validEmails = userEmails.filter(email => {
+      if (existingUsers.some(user => user.userEmail === email)) {
+        results.push({
+          userEmail: email,
+          success: false,
+          message: "User is already added to this lease.",
+        });
+        return false;
+      }
+      if (lease.userEmail === email) {
+        results.push({
+          userEmail: email,
+          success: false,
+          message: "Cannot add lease owner as additional user.",
+        });
+        return false;
+      }
+      return true;
+    });
+
+    // Grant AWS account access for valid users
+    const assignmentResults = await idcService.assignUserToAccount(
+      lease.awsAccountId,
+      validEmails,
+    );
+
+    const newUsers: any[] = [];
+
+    // Process assignment results
+    for (const assignmentResult of assignmentResults) {
+      const newUser = {
+        userEmail: assignmentResult.userEmail,
+        addedBy: addedBy.email,
+        addedDate: new Date().toISOString(),
+        assignmentStatus: {
+          status: assignmentResult.success ? ('SUCCEEDED' as const) : ('FAILED' as const),
+          message: assignmentResult.message,
+          lastUpdated: new Date().toISOString(),
+        },
+        ...(assignmentResult.permissionSetArn && { permissionSetArn: assignmentResult.permissionSetArn }),
+      };
+
+      if (assignmentResult.success) {
+        newUsers.push(newUser);
+      }
+
+      results.push({
+        userEmail: assignmentResult.userEmail,
+        success: assignmentResult.success,
+        message: assignmentResult.message || (assignmentResult.success ? 'User added successfully' : 'Failed to add user'),
+        user: assignmentResult.success ? {
+          userId: newUser.userEmail,
+          email: newUser.userEmail,
+          displayName: newUser.userEmail.split('@')[0],
+          status: 'ACTIVE',
+          assignedAt: newUser.addedDate,
+          assignedBy: newUser.addedBy,
+        } : undefined,
+      });
+    }
+
+    // Update lease with successfully added users
+    if (newUsers.length > 0) {
+      await leaseStore.update({
+        ...lease,
+        users: [...existingUsers, ...newUsers],
+      });
+
+      // Publish events for each successfully added user
+      for (const user of newUsers) {
+        logger.info(
+          `User ${user.userEmail} added to lease by ${addedBy.email}`,
+          {
+            ...searchableLeaseProperties(lease),
+            addedUserEmail: user.userEmail,
+            addedBy: addedBy.email,
+          }
+        );
+
+        await isbEventBridgeClient.sendIsbEvent(
+          tracer,
+          new UserAddedToLeaseEvent({
+            leaseId: lease.uuid,
+            addedUserEmail: user.userEmail,
+            addedBy: addedBy.email,
+            leaseOwner: lease.userEmail,
+            approvedBy: lease.approvedBy,
+          }),
+        );
+      }
+    }
+
+    return results;
+  }
+
+  @logErrors
+  public static async removeUsersFromLease(
+    props: {
+      lease: MonitoredLease;
+      userEmails: string[];
+      removedBy: IsbUser;
+    },
+    context: IsbContext<{
+      leaseStore: LeaseStore;
+      idcService: IdcService;
+      isbEventBridgeClient: IsbEventBridgeClient;
+    }>,
+  ) {
+    const { lease, userEmails, removedBy } = props;
+    const { logger, tracer, leaseStore, idcService, isbEventBridgeClient } = context;
+
+    addCorrelationContext(logger, searchableLeaseProperties(lease));
+
+    const existingUsers = lease.users || [];
+    const results: Array<{
+      userEmail: string;
+      success: boolean;
+      message: string;
+    }> = [];
+
+    // Validate users to remove
+    const usersToRemove = userEmails.filter(email => {
+      // Cannot remove lease owner
+      if (lease.userEmail === email) {
+        results.push({
+          userEmail: email,
+          success: false,
+          message: "Cannot remove lease owner.",
+        });
+        return false;
+      }
+
+      // Check if user exists in lease
+      if (!existingUsers.some(user => user.userEmail === email)) {
+        results.push({
+          userEmail: email,
+          success: false,
+          message: "User is not currently added to this lease.",
+        });
+        return false;
+      }
+
+      return true;
+    });
+
+    // Only proceed if there are valid users to remove
+    if (usersToRemove.length === 0) {
+      return results;
+    }
+
+    // Revoke AWS account access for valid users
+    const revocationResults = await idcService.removeUserFromAccount(
+      lease.awsAccountId,
+      usersToRemove,
+    );
+
+    // Add results for revocation attempts
+    results.push(...revocationResults.map(result => ({
+      ...result,
+      message: result.message || (result.success ? 'User removed successfully' : 'Failed to remove user'),
+    })));
+
+    const successes = results.filter(r => r.success);
+
+    // Update lease - remove only successfully removed users
+    if (successes.length > 0) {
+      const successfulEmails = successes.map(s => s.userEmail);
+      const updatedUsers = existingUsers.filter(user =>
+        !successfulEmails.includes(user.userEmail)
+      );
+      
+      await leaseStore.update({
+        ...lease,
+        users: updatedUsers,
+      });
+
+      // Publish events for each successfully removed user
+      for (const userEmail of successfulEmails) {
+        logger.info(
+          `User ${userEmail} removed from lease by ${removedBy.email}`,
+          {
+            ...searchableLeaseProperties(lease),
+            removedUserEmail: userEmail,
+            removedBy: removedBy.email,
+          }
+        );
+
+        await isbEventBridgeClient.sendIsbEvent(
+          tracer,
+          new UserRemovedFromLeaseEvent({
+            leaseId: lease.uuid,
+            removedUserEmail: userEmail,
+            removedBy: removedBy.email,
+            leaseOwner: lease.userEmail,
+            approvedBy: lease.approvedBy,
+          }),
+        );
+      }
+    }
+
+    return results;
+  }
+
+  @logErrors
+  public static async getSharedLeases(
+    props: {
+      user: IsbUser;
+      filters: {
+        limit: number;
+        status?: string;
+        includeOwned: boolean;
+      };
+    },
+    context: IsbContext<{
+      leaseStore: LeaseStore;
+    }>,
+  ) {
+    const { user, filters } = props;
+    const { logger, leaseStore } = context;
+
+    logger.info(`Getting shared leases for user ${user.email}`, {
+      userEmail: user.email,
+      filters,
+    });
+
+    // Get shared leases using dedicated store method
+    const sharedLeasesResponse = await leaseStore.findSharedLeases({
+      userEmail: user.email,
+      includeOwned: filters.includeOwned,
+      status: filters.status as LeaseStatus | undefined,
+      pageSize: filters.limit,
+    });
+
+    if (sharedLeasesResponse.error) {
+      throw new Error("Failed to retrieve shared leases.");
+    }
+
+    const filteredLeases = sharedLeasesResponse.result;
+
+    // Filter and transform leases
+    const leases = filteredLeases
+      .filter(lease => {
+        // Additional validation: ensure user is actually in the users array with valid data
+        const userRecord = lease.users?.find(u => u.userEmail === user.email);
+        const isOwner = lease.userEmail === user.email;
+        
+        // Only include if user is in users array AND not the owner
+        return userRecord && !isOwner;
+      })
+      .map(lease => ({
+        leaseId: `${lease.userEmail}:${lease.uuid}`, // Will be base64 encoded in handler
+        uuid: lease.uuid,
+        userEmail: lease.userEmail,
+        status: lease.status,
+        originalLeaseTemplateUuid: lease.originalLeaseTemplateUuid,
+        originalLeaseTemplateName: lease.originalLeaseTemplateName,
+        leaseDurationInHours: lease.leaseDurationInHours,
+        maxSpend: lease.maxSpend,
+        budgetThresholds: lease.budgetThresholds,
+        durationThresholds: lease.durationThresholds,
+        ownerEmail: lease.userEmail,
+        ownerDisplayName: lease.userEmail.split('@')[0],
+        sharedAt: lease.users?.find(u => u.userEmail === user.email)?.addedDate || '',
+        sharedBy: lease.users?.find(u => u.userEmail === user.email)?.addedBy || '',
+        meta: lease.meta,
+        ...(isMonitoredLease(lease) && {
+          awsAccountId: lease.awsAccountId,
+          approvedBy: lease.approvedBy,
+          startDate: lease.startDate,
+          expirationDate: lease.expirationDate,
+          lastCheckedDate: lease.lastCheckedDate,
+          totalCostAccrued: lease.totalCostAccrued,
+        }),
+      }));
+
+    return {
+      leases,
+      totalCount: filteredLeases.length,
+      hasMore: !!sharedLeasesResponse.nextPageIdentifier,
+    };
   }
 }
 

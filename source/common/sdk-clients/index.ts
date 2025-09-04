@@ -57,6 +57,11 @@ export class IsbClients {
           new DynamoDBClient({
             customUserAgent: env.USER_AGENT_EXTRA,
           }),
+          {
+            marshallOptions: {
+              removeUndefinedValues: true,
+            },
+          }
         ),
       );
     }

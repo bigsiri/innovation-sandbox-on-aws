@@ -13,6 +13,80 @@ import {
 } from "@amzn/innovation-sandbox-frontend/helpers/ApiProxy";
 import { ApiPaginatedResult } from "@amzn/innovation-sandbox-frontend/types";
 
+export interface LeaseUser {
+  userEmail: string;
+  addedBy: string;
+  addedDate: string;
+  assignmentStatus?: {
+    status: "SUCCEEDED" | "FAILED";
+    message?: string;
+    lastUpdated: string;
+  };
+  permissionSetArn?: string;
+}
+
+export interface LeaseUsersResponse {
+  users: LeaseUser[];
+  totalCount: number;
+}
+
+export interface AddUsersResponse {
+  successCount: number;
+  failureCount: number;
+  results: Array<{
+    userEmail: string;
+    success: boolean;
+    message?: string;
+  }>;
+}
+
+export interface SearchUsersResponse {
+  users: Array<{
+    email: string;
+    displayName: string;
+    userId: string;
+    roles?: string[];
+  }>;
+  totalCount: number;
+  hasMore: boolean;
+}
+
+export interface SharedLease {
+  leaseId: string;
+  uuid: string;
+  userEmail: string;
+  status: string;
+  originalLeaseTemplateUuid: string;
+  originalLeaseTemplateName: string;
+  leaseDurationInHours: number;
+  maxSpend: number;
+  budgetThresholds: any[];
+  durationThresholds: any[];
+  ownerEmail: string;
+  ownerDisplayName: string;
+  sharedAt: string;
+  sharedBy: string;
+  meta?: {
+    schemaVersion: number;
+    createdTime?: string;
+    lastEditTime?: string;
+  };
+  awsAccountId?: string;
+  approvedBy?: string;
+  startDate?: string;
+  expirationDate?: string;
+  lastCheckedDate?: string;
+  totalCostAccrued?: number;
+  users?: LeaseUser[];
+  comments?: string;
+}
+
+export interface SharedLeasesResponse {
+  leases: SharedLease[];
+  totalCount: number;
+  hasMore: boolean;
+}
+
 export class LeaseService {
   private api: IApiProxy;
 
@@ -76,5 +150,51 @@ export class LeaseService {
 
   async freezeLease(leaseId: string): Promise<void> {
     await this.api.post(`/leases/${leaseId}/freeze`);
+  }
+
+  // User management methods
+  async getLeaseUsers(leaseId: string): Promise<LeaseUsersResponse> {
+    const lease = await this.api.get<MonitoredLeaseWithLeaseId>(`/leases/${leaseId}`);
+    return {
+      users: lease.users || [],
+      totalCount: lease.users?.length || 0,
+    };
+  }
+
+  async addUsersToLease(leaseId: string, userEmails: string[]): Promise<AddUsersResponse> {
+    return await this.api.post<AddUsersResponse>(`/leases/${leaseId}/users`, { userEmails });
+  }
+
+  async removeUserFromLease(leaseId: string, userEmail: string): Promise<void> {
+    await this.api.delete(`/leases/${leaseId}/users`, { userEmails: [userEmail] });
+  }
+
+  async searchUsers(query: string, limit: number = 10): Promise<SearchUsersResponse> {
+    const params = new URLSearchParams({
+      q: query,
+      limit: limit.toString(),
+    });
+    return await this.api.get<SearchUsersResponse>(`/users/search?${params}`);
+  }
+
+  async getSharedLeases(options?: {
+    limit?: number;
+    status?: string;
+    includeOwned?: boolean;
+  }): Promise<SharedLeasesResponse> {
+    const params = new URLSearchParams();
+    
+    if (options?.limit) {
+      params.append('limit', options.limit.toString());
+    }
+    if (options?.status) {
+      params.append('status', options.status);
+    }
+    if (options?.includeOwned !== undefined) {
+      params.append('includeOwned', options.includeOwned.toString());
+    }
+
+    const response = await this.api.get<SharedLeasesResponse>(`/leases/shared?${params}`);
+    return response;
   }
 }

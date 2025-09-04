@@ -21,10 +21,12 @@ import {
   ValidationException,
 } from "@amzn/innovation-sandbox-commons/data/global-config/global-config-utils.js";
 import {
+  AllLeaseStatusSchema,
   isMonitoredLease,
   isPendingLease,
   Lease,
   LeaseKeySchema,
+  MonitoredLease,
   MonitoredLeaseSchema,
   MonitoredLeaseStatusSchema,
   PendingLeaseSchema,
@@ -115,6 +117,30 @@ const routes: Route<IsbApiEvent, APIGatewayProxyResult>[] = [
     path: "/leases/{leaseId}/terminate",
     method: "POST",
     handler: middyFactory().handler(terminateLeaseHandler),
+  },
+  {
+    path: "/leases/{leaseId}/users",
+    method: "GET",
+    handler: middyFactory().handler(getLeaseUsersHandler),
+  },
+  {
+    path: "/leases/{leaseId}/users",
+    method: "POST",
+    handler: middyFactory()
+      .use(httpJsonBodyParser())
+      .handler(addUsersToLeaseHandler),
+  },
+  {
+    path: "/leases/{leaseId}/users",
+    method: "DELETE",
+    handler: middyFactory()
+      .use(httpJsonBodyParser())
+      .handler(removeUsersFromLeaseHandler),
+  },
+  {
+    path: "/leases/shared",
+    method: "GET",
+    handler: middyFactory().handler(getSharedLeasesHandler),
   },
 ];
 
@@ -855,4 +881,331 @@ function parseLeaseCompositeKeyFromPathParameters(
     throw createHttpJSendValidationError(leaseKeySchemaParseResponse.error);
 
   return leaseKeySchemaParseResponse.data;
+}
+
+/**
+ * GET /leases/{leaseId}/users
+ * Get all users assigned to a lease
+ */
+async function getLeaseUsersHandler(
+  event: IsbApiEvent,
+  context: ContextWithConfig & IsbApiContext<LeaseLambdaEnvironment>,
+): Promise<APIGatewayProxyResult> {
+  const lease = await validateLeaseAccess(event, context, 'view');
+
+  const users = (lease.users || []).map(leaseUser => ({
+    userId: leaseUser.userEmail,
+    email: leaseUser.userEmail,
+    displayName: leaseUser.userEmail.split('@')[0],
+    status: leaseUser.assignmentStatus?.status === 'SUCCEEDED' ? 'ACTIVE' : 'FAILED',
+    assignedAt: leaseUser.addedDate,
+    assignedBy: leaseUser.addedBy,
+  }));
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      status: "success",
+      data: { users, totalCount: users.length },
+    }),
+    headers: { "Content-Type": "application/json" },
+  };
+}
+/**
+ * Common helper to validate lease access and return lease with users
+ */
+async function validateLeaseAccess(
+  event: IsbApiEvent,
+  context: ContextWithConfig & IsbApiContext<LeaseLambdaEnvironment>,
+  operation: 'add' | 'remove' | 'view'
+): Promise<Lease> {
+  const leaseCompositeKey = parseLeaseCompositeKeyFromPathParameters(
+    event.pathParameters,
+  );
+
+  const leaseStore = IsbServices.leaseStore(context.env);
+  const leaseResponse = await leaseStore.get(leaseCompositeKey);
+  
+  if (leaseResponse.error) {
+    throw createHttpJSendError({
+      statusCode: 404,
+      data: { errors: [{ message: "Lease not found." }] },
+    });
+  }
+
+  const lease = leaseResponse.result!;
+  
+  // Check authorization based on operation
+  const isOwner = context.user.email === lease.userEmail;
+  const hasAdminAccess = !isUserNotAllowedByAll(context.user);
+  
+  if (operation === 'view') {
+    // For viewing: owner, shared user, or admin can access
+    const isSharedUser = lease.users?.some(user => user.userEmail === context.user.email);
+    if (!isOwner && !isSharedUser && !hasAdminAccess) {
+      throw createHttpJSendError({
+        statusCode: 403,
+        data: { errors: [{ message: "Access denied." }] },
+      });
+    }
+  } else {
+    // For add/remove: basic access check (detailed permissions checked separately)
+    if (!isOwner && !hasAdminAccess) {
+      throw createHttpJSendError({
+        statusCode: 403,
+        data: { errors: [{ message: "Access denied." }] },
+      });
+    }
+  }
+
+  // For adding/removing users, ensure lease is in active state (MonitoredLease)
+  if ((operation === 'add' || operation === 'remove') && !isMonitoredLease(lease)) {
+    throw createHttpJSendError({
+      statusCode: 400,
+      data: { errors: [{ message: `Cannot ${operation} users to inactive lease.` }] },
+    });
+  }
+
+  return lease;
+}
+
+/**
+ * Validate if user has permission to manage users on a lease based on template settings
+ */
+async function validateUserManagementPermission(
+  user: { email: string; roles?: string[] },
+  lease: Lease,
+  context: ContextWithConfig & IsbApiContext<LeaseLambdaEnvironment>
+): Promise<void> {
+  // Admins and Managers can always manage users
+  const isManagerOrAdmin = user.roles?.includes("Admin") || user.roles?.includes("Manager");
+  if (isManagerOrAdmin) {
+    return; // Permission granted
+  }
+
+  // Check if user is the lease owner
+  const isOwner = user.email === lease.userEmail;
+  if (!isOwner) {
+    throw createHttpJSendError({
+      statusCode: 403,
+      data: { errors: [{ message: "Only lease owner, managers, or admins can manage users." }] },
+    });
+  }
+
+  // For lease owners, check if the lease template allows user management
+  try {
+    const leaseTemplateStore = IsbServices.leaseTemplateStore(context.env);
+    const templateUuid = (lease.originalLeaseTemplateUuid as any)?.uuid || lease.originalLeaseTemplateUuid;
+    const templateResponse = await leaseTemplateStore.get(templateUuid);
+    
+    if (templateResponse.error) {
+      // If template not found, default to DISABLING user management for security
+      const leaseUuid = (lease.uuid as any)?.uuid || lease.uuid;
+      logger.warn(`Lease template ${templateUuid} not found, defaulting to disable user management`, {
+        leaseId: leaseUuid,
+        templateUuid: templateUuid,
+      });
+      throw createHttpJSendError({
+        statusCode: 403,
+        data: { errors: [{ message: "User management is not enabled for this lease template." }] },
+      });
+    }
+
+    const leaseTemplate = templateResponse.result!;
+    
+    // Check if template allows owner user management (default to false for security)
+    if (leaseTemplate.allowOwnerUserManagement !== true) {
+      throw createHttpJSendError({
+        statusCode: 403,
+        data: { errors: [{ message: "User management is disabled for this lease template." }] },
+      });
+    }
+  } catch (error) {
+    // If there's any error accessing the template, default to DENYING for security
+    const leaseUuid = (lease.uuid as any)?.uuid || lease.uuid;
+    const templateUuid = (lease.originalLeaseTemplateUuid as any)?.uuid || lease.originalLeaseTemplateUuid;
+    logger.error(`Error validating lease template permissions, defaulting to deny`, {
+      leaseId: leaseUuid,
+      templateUuid: templateUuid,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+    
+    // Default to denying user management for security
+    throw createHttpJSendError({
+      statusCode: 403,
+      data: { errors: [{ message: "Unable to validate user management permissions." }] },
+    });
+  }
+}
+
+/**
+ * DELETE /leases/{leaseId}/users
+ * Remove users from a lease
+ */
+async function removeUsersFromLeaseHandler(
+  event: IsbApiEvent,
+  context: ContextWithConfig & IsbApiContext<LeaseLambdaEnvironment>,
+): Promise<APIGatewayProxyResult> {
+  const RequestBodySchema = z.object({
+    userEmails: z.array(z.string().email()).min(1).max(parseInt(context.env.MAX_BULK_USER_ASSIGNMENT)),
+  });
+  
+  const requestBody = RequestBodySchema.parse(event.body);
+  const userEmails = requestBody.userEmails;
+  const lease = await validateLeaseAccess(event, context, 'remove');
+  
+  // Validate user management permissions based on template settings
+  await validateUserManagementPermission(context.user, lease, context);
+  
+  // Type assertion safe because validateLeaseAccess ensures MonitoredLease for 'remove' operation
+  const monitoredLease = lease as MonitoredLease;
+
+  const isbContext = {
+    logger,
+    tracer,
+    leaseStore: IsbServices.leaseStore(context.env),
+    idcService: IsbServices.idcService(
+      context.env,
+      fromTemporaryIsbIdcCredentials(context.env),
+    ),
+    isbEventBridgeClient: IsbServices.isbEventBridge(context.env),
+  };
+
+  const results = await InnovationSandbox.removeUsersFromLease(
+    {
+      lease: monitoredLease,
+      userEmails,
+      removedBy: context.user,
+    },
+    isbContext,
+  );
+
+  const successCount = results.filter(r => r.success).length;
+  const failureCount = results.length - successCount;
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      status: "success",
+      data: {
+        summary: {
+          requested: userEmails.length,
+          successful: successCount,
+          failed: failureCount,
+        },
+        results,
+      },
+    }),
+    headers: { "Content-Type": "application/json" },
+  };
+}
+
+/**
+ * GET /leases/shared
+ * Get leases shared with the current user
+ */
+async function getSharedLeasesHandler(
+  event: IsbApiEvent,
+  context: ContextWithConfig & IsbApiContext<LeaseLambdaEnvironment>,
+): Promise<APIGatewayProxyResult> {
+  const QueryParamsSchema = z.object({
+    limit: z.coerce.number().int().min(1).max(100).default(20),
+    status: AllLeaseStatusSchema.optional(),
+    includeOwned: z.coerce.boolean().default(false),
+  });
+
+  const queryParams = QueryParamsSchema.parse(event.queryStringParameters || {});
+
+  const isbContext = {
+    logger,
+    tracer,
+    leaseStore: IsbServices.leaseStore(context.env),
+  };
+
+  const result = await InnovationSandbox.getSharedLeases(
+    {
+      user: context.user,
+      filters: queryParams,
+    },
+    isbContext,
+  );
+
+  // Encode leaseIds for API response
+  const response = {
+    ...result,
+    leases: result.leases.map(lease => ({
+      ...lease,
+      leaseId: base64EncodeCompositeKey({ userEmail: lease.userEmail, uuid: lease.uuid }),
+    })),
+  };
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      status: "success",
+      data: response,
+    }),
+    headers: { "Content-Type": "application/json" },
+  };
+}
+/**
+ * POST /leases/{leaseId}/users
+ * Add users to a lease
+ */
+async function addUsersToLeaseHandler(
+  event: IsbApiEvent,
+  context: ContextWithConfig & IsbApiContext<LeaseLambdaEnvironment>,
+): Promise<APIGatewayProxyResult> {
+  const RequestBodySchema = z.object({
+    userEmails: z.array(z.string().email()).min(1).max(parseInt(context.env.MAX_BULK_USER_ASSIGNMENT)),
+  });
+  
+  const requestBody = RequestBodySchema.parse(event.body);
+  const userEmails = requestBody.userEmails;
+  const lease = await validateLeaseAccess(event, context, 'add');
+  
+  // Validate user management permissions based on template settings
+  await validateUserManagementPermission(context.user, lease, context);
+  
+  // Type assertion safe because validateLeaseAccess ensures MonitoredLease for 'add' operation
+  const monitoredLease = lease as MonitoredLease;
+
+  const isbContext = {
+    logger,
+    tracer,
+    leaseStore: IsbServices.leaseStore(context.env),
+    idcService: IsbServices.idcService(
+      context.env,
+      fromTemporaryIsbIdcCredentials(context.env),
+    ),
+    isbEventBridgeClient: IsbServices.isbEventBridge(context.env),
+  };
+
+  const results = await InnovationSandbox.addUsersToLease(
+    {
+      lease: monitoredLease,
+      userEmails,
+      addedBy: context.user,
+    },
+    isbContext,
+  );
+
+  const successCount = results.filter(r => r.success).length;
+  const failureCount = results.length - successCount;
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      status: "success",
+      data: {
+        results,
+        summary: {
+          total: results.length,
+          successful: successCount,
+          failed: failureCount,
+        },
+      },
+    }),
+    headers: { "Content-Type": "application/json" },
+  };
 }
