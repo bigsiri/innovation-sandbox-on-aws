@@ -80,6 +80,8 @@ export class LeasesApi {
             props.namespace,
             props.orgMgtAccountId,
           ),
+          MAX_USERS_PER_LEASE: '20',
+          MAX_BULK_USER_ASSIGNMENT: '20',
         },
         logGroup: restApi.logGroup,
         envSchema: LeaseLambdaEnvironmentSchema,
@@ -123,9 +125,19 @@ export class LeasesApi {
     leasesResource.addMethod("GET");
     leasesResource.addMethod("POST");
 
+    // Add shared leases endpoint
+    const sharedResource = leasesResource.addResource("shared");
+    sharedResource.addMethod("GET");
+
     const leaseIdResource = leasesResource.addResource("{leaseId}");
     leaseIdResource.addMethod("GET");
     leaseIdResource.addMethod("PATCH");
+
+    // Add users management endpoints
+    const usersResource = leaseIdResource.addResource("users");
+    usersResource.addMethod("GET");
+    usersResource.addMethod("POST");
+    usersResource.addMethod("DELETE");
 
     const leaseReviewResource = leaseIdResource.addResource("review");
     leaseReviewResource.addMethod("POST");

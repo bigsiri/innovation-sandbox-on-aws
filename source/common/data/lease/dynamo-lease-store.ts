@@ -235,6 +235,60 @@ export class DynamoLeaseStore extends LeaseStore {
     };
   }
 
+  public override async findSharedLeases(props: {
+    userEmail: EmailAddress;
+    includeOwned?: boolean;
+    status?: LeaseStatus;
+    pageSize?: number;
+    pageIdentifier?: string;
+  }): Promise<PaginatedQueryResult<Lease>> {
+    const { userEmail, includeOwned = false, status, pageSize = 50, pageIdentifier } = props;
+
+    // Build filter expression for DynamoDB scan
+    let filterExpression = "contains(#users, :userEmailPattern)";
+    const expressionAttributeNames: Record<string, string> = {
+      "#users": "users",
+    };
+    const expressionAttributeValues: Record<string, any> = {
+      ":userEmailPattern": userEmail,
+    };
+
+    // Add owner condition if includeOwned is true
+    if (includeOwned) {
+      filterExpression = `(${filterExpression} OR #userEmail = :userEmail)`;
+      expressionAttributeNames["#userEmail"] = "userEmail";
+      expressionAttributeValues[":userEmail"] = userEmail;
+    } else {
+      // Exclude owned leases
+      filterExpression = `(${filterExpression} AND #userEmail <> :userEmail)`;
+      expressionAttributeNames["#userEmail"] = "userEmail";
+      expressionAttributeValues[":userEmail"] = userEmail;
+    }
+
+    // Add status filter if provided
+    if (status) {
+      filterExpression = `(${filterExpression}) AND #status = :status`;
+      expressionAttributeNames["#status"] = "status";
+      expressionAttributeValues[":status"] = status;
+    }
+
+    const result = await this.ddbClient.send(
+      new ScanCommand({
+        TableName: this.tableName,
+        FilterExpression: filterExpression,
+        ExpressionAttributeNames: expressionAttributeNames,
+        ExpressionAttributeValues: expressionAttributeValues,
+        ExclusiveStartKey: base64DecodeCompositeKey(pageIdentifier),
+        Limit: pageSize,
+      }),
+    );
+
+    return {
+      ...parseResults(result.Items, LeaseSchema),
+      nextPageIdentifier: base64EncodeCompositeKey(result.LastEvaluatedKey),
+    };
+  }
+
   public override async findByUserEmail(props: {
     userEmail: EmailAddress;
     pageIdentifier?: string;

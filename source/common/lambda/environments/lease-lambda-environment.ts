@@ -18,6 +18,8 @@ export const LeaseLambdaEnvironmentSchema = BaseLambdaEnvironmentSchema.extend({
   ISB_EVENT_BUS: z.string(),
   ACCOUNT_TABLE_NAME: z.string(),
   AWS_APPCONFIG_EXTENSION_PREFETCH_LIST: z.string(),
+  MAX_USERS_PER_LEASE: z.string().default("20"),
+  MAX_BULK_USER_ASSIGNMENT: z.string().default("20"),
 });
 
 export type LeaseLambdaEnvironment = z.infer<

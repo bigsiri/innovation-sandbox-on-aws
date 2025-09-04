@@ -21,10 +21,12 @@ import {
   ValidationException,
 } from "@amzn/innovation-sandbox-commons/data/global-config/global-config-utils.js";
 import {
+  AllLeaseStatusSchema,
   isMonitoredLease,
   isPendingLease,
   Lease,
   LeaseKeySchema,
+  MonitoredLease,
   MonitoredLeaseSchema,
   MonitoredLeaseStatusSchema,
   PendingLeaseSchema,
@@ -115,6 +117,30 @@ const routes: Route<IsbApiEvent, APIGatewayProxyResult>[] = [
     path: "/leases/{leaseId}/terminate",
     method: "POST",
     handler: middyFactory().handler(terminateLeaseHandler),
+  },
+  {
+    path: "/leases/{leaseId}/users",
+    method: "GET",
+    handler: middyFactory().handler(getLeaseUsersHandler),
+  },
+  {
+    path: "/leases/{leaseId}/users",
+    method: "POST",
+    handler: middyFactory()
+      .use(httpJsonBodyParser())
+      .handler(addUsersToLeaseHandler),
+  },
+  {
+    path: "/leases/{leaseId}/users",
+    method: "DELETE",
+    handler: middyFactory()
+      .use(httpJsonBodyParser())
+      .handler(removeUsersFromLeaseHandler),
+  },
+  {
+    path: "/leases/shared",
+    method: "GET",
+    handler: middyFactory().handler(getSharedLeasesHandler),
   },
 ];
 
@@ -855,4 +881,416 @@ function parseLeaseCompositeKeyFromPathParameters(
     throw createHttpJSendValidationError(leaseKeySchemaParseResponse.error);
 
   return leaseKeySchemaParseResponse.data;
+}
+
+/**
+ * GET /leases/{leaseId}/users
+ * Get all users assigned to a lease
+ */
+async function getLeaseUsersHandler(
+  event: IsbApiEvent,
+  context: ContextWithConfig & IsbApiContext<LeaseLambdaEnvironment>,
+): Promise<APIGatewayProxyResult> {
+  const lease = await validateLeaseAccess(event, context, 'view');
+
+  const users = (lease.users || []).map(leaseUser => ({
+    userId: leaseUser.userEmail,
+    email: leaseUser.userEmail,
+    displayName: leaseUser.userEmail.split('@')[0],
+    status: leaseUser.assignmentStatus?.status === 'SUCCEEDED' ? 'ACTIVE' : 'FAILED',
+    assignedAt: leaseUser.addedDate,
+    assignedBy: leaseUser.addedBy,
+  }));
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      status: "success",
+      data: { users, totalCount: users.length },
+    }),
+    headers: { "Content-Type": "application/json" },
+  };
+}
+/**
+ * Common helper to validate lease access and return lease with users
+ */
+async function validateLeaseAccess(
+  event: IsbApiEvent,
+  context: ContextWithConfig & IsbApiContext<LeaseLambdaEnvironment>,
+  operation: 'add' | 'remove' | 'view'
+): Promise<Lease> {
+  const leaseCompositeKey = parseLeaseCompositeKeyFromPathParameters(
+    event.pathParameters,
+  );
+
+  const leaseStore = IsbServices.leaseStore(context.env);
+  const leaseResponse = await leaseStore.get(leaseCompositeKey);
+  
+  if (leaseResponse.error) {
+    throw createHttpJSendError({
+      statusCode: 404,
+      data: { errors: [{ message: "Lease not found." }] },
+    });
+  }
+
+  const lease = leaseResponse.result!;
+  
+  // Check authorization based on operation
+  const isOwner = context.user.email === lease.userEmail;
+  const hasAdminAccess = !isUserNotAllowedByAll(context.user);
+  
+  if (operation === 'view') {
+    // For viewing: owner, shared user, or admin can access
+    const isSharedUser = lease.users?.some(user => user.userEmail === context.user.email);
+    if (!isOwner && !isSharedUser && !hasAdminAccess) {
+      throw createHttpJSendError({
+        statusCode: 403,
+        data: { errors: [{ message: "Access denied." }] },
+      });
+    }
+  } else {
+    // For add/remove: only owner or admin can manage users
+    if (!isOwner && !hasAdminAccess) {
+      throw createHttpJSendError({
+        statusCode: 403,
+        data: { errors: [{ message: `Only lease owner or admin can ${operation} users.` }] },
+      });
+    }
+  }
+
+  // For adding/removing users, ensure lease is in active state (MonitoredLease)
+  if ((operation === 'add' || operation === 'remove') && !isMonitoredLease(lease)) {
+    throw createHttpJSendError({
+      statusCode: 400,
+      data: { errors: [{ message: `Cannot ${operation} users to inactive lease.` }] },
+    });
+  }
+
+  return lease;
+}
+
+/**
+ * DELETE /leases/{leaseId}/users
+ * Remove users from a lease
+ */
+async function removeUsersFromLeaseHandler(
+  event: IsbApiEvent,
+  context: ContextWithConfig & IsbApiContext<LeaseLambdaEnvironment>,
+): Promise<APIGatewayProxyResult> {
+  const RequestBodySchema = z.object({
+    userEmails: z.array(z.string().email()).min(1).max(parseInt(context.env.MAX_BULK_USER_ASSIGNMENT)),
+  });
+  
+  const requestBody = RequestBodySchema.parse(event.body);
+  const userEmails = requestBody.userEmails;
+  const lease = await validateLeaseAccess(event, context, 'remove');
+  
+  // Type assertion safe because validateLeaseAccess ensures MonitoredLease for 'remove' operation
+  const monitoredLease = lease as MonitoredLease;
+  const existingUsers = lease.users || [];
+
+  const leaseStore = IsbServices.leaseStore(context.env);
+
+  // Validate users to remove
+  const usersToRemove = [];
+  const failures = [];
+
+  for (const userEmail of userEmails) {
+    // Cannot remove lease owner
+    if (monitoredLease.userEmail === userEmail) {
+      failures.push({
+        userEmail,
+        success: false,
+        message: "Cannot remove lease owner"
+      });
+      continue;
+    }
+
+    // Find user in lease
+    const userToRemove = existingUsers.find(user => user.userEmail === userEmail);
+    if (!userToRemove) {
+      failures.push({
+        userEmail,
+        success: false,
+        message: "User not found in lease"
+      });
+      continue;
+    }
+
+    usersToRemove.push(userToRemove);
+  }
+
+  // If no valid users to remove, return errors
+  if (usersToRemove.length === 0) {
+    throw createHttpJSendError({
+      statusCode: 400,
+      data: { errors: failures.map(f => ({ message: f.message })) },
+    });
+  }
+
+  // Revoke AWS account access for all users
+  const idcService = IsbServices.idcService(
+    context.env,
+    fromTemporaryIsbIdcCredentials(context.env),
+  );
+  
+  const userEmailsToRemove = usersToRemove.map(user => user.userEmail);
+  const permissionSetsToRemove = usersToRemove
+    .map(user => user.permissionSetArn)
+    .filter(arn => arn !== undefined);
+
+  const removalResults = await idcService.removeUserFromAccount(
+    monitoredLease.awsAccountId,
+    userEmailsToRemove,
+    permissionSetsToRemove.length > 0 ? permissionSetsToRemove : undefined
+  );
+
+  // Process results and update lease
+  const successes: { userEmail: string | undefined; success: boolean }[] = [];
+
+  removalResults.forEach((result, index) => {
+    const userEmail = userEmailsToRemove[index];
+    if (result.success) {
+      successes.push({ userEmail, success: true });
+    } else {
+      failures.push({
+        userEmail,
+        success: false,
+        message: result.message || "Failed to remove user from AWS account"
+      });
+    }
+  });
+
+  // Update lease - remove only successfully removed users
+  if (successes.length > 0) {
+    const successfulEmails = successes.map(s => s.userEmail);
+    const updatedUsers = existingUsers.filter(user => 
+      !successfulEmails.includes(user.userEmail)
+    );
+    const updatedLease = { ...monitoredLease, users: updatedUsers };
+
+    // Save updated lease to database
+    await leaseStore.update(updatedLease);
+  }
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      status: "success",
+      data: {
+        summary: {
+          requested: userEmails.length,
+          successful: successes.length,
+          failed: failures.length,
+        },
+        results: [...successes, ...failures],
+      },
+    }),
+    headers: { "Content-Type": "application/json" },
+  };
+}
+
+/**
+ * GET /leases/shared
+ * Get leases shared with the current user
+ */
+async function getSharedLeasesHandler(
+  event: IsbApiEvent,
+  context: ContextWithConfig & IsbApiContext<LeaseLambdaEnvironment>,
+): Promise<APIGatewayProxyResult> {
+  const QueryParamsSchema = z.object({
+    limit: z.coerce.number().int().min(1).max(100).default(20),
+    status: AllLeaseStatusSchema.optional(),
+    includeOwned: z.coerce.boolean().default(false),
+  });
+
+  const queryParams = QueryParamsSchema.parse(event.queryStringParameters || {});
+
+  const leaseStore = IsbServices.leaseStore(context.env);
+  
+  // Get shared leases using dedicated store method
+  const sharedLeasesResponse = await leaseStore.findSharedLeases({
+    userEmail: context.user.email,
+    includeOwned: queryParams.includeOwned,
+    status: queryParams.status,
+    pageSize: queryParams.limit,
+  });
+  
+  if (sharedLeasesResponse.error) {
+    throw createHttpJSendError({
+      statusCode: 500,
+      data: { errors: [{ message: "Failed to retrieve shared leases." }] },
+    });
+  }
+
+  const filteredLeases = sharedLeasesResponse.result;
+
+  const response = {
+    leases: filteredLeases.map(lease => ({
+      leaseId: base64EncodeCompositeKey({ userEmail: lease.userEmail, uuid: lease.uuid }),
+      uuid: lease.uuid,
+      userEmail: lease.userEmail,
+      status: lease.status,
+      originalLeaseTemplateUuid: lease.originalLeaseTemplateUuid,
+      originalLeaseTemplateName: lease.originalLeaseTemplateName,
+      leaseDurationInHours: lease.leaseDurationInHours,
+      maxSpend: lease.maxSpend,
+      budgetThresholds: lease.budgetThresholds,
+      durationThresholds: lease.durationThresholds,
+      ownerEmail: lease.userEmail,
+      ownerDisplayName: lease.userEmail.split('@')[0],
+      sharedAt: lease.users?.find(u => u.userEmail === context.user.email)?.addedDate || '',
+      sharedBy: lease.users?.find(u => u.userEmail === context.user.email)?.addedBy || '',
+      meta: lease.meta,
+      ...(isMonitoredLease(lease) && {
+        awsAccountId: lease.awsAccountId,
+        approvedBy: lease.approvedBy,
+        startDate: lease.startDate,
+        expirationDate: lease.expirationDate,
+        lastCheckedDate: lease.lastCheckedDate,
+        totalCostAccrued: lease.totalCostAccrued,
+      }),
+    })),
+    totalCount: filteredLeases.length,
+    hasMore: !!sharedLeasesResponse.nextPageIdentifier,
+  };
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      status: "success",
+      data: response,
+    }),
+    headers: { "Content-Type": "application/json" },
+  };
+}
+/**
+ * POST /leases/{leaseId}/users
+ * Add users to a lease
+ */
+async function addUsersToLeaseHandler(
+  event: IsbApiEvent,
+  context: ContextWithConfig & IsbApiContext<LeaseLambdaEnvironment>,
+): Promise<APIGatewayProxyResult> {
+  const RequestBodySchema = z.object({
+    userEmails: z.array(z.string().email()).min(1).max(parseInt(context.env.MAX_BULK_USER_ASSIGNMENT)),
+  });
+  
+  const requestBody = RequestBodySchema.parse(event.body);
+  const userEmails = requestBody.userEmails;
+  const lease = await validateLeaseAccess(event, context, 'add');
+  
+  // Type assertion safe because validateLeaseAccess ensures MonitoredLease for 'add' operation
+  const monitoredLease = lease as MonitoredLease;
+  const existingUsers = lease.users || [];
+
+  const leaseStore = IsbServices.leaseStore(context.env);
+  const idcService = IsbServices.idcService(
+    context.env,
+    fromTemporaryIsbIdcCredentials(context.env),
+  );
+
+  // Check if adding all users would exceed the limit
+  const potentialNewUsers = userEmails.filter(email => 
+    !existingUsers.some(user => user.userEmail === email) && 
+    email !== monitoredLease.userEmail
+  );
+  
+  if (existingUsers.length + potentialNewUsers.length > parseInt(context.env.MAX_USERS_PER_LEASE)) {
+    throw createHttpJSendError({
+      statusCode: 400,
+      data: { errors: [{ message: `Adding ${potentialNewUsers.length} users would exceed maximum ${context.env.MAX_USERS_PER_LEASE} users per lease.` }] },
+    });
+  }
+
+  // Process all users in bulk
+  const assignmentResults = await idcService.assignUserToAccount(
+    monitoredLease.awsAccountId,
+    potentialNewUsers
+  );
+
+  // Process results
+  const results = [];
+  const newUsers = [];
+
+  // Handle existing users first
+  for (const userEmail of userEmails) {
+    if (existingUsers.some(user => user.userEmail === userEmail)) {
+      results.push({
+        userEmail,
+        success: false,
+        message: "User already assigned to this lease.",
+      });
+      continue;
+    }
+
+    if (lease.userEmail === userEmail) {
+      results.push({
+        userEmail,
+        success: false,
+        message: "Cannot add lease owner as additional user.",
+      });
+    }
+  }
+
+  // Handle assignment results
+  for (const assignmentResult of assignmentResults) {
+    const newUser = {
+      userEmail: assignmentResult.userEmail,
+      addedBy: context.user.email,
+      addedDate: new Date().toISOString(),
+      assignmentStatus: {
+        status: assignmentResult.success ? ('SUCCEEDED' as const) : ('FAILED' as const),
+        message: assignmentResult.message,
+        lastUpdated: new Date().toISOString(),
+      },
+      ...(assignmentResult.permissionSetArn && { permissionSetArn: assignmentResult.permissionSetArn }),
+    };
+
+    if (assignmentResult.success) {
+      newUsers.push(newUser);
+    }
+
+    results.push({
+      userEmail: assignmentResult.userEmail,
+      success: assignmentResult.success,
+      message: assignmentResult.message,
+      user: assignmentResult.success ? {
+        userId: newUser.userEmail,
+        email: newUser.userEmail,
+        displayName: newUser.userEmail.split('@')[0],
+        status: 'ACTIVE',
+        assignedAt: newUser.addedDate,
+        assignedBy: newUser.addedBy,
+      } : undefined,
+    });
+  }
+
+  // Update lease with successfully added users
+  if (newUsers.length > 0) {
+    const updatedLease = {
+      ...monitoredLease,
+      users: [...existingUsers, ...newUsers],
+    };
+    await leaseStore.update(updatedLease);
+  }
+
+  const successCount = results.filter(r => r.success).length;
+  const failureCount = results.length - successCount;
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      status: "success",
+      data: {
+        results,
+        summary: {
+          total: results.length,
+          successful: successCount,
+          failed: failureCount,
+        },
+      },
+    }),
+    headers: { "Content-Type": "application/json" },
+  };
 }
