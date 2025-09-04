@@ -69,4 +69,12 @@ export abstract class LeaseStore {
     pageIdentifier?: string;
     pageSize?: number;
   }): Promise<PaginatedQueryResult<Lease>>;
+
+  abstract findSharedLeases(props: {
+    userEmail: EmailAddress;
+    includeOwned?: boolean;
+    status?: LeaseStatus;
+    pageSize?: number;
+    pageIdentifier?: string;
+  }): Promise<PaginatedQueryResult<Lease>>;
 }

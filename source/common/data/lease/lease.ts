@@ -11,6 +11,7 @@ import {
   LeaseTemplateSchema,
 } from "@amzn/innovation-sandbox-commons/data/lease-template/lease-template.js";
 import { ItemWithMetadataSchema } from "@amzn/innovation-sandbox-commons/data/metadata.js";
+import { LeaseUserSchema } from "@amzn/innovation-sandbox-commons/data/lease/lease-user.js";
 
 // IMPORTANT -- this value must be updated whenever the schema changes.
 export const LeaseSchemaVersion = 1;
@@ -56,6 +57,7 @@ export const PendingLeaseSchema = LeaseKeySchema.extend({
   originalLeaseTemplateName: LeaseTemplateSchema.shape.name,
   leaseDurationInHours: DurationConfigSchema.shape.leaseDurationInHours,
   comments: FreeTextSchema.optional(),
+  users: z.array(LeaseUserSchema).optional(),
 }).merge(
   LeaseTemplateSchema.pick({
     maxSpend: true,

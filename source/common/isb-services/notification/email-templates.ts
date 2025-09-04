@@ -10,6 +10,8 @@ import { LeaseDurationThresholdBreachedAlert } from "@amzn/innovation-sandbox-co
 import { LeaseFrozenEvent } from "@amzn/innovation-sandbox-commons/events/lease-frozen-event.js";
 import { LeaseRequestedEvent } from "@amzn/innovation-sandbox-commons/events/lease-requested-event.js";
 import { LeaseTerminatedEvent } from "@amzn/innovation-sandbox-commons/events/lease-terminated-event.js";
+import { UserAddedToLeaseEvent } from "@amzn/innovation-sandbox-commons/events/user-added-to-lease-event.js";
+import { UserRemovedFromLeaseEvent } from "@amzn/innovation-sandbox-commons/events/user-removed-from-lease-event.js";
 import { SynthesizedEmail } from "@amzn/innovation-sandbox-commons/isb-services/notification/email-service.js";
 
 // either to or bcc, but not both
@@ -486,5 +488,131 @@ export namespace EmailTemplates {
     `,
       };
     }
+  }
+
+  export function UserAddedToLease(
+    event: UserAddedToLeaseEvent,
+    context: EmailTemplatesContext,
+  ): SynthesizedEmail {
+    return {
+      to: context.destination.to!,
+      subject: "Innovation Sandbox: You've been added to a lease",
+      htmlBody: `
+        <h1>You've been added to a lease</h1>
+        <p>You have been added to lease <strong>${event.Detail.leaseId}</strong> by ${event.Detail.addedBy}.</p>
+        <p>You can now access this lease at: <a href="${context.webAppUrl}/leases/${event.Detail.leaseOwner}/${event.Detail.leaseId}">${context.webAppUrl}/leases</a></p>
+      `,
+      textBody: `
+You've been added to a lease
+
+You have been added to lease ${event.Detail.leaseId} by ${event.Detail.addedBy}.
+You can now access this lease at: ${context.webAppUrl}/leases/${event.Detail.leaseOwner}/${event.Detail.leaseId}
+      `,
+    };
+  }
+
+  export function UserRemovedFromLease(
+    event: UserRemovedFromLeaseEvent,
+    context: EmailTemplatesContext,
+  ): SynthesizedEmail {
+    return {
+      to: context.destination.to!,
+      subject: "Innovation Sandbox: You've been removed from a lease",
+      htmlBody: `
+        <h1>You've been removed from a lease</h1>
+        <p>You have been removed from lease <strong>${event.Detail.leaseId}</strong> by ${event.Detail.removedBy}.</p>
+        <p>You no longer have access to this lease.</p>
+      `,
+      textBody: `
+You've been removed from a lease
+
+You have been removed from lease ${event.Detail.leaseId} by ${event.Detail.removedBy}.
+You no longer have access to this lease.
+      `,
+    };
+  }
+
+  export function LeaseUserAddedNotification(
+    event: UserAddedToLeaseEvent,
+    context: EmailTemplatesContext,
+  ): SynthesizedEmail {
+    return {
+      to: context.destination.to!,
+      subject: "Innovation Sandbox: User added to your lease",
+      htmlBody: `
+        <h1>User added to your lease</h1>
+        <p><strong>${event.Detail.addedUserEmail}</strong> has been added to your lease <strong>${event.Detail.leaseId}</strong> by ${event.Detail.addedBy}.</p>
+        <p>View your lease at: <a href="${context.webAppUrl}/leases/${event.Detail.leaseOwner}/${event.Detail.leaseId}">${context.webAppUrl}/leases</a></p>
+      `,
+      textBody: `
+User added to your lease
+
+${event.Detail.addedUserEmail} has been added to your lease ${event.Detail.leaseId} by ${event.Detail.addedBy}.
+View your lease at: ${context.webAppUrl}/leases/${event.Detail.leaseOwner}/${event.Detail.leaseId}
+      `,
+    };
+  }
+
+  export function LeaseUserRemovedNotification(
+    event: UserRemovedFromLeaseEvent,
+    context: EmailTemplatesContext,
+  ): SynthesizedEmail {
+    return {
+      to: context.destination.to!,
+      subject: "Innovation Sandbox: User removed from your lease",
+      htmlBody: `
+        <h1>User removed from your lease</h1>
+        <p><strong>${event.Detail.removedUserEmail}</strong> has been removed from your lease <strong>${event.Detail.leaseId}</strong> by ${event.Detail.removedBy}.</p>
+        <p>View your lease at: <a href="${context.webAppUrl}/leases/${event.Detail.leaseOwner}/${event.Detail.leaseId}">${context.webAppUrl}/leases</a></p>
+      `,
+      textBody: `
+User removed from your lease
+
+${event.Detail.removedUserEmail} has been removed from your lease ${event.Detail.leaseId} by ${event.Detail.removedBy}.
+View your lease at: ${context.webAppUrl}/leases/${event.Detail.leaseOwner}/${event.Detail.leaseId}
+      `,
+    };
+  }
+
+  export function LeaseUserAddedApproverNotification(
+    event: UserAddedToLeaseEvent,
+    context: EmailTemplatesContext,
+  ): SynthesizedEmail {
+    return {
+      to: context.destination.to!,
+      subject: "Innovation Sandbox: User added to lease you approved",
+      htmlBody: `
+        <h1>User added to lease you approved</h1>
+        <p><strong>${event.Detail.addedUserEmail}</strong> has been added to lease <strong>${event.Detail.leaseId}</strong> (owned by ${event.Detail.leaseOwner}) by ${event.Detail.addedBy}.</p>
+        <p>This is a lease you previously approved. View the lease at: <a href="${context.webAppUrl}/leases/${event.Detail.leaseOwner}/${event.Detail.leaseId}">${context.webAppUrl}/leases</a></p>
+      `,
+      textBody: `
+User added to lease you approved
+
+${event.Detail.addedUserEmail} has been added to lease ${event.Detail.leaseId} (owned by ${event.Detail.leaseOwner}) by ${event.Detail.addedBy}.
+This is a lease you previously approved. View the lease at: ${context.webAppUrl}/leases/${event.Detail.leaseOwner}/${event.Detail.leaseId}
+      `,
+    };
+  }
+
+  export function LeaseUserRemovedApproverNotification(
+    event: UserRemovedFromLeaseEvent,
+    context: EmailTemplatesContext,
+  ): SynthesizedEmail {
+    return {
+      to: context.destination.to!,
+      subject: "Innovation Sandbox: User removed from lease you approved",
+      htmlBody: `
+        <h1>User removed from lease you approved</h1>
+        <p><strong>${event.Detail.removedUserEmail}</strong> has been removed from lease <strong>${event.Detail.leaseId}</strong> (owned by ${event.Detail.leaseOwner}) by ${event.Detail.removedBy}.</p>
+        <p>This is a lease you previously approved. View the lease at: <a href="${context.webAppUrl}/leases/${event.Detail.leaseOwner}/${event.Detail.leaseId}">${context.webAppUrl}/leases</a></p>
+      `,
+      textBody: `
+User removed from lease you approved
+
+${event.Detail.removedUserEmail} has been removed from lease ${event.Detail.leaseId} (owned by ${event.Detail.leaseOwner}) by ${event.Detail.removedBy}.
+This is a lease you previously approved. View the lease at: ${context.webAppUrl}/leases/${event.Detail.leaseOwner}/${event.Detail.leaseId}
+      `,
+    };
   }
 }

@@ -21,6 +21,7 @@ import { AuthApi } from "@amzn/innovation-sandbox-infrastructure/components/api/
 import { ConfigurationsApi } from "@amzn/innovation-sandbox-infrastructure/components/api/configurations-api";
 import { LeaseTemplatesApi } from "@amzn/innovation-sandbox-infrastructure/components/api/lease-templates-api";
 import { LeasesApi } from "@amzn/innovation-sandbox-infrastructure/components/api/leases-api";
+import { UsersApi } from "@amzn/innovation-sandbox-infrastructure/components/api/users-api";
 import { addAppConfigExtensionLayer } from "@amzn/innovation-sandbox-infrastructure/components/config/app-config-lambda-extension";
 import { IsbLambdaFunction } from "@amzn/innovation-sandbox-infrastructure/components/isb-lambda-function";
 import { IsbKmsKeys } from "@amzn/innovation-sandbox-infrastructure/components/kms";
@@ -275,6 +276,7 @@ export class RestApi extends ApiGatewayRestApi {
     new LeaseTemplatesApi(this, scope, props);
     new AccountsApi(this, scope, props);
     new ConfigurationsApi(this, scope, props);
+    new UsersApi(this, scope, props);
 
     const secretAccessPolicy = new aws_iam.PolicyStatement({
       actions: ["secretsmanager:GetSecretValue"],

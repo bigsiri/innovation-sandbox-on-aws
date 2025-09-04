@@ -1,0 +1,33 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
+import { Badge, Box, SpaceBetween } from "@cloudscape-design/components";
+
+interface UserStatusBadgeProps {
+  status?: "SUCCEEDED" | "FAILED";
+  message?: string;
+}
+
+export const UserStatusBadge = ({ status, message }: UserStatusBadgeProps) => {
+  if (!status) {
+    return <Badge color="grey">Unknown</Badge>;
+  }
+
+  const badgeProps = {
+    SUCCEEDED: { color: "green" as const, text: "Active" },
+    FAILED: { color: "red" as const, text: "Failed" },
+  };
+
+  const { color, text } = badgeProps[status];
+
+  return (
+    <SpaceBetween direction="vertical" size="xs">
+      <Badge color={color}>{text}</Badge>
+      {status === "FAILED" && message && (
+        <Box fontSize="body-s" color="text-status-error">
+          {message}
+        </Box>
+      )}
+    </SpaceBetween>
+  );
+};

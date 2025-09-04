@@ -17,4 +17,6 @@ export const EventDetailTypes = {
   AccountCleanupFailure: "AccountCleanupFailed",
   AccountQuarantined: "AccountQuarantined",
   AccountDriftDetected: "AccountDriftDetected",
+  UserAddedToLease: "UserAddedToLease",
+  UserRemovedFromLease: "UserRemovedFromLease",
 } as const;

@@ -25,9 +25,16 @@ export const authorizationMap: AuthorizationMapType = {
     GET: ["Manager", "Admin", "User"],
     POST: ["User", "Manager", "Admin"],
   },
+  "/leases/shared": {
+    GET: ["User", "Manager", "Admin"],
+  },
   "/leases/{param}": {
     PATCH: ["Manager", "Admin"],
     GET: ["User", "Manager", "Admin"],
+  },
+  "/leases/{param}/users": {
+    POST: ["User", "Manager", "Admin"],
+    DELETE: ["User", "Manager", "Admin"],
   },
   "/leases/{param}/review": {
     POST: ["Manager", "Admin"],
@@ -69,5 +76,8 @@ export const authorizationMap: AuthorizationMapType = {
   },
   "/users": {
     GET: ["Admin", "Manager"],
+  },
+  "/users/search": {
+    GET: ["User", "Manager", "Admin"],
   },
 };

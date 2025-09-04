@@ -10,6 +10,8 @@ import { LeaseDurationThresholdBreachedAlert } from "@amzn/innovation-sandbox-co
 import { LeaseFrozenEvent } from "@amzn/innovation-sandbox-commons/events/lease-frozen-event.js";
 import { LeaseRequestedEvent } from "@amzn/innovation-sandbox-commons/events/lease-requested-event.js";
 import { LeaseTerminatedEvent } from "@amzn/innovation-sandbox-commons/events/lease-terminated-event.js";
+import { UserAddedToLeaseEvent } from "@amzn/innovation-sandbox-commons/events/user-added-to-lease-event.js";
+import { UserRemovedFromLeaseEvent } from "@amzn/innovation-sandbox-commons/events/user-removed-from-lease-event.js";
 import { IdcService } from "@amzn/innovation-sandbox-commons/isb-services/idc-service.js";
 import {
   IsbServices,
@@ -178,6 +180,12 @@ export class EmailService {
         break;
       case "LeaseFrozen":
         await this.sendFrozenEmails(LeaseFrozenEvent.parse(isbAlert));
+        break;
+      case "UserAddedToLease":
+        await this.sendUserAddedEmails(UserAddedToLeaseEvent.parse(isbAlert));
+        break;
+      case "UserRemovedFromLease":
+        await this.sendUserRemovedEmails(UserRemovedFromLeaseEvent.parse(isbAlert));
         break;
       default:
         assertNever(emailEventName);
@@ -415,5 +423,75 @@ export class EmailService {
       },
     });
     await this.sesClient.send(sendEmailCommand);
+  }
+
+  private async sendUserAddedEmails(parsedEvent: UserAddedToLeaseEvent) {
+    const context = { webAppUrl: this.webAppUrl };
+
+    // Notify the added user
+    await this.sendEmail(
+      EmailTemplates.UserAddedToLease(parsedEvent, {
+        ...context,
+        destination: { to: [parsedEvent.Detail.addedUserEmail] },
+      }),
+    );
+
+    // Notify lease owner (if different from person who added)
+    if (parsedEvent.Detail.leaseOwner !== parsedEvent.Detail.addedBy) {
+      await this.sendEmail(
+        EmailTemplates.LeaseUserAddedNotification(parsedEvent, {
+          ...context,
+          destination: { to: [parsedEvent.Detail.leaseOwner] },
+        }),
+      );
+    }
+
+    // Notify original approver (if not AUTO_APPROVED and different from adder)
+    if (
+      parsedEvent.Detail.approvedBy !== "AUTO_APPROVED" &&
+      parsedEvent.Detail.approvedBy !== parsedEvent.Detail.addedBy
+    ) {
+      await this.sendEmail(
+        EmailTemplates.LeaseUserAddedApproverNotification(parsedEvent, {
+          ...context,
+          destination: { to: [parsedEvent.Detail.approvedBy] },
+        }),
+      );
+    }
+  }
+
+  private async sendUserRemovedEmails(parsedEvent: UserRemovedFromLeaseEvent) {
+    const context = { webAppUrl: this.webAppUrl };
+
+    // Notify the removed user
+    await this.sendEmail(
+      EmailTemplates.UserRemovedFromLease(parsedEvent, {
+        ...context,
+        destination: { to: [parsedEvent.Detail.removedUserEmail] },
+      }),
+    );
+
+    // Notify lease owner (if different from person who removed)
+    if (parsedEvent.Detail.leaseOwner !== parsedEvent.Detail.removedBy) {
+      await this.sendEmail(
+        EmailTemplates.LeaseUserRemovedNotification(parsedEvent, {
+          ...context,
+          destination: { to: [parsedEvent.Detail.leaseOwner] },
+        }),
+      );
+    }
+
+    // Notify original approver (if not AUTO_APPROVED and different from remover)
+    if (
+      parsedEvent.Detail.approvedBy !== "AUTO_APPROVED" &&
+      parsedEvent.Detail.approvedBy !== parsedEvent.Detail.removedBy
+    ) {
+      await this.sendEmail(
+        EmailTemplates.LeaseUserRemovedApproverNotification(parsedEvent, {
+          ...context,
+          destination: { to: [parsedEvent.Detail.approvedBy] },
+        }),
+      );
+    }
   }
 }
