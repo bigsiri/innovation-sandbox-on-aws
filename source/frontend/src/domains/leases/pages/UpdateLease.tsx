@@ -9,6 +9,7 @@ import { isMonitoredLease } from "@amzn/innovation-sandbox-commons/data/lease/le
 import { ErrorPanel } from "@amzn/innovation-sandbox-frontend/components/ErrorPanel";
 import { Loader } from "@amzn/innovation-sandbox-frontend/components/Loader";
 import { showSuccessToast } from "@amzn/innovation-sandbox-frontend/components/Toast";
+import { UsersTab } from "@amzn/innovation-sandbox-frontend/components/users/UsersTab";
 import {
   LeaseDurationForm,
   LeaseDurationFormData,
@@ -154,6 +155,17 @@ export const UpdateLease = () => {
                 onSubmit={onUpdateDuration}
                 onCancel={onCancel}
                 isUpdating={isUpdating}
+              />
+            ),
+          },
+          {
+            label: "Users",
+            id: "users",
+            content: (
+              <UsersTab
+                leaseId={lease.leaseId}
+                currentUserEmail={lease.userEmail}
+                isLeaseActive={lease.status === "Active"}
               />
             ),
           },

@@ -244,28 +244,16 @@ export class DynamoLeaseStore extends LeaseStore {
   }): Promise<PaginatedQueryResult<Lease>> {
     const { userEmail, includeOwned = false, status, pageSize = 50, pageIdentifier } = props;
 
-    // Build filter expression for DynamoDB scan
-    let filterExpression = "contains(#users, :userEmailPattern)";
+    // First, get all leases that have users (we'll filter in application layer)
+    let filterExpression = "attribute_exists(#users) AND size(#users) > :zero";
     const expressionAttributeNames: Record<string, string> = {
       "#users": "users",
     };
     const expressionAttributeValues: Record<string, any> = {
-      ":userEmailPattern": userEmail,
+      ":zero": 0,
     };
 
-    // Add owner condition if includeOwned is true
-    if (includeOwned) {
-      filterExpression = `(${filterExpression} OR #userEmail = :userEmail)`;
-      expressionAttributeNames["#userEmail"] = "userEmail";
-      expressionAttributeValues[":userEmail"] = userEmail;
-    } else {
-      // Exclude owned leases
-      filterExpression = `(${filterExpression} AND #userEmail <> :userEmail)`;
-      expressionAttributeNames["#userEmail"] = "userEmail";
-      expressionAttributeValues[":userEmail"] = userEmail;
-    }
-
-    // Add status filter if provided
+    // Add status filter if provided (this can be done at DB level)
     if (status) {
       filterExpression = `(${filterExpression}) AND #status = :status`;
       expressionAttributeNames["#status"] = "status";
@@ -279,13 +267,41 @@ export class DynamoLeaseStore extends LeaseStore {
         ExpressionAttributeNames: expressionAttributeNames,
         ExpressionAttributeValues: expressionAttributeValues,
         ExclusiveStartKey: base64DecodeCompositeKey(pageIdentifier),
-        Limit: pageSize,
+        Limit: pageSize * 3, // Get more items to account for filtering
       }),
     );
 
+    const parsedResults = parseResults(result.Items, LeaseSchema);
+    
+    // Filter in application layer for shared leases
+    const filteredLeases = parsedResults.result.filter(lease => {
+      const isOwner = lease.userEmail === userEmail;
+      
+      // If includeOwned is false, NEVER include leases owned by the current user
+      // regardless of whether they're in the users array
+      if (!includeOwned && isOwner) {
+        return false;
+      }
+      
+      const isSharedUser = lease.users?.some(user => user.userEmail === userEmail) || false;
+      
+      if (includeOwned) {
+        // Include both owned and shared leases
+        return isOwner || isSharedUser;
+      } else {
+        // Only include leases where user is shared but NOT the owner
+        return isSharedUser && !isOwner;
+      }
+    });
+
+    // Take only the requested page size
+    const paginatedLeases = filteredLeases.slice(0, pageSize);
+
     return {
-      ...parseResults(result.Items, LeaseSchema),
-      nextPageIdentifier: base64EncodeCompositeKey(result.LastEvaluatedKey),
+      result: paginatedLeases,
+      error: parsedResults.error,
+      nextPageIdentifier: paginatedLeases.length === pageSize ? 
+        base64EncodeCompositeKey(result.LastEvaluatedKey) : null,
     };
   }
 

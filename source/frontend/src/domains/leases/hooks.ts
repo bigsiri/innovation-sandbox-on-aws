@@ -121,3 +121,49 @@ export const useFreezeLease = () => {
     },
   });
 };
+
+// User management hooks
+export const useGetLeaseUsers = (leaseId: string) => {
+  return useQuery({
+    queryKey: ["lease-users", leaseId],
+    queryFn: async () => await new LeaseService().getLeaseUsers(leaseId),
+    enabled: !!leaseId,
+  });
+};
+
+export const useAddUserToLease = () => {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ leaseId, userEmails }: { leaseId: string; userEmails: string[] }) => {
+      return await new LeaseService().addUsersToLease(leaseId, userEmails);
+    },
+    onSuccess: (_, { leaseId }) => {
+      client.invalidateQueries({ queryKey: ["lease-users", leaseId] });
+      client.invalidateQueries({ queryKey: ["leases"] });
+    },
+  });
+};
+
+export const useRemoveUserFromLease = () => {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ leaseId, userEmail }: { leaseId: string; userEmail: string }) => {
+      await new LeaseService().removeUserFromLease(leaseId, userEmail);
+    },
+    onSuccess: (_, { leaseId }) => {
+      client.invalidateQueries({ queryKey: ["lease-users", leaseId] });
+      client.invalidateQueries({ queryKey: ["leases"] });
+    },
+  });
+};
+
+export const useGetSharedLeases = (options?: {
+  limit?: number;
+  status?: string;
+  includeOwned?: boolean;
+}) => {
+  return useQuery({
+    queryKey: ["shared-leases", options],
+    queryFn: async () => await new LeaseService().getSharedLeases(options),
+  });
+};
