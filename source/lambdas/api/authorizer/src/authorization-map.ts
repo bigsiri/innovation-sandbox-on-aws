@@ -77,4 +77,7 @@ export const authorizationMap: AuthorizationMapType = {
   "/users": {
     GET: ["Admin", "Manager"],
   },
+  "/users/search": {
+    GET: ["User", "Manager", "Admin"],
+  },
 };

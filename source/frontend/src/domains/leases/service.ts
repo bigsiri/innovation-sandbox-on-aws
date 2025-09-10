@@ -40,6 +40,17 @@ export interface AddUsersResponse {
   }>;
 }
 
+export interface SearchUsersResponse {
+  users: Array<{
+    email: string;
+    displayName: string;
+    userId: string;
+    roles?: string[];
+  }>;
+  totalCount: number;
+  hasMore: boolean;
+}
+
 export interface SharedLease {
   leaseId: string;
   uuid: string;
@@ -156,6 +167,14 @@ export class LeaseService {
 
   async removeUserFromLease(leaseId: string, userEmail: string): Promise<void> {
     await this.api.delete(`/leases/${leaseId}/users`, { userEmails: [userEmail] });
+  }
+
+  async searchUsers(query: string, limit: number = 10): Promise<SearchUsersResponse> {
+    const params = new URLSearchParams({
+      q: query,
+      limit: limit.toString(),
+    });
+    return await this.api.get<SearchUsersResponse>(`/users/search?${params}`);
   }
 
   async getSharedLeases(options?: {
