@@ -2,13 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import {
-  Container,
+  Button,
   Header,
   SpaceBetween,
-  Box,
 } from "@cloudscape-design/components";
 
 import { ErrorPanel } from "@amzn/innovation-sandbox-frontend/components/ErrorPanel";
+import { InfoPanel } from "@amzn/innovation-sandbox-frontend/components/InfoPanel";
 import { Loader } from "@amzn/innovation-sandbox-frontend/components/Loader";
 import { SharedLeaseCard } from "./SharedLeaseCard";
 import { useGetSharedLeases } from "@amzn/innovation-sandbox-frontend/domains/leases/hooks";
@@ -28,64 +28,62 @@ export const SharedLeasesSection = () => {
 
   const sharedLeases = sharedLeasesData?.leases || [];
 
-  if (isFetching) {
-    return (
-      <Container
-        header={
-          <Header variant="h2" description="AWS accounts shared with you">
-            Shared Leases
-          </Header>
-        }
-      >
-        <Loader label="Loading shared leases..." />
-      </Container>
-    );
-  }
+  const body = () => {
+    if (isFetching) {
+      return <Loader label="Loading shared leases..." />;
+    }
 
-  if (isError) {
-    return (
-      <Container
-        header={
-          <Header variant="h2" description="AWS accounts shared with you">
-            Shared Leases
-          </Header>
-        }
-      >
+    if (isError) {
+      return (
         <ErrorPanel
           description="Shared leases could not be loaded."
           retry={refetch}
           error={error as Error}
         />
-      </Container>
+      );
+    }
+
+    if (sharedLeases.length === 0) {
+      return (
+        <InfoPanel
+          header="You currently don't have any shared leases."
+          description="When someone shares an active lease with you, it will appear here."
+        />
+      );
+    }
+
+    return (
+      <SpaceBetween size="xl">
+        {sharedLeases.map((lease) => (
+          <SharedLeaseCard key={lease.leaseId} lease={lease} />
+        ))}
+      </SpaceBetween>
     );
-  }
+  };
+
+  const count = () => {
+    if (!isFetching && !isError) {
+      return <span data-counter>({sharedLeases.length})</span>;
+    }
+  };
 
   return (
-    <Container
-      header={
-        <Header
-          variant="h2"
-          description="Active AWS accounts shared with you"
-          counter={`(${sharedLeases.length})`}
-        >
-          Shared Leases
-        </Header>
-      }
-    >
-      {sharedLeases.length === 0 ? (
-        <Box textAlign="center" color="text-body-secondary">
-          <SpaceBetween size="s">
-            <div><strong>No shared leases available</strong></div>
-            <div>When someone shares an active lease with you, it will appear here.</div>
-          </SpaceBetween>
-        </Box>
-      ) : (
-        <SpaceBetween size="m">
-          {sharedLeases.map((lease) => (
-            <SharedLeaseCard key={lease.leaseId} lease={lease} />
-          ))}
-        </SpaceBetween>
-      )}
-    </Container>
+    <SpaceBetween size="m">
+      <Header
+        variant="h2"
+        description="View active leases shared with you"
+        actions={
+          <Button
+            iconName="refresh"
+            ariaLabel="Refresh"
+            disabled={isFetching}
+            onClick={() => refetch()}
+          />
+        }
+      >
+        Shared Leases {count()}
+      </Header>
+      {body()}
+    </SpaceBetween>
   );
 };

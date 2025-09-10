@@ -45,7 +45,7 @@ export const SharedLeaseCard = ({ lease }: SharedLeaseCardProps) => {
     if (lease.status === "Active" && lease.awsAccountId) {
       return (
         <AccountLoginLink 
-          variant="primary" 
+          variant="normal" 
           accountId={lease.awsAccountId} 
         />
       );
