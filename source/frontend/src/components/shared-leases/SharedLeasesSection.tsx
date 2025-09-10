@@ -5,11 +5,8 @@ import {
   Container,
   Header,
   SpaceBetween,
-  Tabs,
-  TabsProps,
   Box,
 } from "@cloudscape-design/components";
-import { useState } from "react";
 
 import { ErrorPanel } from "@amzn/innovation-sandbox-frontend/components/ErrorPanel";
 import { Loader } from "@amzn/innovation-sandbox-frontend/components/Loader";
@@ -17,8 +14,6 @@ import { SharedLeaseCard } from "./SharedLeaseCard";
 import { useGetSharedLeases } from "@amzn/innovation-sandbox-frontend/domains/leases/hooks";
 
 export const SharedLeasesSection = () => {
-  const [activeTab, setActiveTab] = useState("all");
-  
   const {
     data: sharedLeasesData,
     isFetching,
@@ -27,82 +22,70 @@ export const SharedLeasesSection = () => {
     error,
   } = useGetSharedLeases({
     limit: 20,
-    status: activeTab === "all" ? undefined : activeTab,
+    status: "Active", // Only show active shared leases
     includeOwned: false,
   });
 
   const sharedLeases = sharedLeasesData?.leases || [];
 
-  const getTabContent = () => {
-    if (isFetching) {
-      return <Loader label="Loading shared leases..." />;
-    }
+  if (isFetching) {
+    return (
+      <Container
+        header={
+          <Header variant="h2" description="AWS accounts shared with you">
+            Shared Leases
+          </Header>
+        }
+      >
+        <Loader label="Loading shared leases..." />
+      </Container>
+    );
+  }
 
-    if (isError) {
-      return (
+  if (isError) {
+    return (
+      <Container
+        header={
+          <Header variant="h2" description="AWS accounts shared with you">
+            Shared Leases
+          </Header>
+        }
+      >
         <ErrorPanel
           description="Shared leases could not be loaded."
           retry={refetch}
           error={error as Error}
         />
-      );
-    }
-
-    if (sharedLeases.length === 0) {
-      return (
-        <Box textAlign="center" color="text-body-secondary">
-          <SpaceBetween size="s">
-            <div><strong>No shared leases available</strong></div>
-            <div>When someone shares a lease with you, it will appear here.</div>
-          </SpaceBetween>
-        </Box>
-      );
-    }
-
-    return (
-      <SpaceBetween size="m">
-        {sharedLeases.map((lease) => (
-          <SharedLeaseCard key={lease.leaseId} lease={lease} />
-        ))}
-      </SpaceBetween>
+      </Container>
     );
-  };
-
-  const tabs: TabsProps.Tab[] = [
-    {
-      label: "All",
-      id: "all",
-      content: getTabContent(),
-    },
-    {
-      label: "Active",
-      id: "Active",
-      content: getTabContent(),
-    },
-    {
-      label: "Pending",
-      id: "PendingApproval",
-      content: getTabContent(),
-    },
-  ];
+  }
 
   return (
     <Container
       header={
         <Header
           variant="h2"
-          description="View leases shared with you by other users"
+          description="Active AWS accounts shared with you"
           counter={`(${sharedLeases.length})`}
         >
           Shared Leases
         </Header>
       }
     >
-      <Tabs
-        tabs={tabs}
-        activeTabId={activeTab}
-        onChange={({ detail }) => setActiveTab(detail.activeTabId)}
-      />
+      {sharedLeases.length === 0 ? (
+        <Box textAlign="center" color="text-body-secondary">
+          <SpaceBetween size="s">
+            <div><strong>No shared leases available</strong></div>
+            <div>When someone shares an active lease with you, it will appear here.</div>
+          </SpaceBetween>
+        </Box>
+      ) : (
+        <SpaceBetween size="m">
+          {sharedLeases.map((lease) => (
+            <SharedLeaseCard key={lease.leaseId} lease={lease} />
+          ))}
+        </SpaceBetween>
+      )}
     </Container>
   );
 };

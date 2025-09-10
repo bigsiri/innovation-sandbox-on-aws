@@ -1,6 +1,3 @@
-// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// SPDX-License-Identifier: Apache-2.0
-
 import {
   Box,
   Button,
@@ -12,6 +9,7 @@ import {
 } from "@cloudscape-design/components";
 
 import { SharedLease } from "@amzn/innovation-sandbox-frontend/domains/leases/service";
+import { AccountLoginLink } from "@amzn/innovation-sandbox-frontend/components/AccountLoginLink";
 
 interface SharedLeaseCardProps {
   lease: SharedLease;
@@ -43,20 +41,33 @@ export const SharedLeaseCard = ({ lease }: SharedLeaseCardProps) => {
     return new Date(dateString).toLocaleDateString();
   };
 
+  const getActionButton = () => {
+    if (lease.status === "Active" && lease.awsAccountId) {
+      return (
+        <AccountLoginLink 
+          variant="primary" 
+          accountId={lease.awsAccountId} 
+        />
+      );
+    }
+    
+    return (
+      <Button
+        variant="normal"
+        href={`/leases/${lease.leaseId}`}
+        external={false}
+      >
+        View Details
+      </Button>
+    );
+  };
+
   return (
     <Container
       header={
         <Header
           variant="h3"
-          actions={
-            <Button
-              variant="primary"
-              href={`/leases/${lease.leaseId}`}
-              external={false}
-            >
-              View Details
-            </Button>
-          }
+          actions={getActionButton()}
         >
           {lease.originalLeaseTemplateName}
         </Header>

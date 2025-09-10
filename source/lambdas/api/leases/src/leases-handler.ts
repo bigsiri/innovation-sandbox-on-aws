@@ -1126,7 +1126,16 @@ async function getSharedLeasesHandler(
   const filteredLeases = sharedLeasesResponse.result;
 
   const response = {
-    leases: filteredLeases.map(lease => ({
+    leases: filteredLeases
+      .filter(lease => {
+        // Additional validation: ensure user is actually in the users array with valid data
+        const userRecord = lease.users?.find(u => u.userEmail === context.user.email);
+        const isOwner = lease.userEmail === context.user.email;
+        
+        // Only include if user is in users array AND not the owner
+        return userRecord && !isOwner;
+      })
+      .map(lease => ({
       leaseId: base64EncodeCompositeKey({ userEmail: lease.userEmail, uuid: lease.uuid }),
       uuid: lease.uuid,
       userEmail: lease.userEmail,

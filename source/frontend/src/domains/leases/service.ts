@@ -175,32 +175,7 @@ export class LeaseService {
       params.append('includeOwned', options.includeOwned.toString());
     }
 
-    const response = await this.api.get<ApiPaginatedResult<LeaseWithLeaseId>>(`/leases?${params}`);
-    
-    return {
-      leases: response.result.map((lease: LeaseWithLeaseId): SharedLease => ({
-        leaseId: lease.leaseId,
-        uuid: lease.uuid,
-        userEmail: lease.userEmail,
-        status: lease.status,
-        originalLeaseTemplateUuid: lease.originalLeaseTemplateUuid,
-        originalLeaseTemplateName: lease.originalLeaseTemplateName,
-        leaseDurationInHours: lease.leaseDurationInHours || 0,
-        maxSpend: lease.maxSpend || 0,
-        budgetThresholds: lease.budgetThresholds || [],
-        durationThresholds: lease.durationThresholds || [],
-        ownerEmail: lease.userEmail,
-        ownerDisplayName: lease.userEmail,
-        sharedAt: lease.meta?.createdTime || new Date().toISOString(),
-        sharedBy: lease.userEmail,
-        awsAccountId: 'awsAccountId' in lease ? lease.awsAccountId : undefined,
-        approvedBy: 'approvedBy' in lease ? lease.approvedBy : undefined,
-        startDate: 'startDate' in lease ? lease.startDate : undefined,
-        expirationDate: 'expirationDate' in lease ? lease.expirationDate : undefined,
-        users: 'users' in lease ? lease.users : undefined,
-      })),
-      totalCount: response.result.length,
-      hasMore: response.nextPageIdentifier !== null,
-    };
+    const response = await this.api.get<SharedLeasesResponse>(`/leases/shared?${params}`);
+    return response;
   }
 }
