@@ -62,19 +62,25 @@ export const UsersTab = ({
       setAddUserError(null);
       const response = await addUser({ leaseId, userEmails });
       
-      if (response.successCount > 0) {
+      // Always close the form after attempting to add users
+      setShowAddUserForm(false);
+      
+      if (response.successCount > 0 && response.failureCount === 0) {
+        // All users added successfully
         showSuccessToast(`Successfully added ${response.successCount} user(s)`);
-        setShowAddUserForm(false);
+      } else if (response.successCount > 0 && response.failureCount > 0) {
+        // Mixed results
+        showSuccessToast(`Added ${response.successCount} user(s). ${response.failureCount} failed.`);
+      } else if (response.failureCount > 0) {
+        // All failed
+        showErrorToast(`Failed to add ${response.failureCount} user(s)`);
       }
       
-      if (response.failureCount > 0) {
-        const errorMsg = `Failed to add ${response.failureCount} user(s)`;
-        setAddUserError(errorMsg);
-        showErrorToast(errorMsg);
-      }
+      // Refresh the user list to show any successfully added users
+      refetchUsers();
     } catch (error) {
+      setShowAddUserForm(false);
       const errorMessage = error instanceof Error ? error.message : 'Failed to add user';
-      setAddUserError(errorMessage);
       showErrorToast(errorMessage);
     }
   };

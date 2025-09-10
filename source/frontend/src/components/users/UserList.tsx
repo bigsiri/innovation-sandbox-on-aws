@@ -8,7 +8,6 @@ import {
   Button,
   Header,
   Modal,
-  ButtonDropdown,
 } from "@cloudscape-design/components";
 import { useState } from "react";
 
@@ -93,19 +92,16 @@ export const UserList = ({
       id: "actions",
       header: "Actions",
       cell: (item: LeaseUser) => (
-        <ButtonDropdown
-          items={[
-            {
-              text: "Remove User",
-              id: "remove",
-              disabled: item.userEmail === currentUserEmail,
-            },
-          ]}
-          onItemClick={() => handleRemoveClick(item)}
+        <Button
+          variant="normal"
+          iconName="remove"
+          onClick={() => handleRemoveClick(item)}
           loading={isRemoving}
+          disabled={item.userEmail === currentUserEmail}
+          ariaLabel={`Remove ${item.userEmail} from lease`}
         >
-          Actions
-        </ButtonDropdown>
+          Remove
+        </Button>
       ),
     },
   ];
