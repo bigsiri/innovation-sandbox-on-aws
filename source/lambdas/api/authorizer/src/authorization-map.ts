@@ -29,6 +29,10 @@ export const authorizationMap: AuthorizationMapType = {
     PATCH: ["Manager", "Admin"],
     GET: ["User", "Manager", "Admin"],
   },
+  "/leases/{param}/users": {
+    POST: ["User", "Manager", "Admin"],
+    DELETE: ["User", "Manager", "Admin"],
+  },
   "/leases/{param}/review": {
     POST: ["Manager", "Admin"],
   },

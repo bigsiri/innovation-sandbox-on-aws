@@ -14,6 +14,7 @@ import { IsbUser } from "@amzn/innovation-sandbox-commons/types/isb-types";
 import { Divider } from "@amzn/innovation-sandbox-frontend/components/Divider";
 import { InfoLink } from "@amzn/innovation-sandbox-frontend/components/InfoLink";
 import { Markdown } from "@amzn/innovation-sandbox-frontend/components/Markdown";
+import { SharedLeasesSection } from "@amzn/innovation-sandbox-frontend/components/shared-leases/SharedLeasesSection";
 import { AccountsPanel } from "@amzn/innovation-sandbox-frontend/domains/home/components/AccountsPanel";
 import { ApprovalsPanel } from "@amzn/innovation-sandbox-frontend/domains/home/components/ApprovalsPanel";
 import { MyLeases } from "@amzn/innovation-sandbox-frontend/domains/home/components/MyLeases";
@@ -47,6 +48,8 @@ export const Home = () => {
           <AccountsPanel />
           <Divider />
           <MyLeases />
+          <Divider />
+          <SharedLeasesSection />
         </SpaceBetween>
       );
     }
@@ -58,6 +61,8 @@ export const Home = () => {
           <ApprovalsPanel />
           <Divider />
           <MyLeases />
+          <Divider />
+          <SharedLeasesSection />
         </SpaceBetween>
       );
     }
@@ -66,6 +71,8 @@ export const Home = () => {
       <SpaceBetween size="m">
         <Divider />
         <MyLeases />
+        <Divider />
+        <SharedLeasesSection />
       </SpaceBetween>
     );
   };
