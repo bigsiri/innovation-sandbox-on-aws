@@ -883,7 +883,7 @@ export class InnovationSandbox {
       results.push({
         userEmail: assignmentResult.userEmail,
         success: assignmentResult.success,
-        message: assignmentResult.message,
+        message: assignmentResult.message || (assignmentResult.success ? 'User added successfully' : 'Failed to add user'),
         user: assignmentResult.success ? {
           userId: newUser.userEmail,
           email: newUser.userEmail,
@@ -991,7 +991,10 @@ export class InnovationSandbox {
     );
 
     // Add results for revocation attempts
-    results.push(...revocationResults);
+    results.push(...revocationResults.map(result => ({
+      ...result,
+      message: result.message || (result.success ? 'User removed successfully' : 'Failed to remove user'),
+    })));
 
     const successes = results.filter(r => r.success);
 
@@ -1060,7 +1063,7 @@ export class InnovationSandbox {
     const sharedLeasesResponse = await leaseStore.findSharedLeases({
       userEmail: user.email,
       includeOwned: filters.includeOwned,
-      status: filters.status,
+      status: filters.status as LeaseStatus | undefined,
       pageSize: filters.limit,
     });
 

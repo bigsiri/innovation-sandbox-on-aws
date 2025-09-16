@@ -995,37 +995,46 @@ async function validateUserManagementPermission(
   // For lease owners, check if the lease template allows user management
   try {
     const leaseTemplateStore = IsbServices.leaseTemplateStore(context.env);
-    const templateResponse = await leaseTemplateStore.get({ uuid: lease.originalLeaseTemplateUuid });
+    const templateUuid = (lease.originalLeaseTemplateUuid as any)?.uuid || lease.originalLeaseTemplateUuid;
+    const templateResponse = await leaseTemplateStore.get(templateUuid);
     
     if (templateResponse.error) {
-      // If template not found, default to allowing user management for backwards compatibility
-      logger.warn(`Lease template ${lease.originalLeaseTemplateUuid} not found, defaulting to allow user management`, {
-        leaseId: lease.uuid,
-        templateUuid: lease.originalLeaseTemplateUuid,
+      // If template not found, default to DISABLING user management for security
+      const leaseUuid = (lease.uuid as any)?.uuid || lease.uuid;
+      logger.warn(`Lease template ${templateUuid} not found, defaulting to disable user management`, {
+        leaseId: leaseUuid,
+        templateUuid: templateUuid,
       });
-      return;
+      throw createHttpJSendError({
+        statusCode: 403,
+        data: { errors: [{ message: "User management is not enabled for this lease template." }] },
+      });
     }
 
     const leaseTemplate = templateResponse.result!;
     
-    // Check if template allows owner user management (default to true for backwards compatibility)
-    if (!leaseTemplate.allowOwnerUserManagement) {
+    // Check if template allows owner user management (default to false for security)
+    if (leaseTemplate.allowOwnerUserManagement !== true) {
       throw createHttpJSendError({
         statusCode: 403,
         data: { errors: [{ message: "User management is disabled for this lease template." }] },
       });
     }
   } catch (error) {
-    // If there's any error accessing the template, log it but allow the operation
-    // This prevents 500 errors from blocking legitimate user management operations
-    logger.error(`Error validating lease template permissions, defaulting to allow`, {
-      leaseId: lease.uuid,
-      templateUuid: lease.originalLeaseTemplateUuid,
+    // If there's any error accessing the template, default to DENYING for security
+    const leaseUuid = (lease.uuid as any)?.uuid || lease.uuid;
+    const templateUuid = (lease.originalLeaseTemplateUuid as any)?.uuid || lease.originalLeaseTemplateUuid;
+    logger.error(`Error validating lease template permissions, defaulting to deny`, {
+      leaseId: leaseUuid,
+      templateUuid: templateUuid,
       error: error instanceof Error ? error.message : 'Unknown error',
     });
     
-    // Default to allowing user management to prevent blocking legitimate operations
-    return;
+    // Default to denying user management for security
+    throw createHttpJSendError({
+      statusCode: 403,
+      data: { errors: [{ message: "Unable to validate user management permissions." }] },
+    });
   }
 }
 

@@ -44,7 +44,7 @@ export const LeaseTemplateSchema = z
     name: z.string().max(50).min(1),
     description: FreeTextSchema.optional(),
     requiresApproval: z.boolean(),
-    allowOwnerUserManagement: z.boolean().default(true),
+    allowOwnerUserManagement: z.boolean().default(false).optional(),
     createdBy: z.string().email(),
   })
   .merge(BudgetConfigSchema)

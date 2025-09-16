@@ -46,7 +46,7 @@ export const useGetLeaseById = (uuid: string) => {
   });
 };
 
-export const getLeasesForCurrentUser = () => {
+export const useGetLeasesForCurrentUser = () => {
   return useQuery({
     queryKey: ["leases", "CURRENT_USER"],
     queryFn: async () => {
@@ -192,7 +192,6 @@ export const useUserSearch = (existingUsers: string[] = []) => {
         displayName: user.displayName,
       }));
     } catch (error) {
-      console.error("Error searching users:", error);
       return [];
     }
   }, []);
@@ -228,7 +227,6 @@ export const useUserSearch = (existingUsers: string[] = []) => {
       setOptions(newOptions);
       setStatus("finished");
     } catch (error) {
-      console.error("Error searching users:", error);
       setOptions([]);
       setStatus("error");
     }
