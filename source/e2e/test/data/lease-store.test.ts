@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 import { retryAsync } from "ts-retry/lib/esm/index.js";
-import { beforeAll, describe, expect, inject, test } from "vitest";
+import { beforeAll, describe, expect, inject, test, it } from "vitest";
 
 import { LeaseStore } from "@amzn/innovation-sandbox-commons/data/lease/lease-store.js";
 import {
@@ -353,5 +353,75 @@ describe("lease-store", () => {
       },
       { delay: 200, maxTry: 10 },
     );
+  });
+
+  describe("findSharedLeases", () => {
+    it("should return leases where user is added", async () => {
+      const userEmail = "shared-user@example.com";
+      const ownerEmail = "owner@example.com";
+      
+      // Create a lease with the user added
+      const lease = generateSchemaData(MonitoredLeaseSchema);
+      lease.userEmail = ownerEmail;
+      lease.users = [
+        {
+          userEmail: userEmail,
+          addedBy: ownerEmail,
+          addedDate: new Date().toISOString(),
+          assignmentStatus: { status: "SUCCEEDED", lastUpdated: new Date().toISOString() }
+        }
+      ];
+
+      await leaseStore.create(lease);
+
+      const result = await leaseStore.findSharedLeases({
+        userEmail: userEmail,
+        includeOwned: false,
+      });
+
+      expect(result.error).toBeUndefined();
+      expect(result.result).toHaveLength(1);
+      if (result.result) {
+        expect(result.result[0]!.userEmail).toBe(ownerEmail);
+      }
+    });
+
+    it("should filter by status", async () => {
+      const userEmail = "filter-user@example.com";
+      
+      // Create active lease
+      const activeLease = generateSchemaData(MonitoredLeaseSchema);
+      activeLease.status = "Active";
+      activeLease.users = [
+        {
+          userEmail: userEmail,
+          addedBy: "owner@example.com",
+          addedDate: new Date().toISOString(),
+          assignmentStatus: { status: "SUCCEEDED", lastUpdated: new Date().toISOString() }
+        }
+      ];
+      await leaseStore.create(activeLease);
+
+      const result = await leaseStore.findSharedLeases({
+        userEmail: userEmail,
+        status: "Active",
+      });
+
+      expect(result.error).toBeUndefined();
+      expect(result.result).toHaveLength(1);
+      if (result.result) {
+        expect(result.result[0]!.status).toBe("Active");
+      }
+    });
+
+    it("should return empty array when no shared leases found", async () => {
+      const result = await leaseStore.findSharedLeases({
+        userEmail: "no-leases@example.com",
+      });
+
+      expect(result.error).toBeUndefined();
+      expect(result.result).toHaveLength(0);
+      expect(result.nextPageIdentifier).toBeNull();
+    });
   });
 });

@@ -34,6 +34,7 @@ import {
   Lease,
   LeaseKeySchema,
   LeaseSchema,
+  MonitoredLease,
   MonitoredLeaseSchema,
   PendingLeaseSchema,
 } from "@amzn/innovation-sandbox-commons/data/lease/lease.js";
@@ -1986,6 +1987,141 @@ describe("Leases Handler", async () => {
       });
       expect(getLeaseSpy).toHaveBeenCalledOnce();
       expect(freezeLeaseSpy).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe("POST /leases/{leaseId}/users", () => {
+    it("should return 200 and add users to lease", async () => {
+      const mockedLease = generateSchemaData(MonitoredLeaseSchema);
+      const mockedLeaseId = base64EncodeCompositeKey({
+        userEmail: mockedLease.userEmail,
+        uuid: mockedLease.uuid,
+      });
+
+      vi.spyOn(InnovationSandbox, "addUsersToLease").mockResolvedValue([
+        {
+          userEmail: "test@example.com",
+          success: true,
+          message: "User added successfully",
+          user: { userId: "test@example.com", email: "test@example.com", displayName: "test" }
+        }
+      ]);
+
+      const event = createAPIGatewayProxyEvent({
+        httpMethod: "POST",
+        path: `/leases/${mockedLeaseId}/users`,
+        body: JSON.stringify({
+          userEmails: ["test@example.com"]
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${isbAuthorizedUser.token}`,
+        },
+        pathParameters: { leaseId: mockedLeaseId! },
+      });
+
+      const response = await handler(event, mockAuthorizedContext(testEnv, mockedGlobalConfig));
+
+      expect(response.statusCode).toBe(200);
+    });
+
+    it("should return 400 when userEmails is empty", async () => {
+      const mockedLease = generateSchemaData(MonitoredLeaseSchema);
+      const mockedLeaseId = base64EncodeCompositeKey({
+        userEmail: mockedLease.userEmail,
+        uuid: mockedLease.uuid,
+      });
+
+      const event = createAPIGatewayProxyEvent({
+        httpMethod: "POST",
+        path: `/leases/${mockedLeaseId}/users`,
+        body: JSON.stringify({
+          userEmails: []
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${isbAuthorizedUser.token}`,
+        },
+        pathParameters: { leaseId: mockedLeaseId! },
+      });
+
+      const response = await handler(event, mockAuthorizedContext(testEnv, mockedGlobalConfig));
+
+      expect(response.statusCode).toBe(400);
+    });
+  });
+
+  describe("DELETE /leases/{leaseId}/users", () => {
+    it("should return 200 and remove users from lease", async () => {
+      const mockedLease = generateSchemaData(MonitoredLeaseSchema);
+      const mockedLeaseId = base64EncodeCompositeKey({
+        userEmail: mockedLease.userEmail,
+        uuid: mockedLease.uuid,
+      });
+
+      vi.spyOn(InnovationSandbox, "removeUsersFromLease").mockResolvedValue([
+        {
+          userEmail: "test@example.com",
+          success: true,
+          message: "User removed successfully"
+        }
+      ]);
+
+      const event = createAPIGatewayProxyEvent({
+        httpMethod: "DELETE",
+        path: `/leases/${mockedLeaseId}/users`,
+        body: JSON.stringify({
+          userEmails: ["test@example.com"]
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${isbAuthorizedUser.token}`,
+        },
+        pathParameters: { leaseId: mockedLeaseId! },
+      });
+
+      const response = await handler(event, mockAuthorizedContext(testEnv, mockedGlobalConfig));
+
+      expect(response.statusCode).toBe(200);
+    });
+  });
+
+  describe("GET /leases/{leaseId}/users", () => {
+    it("should return 200 with lease users", async () => {
+      const mockedLease = {
+        ...generateSchemaData(MonitoredLeaseSchema),
+        users: [
+          {
+            userEmail: "test@example.com",
+            addedBy: "owner@example.com",
+            addedDate: new Date().toISOString(),
+            assignmentStatus: { status: "SUCCEEDED" as const, lastUpdated: new Date().toISOString() }
+          }
+        ]
+      } as MonitoredLease;
+      const mockedLeaseId = base64EncodeCompositeKey({
+        userEmail: mockedLease.userEmail,
+        uuid: mockedLease.uuid,
+      });
+
+      vi.spyOn(DynamoLeaseStore.prototype, "get").mockResolvedValue({
+        result: mockedLease,
+      });
+
+      const event = createAPIGatewayProxyEvent({
+        httpMethod: "GET",
+        path: `/leases/${mockedLeaseId}/users`,
+        headers: {
+          Authorization: `Bearer ${isbAuthorizedUser.token}`,
+        },
+        pathParameters: { leaseId: mockedLeaseId! },
+      });
+
+      const response = await handler(event, mockAuthorizedContext(testEnv, mockedGlobalConfig));
+
+      expect(response.statusCode).toBe(200);
+      const responseBody = JSON.parse(response.body);
+      expect(responseBody.data.users).toHaveLength(1);
     });
   });
 
