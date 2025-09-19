@@ -1,0 +1,98 @@
+{
+  "page": {
+    "welcome": "Welcome to Innovation Sandbox on AWS",
+    "home": "Home"
+  },
+  "actions": {
+    "requestNewLease": "Request a new lease",
+    "loginToAccount": "Login to account",
+    "manageUsers": "Manage Users",
+    "viewAllApprovals": "View all approvals",
+    "refresh": "Refresh",
+    "manageAccounts": "Manage accounts"
+  },
+  "sections": {
+    "myLeases": "My Leases",
+    "approvals": "Approvals", 
+    "accounts": "Accounts",
+    "sharedSandboxes": "Shared Sandboxes",
+    "administration": "Administration",
+    "accountPoolSummary": "Account Pool Summary"
+  },
+  "table": {
+    "awsAccountId": "AWS Account ID",
+    "users": "Users",
+    "user": "user",
+    "expiry": "Expiry",
+    "budget": "Budget",
+    "accountStatus": "Account Status",
+    "count": "Count"
+  },
+  "status": {
+    "active": "Active",
+    "frozen": "Frozen - Threshold Reached",
+    "pendingApproval": "Pending Approval",
+    "approvalDenied": "Approval Denied",
+    "expired": "Lease Duration Expired",
+    "budgetExceeded": "Budget Exceeded",
+    "manuallyTerminated": "Lease Manually Terminated",
+    "accountQuarantined": "Account Quarantined",
+    "ejected": "Account Manually Ejected",
+    "accountPendingApproval": "Your account is pending approval",
+    "noAccountAssigned": "No account assigned",
+    "noAccountAssignedYet": "yet"
+  },
+  "duration": {
+    "expiringSoon": "expiring soon",
+    "expired": "expired",
+    "willExpire": "will expire",
+    "afterApproval": "after approval",
+    "noExpiry": "No expiry",
+    "thisLease": "This lease"
+  },
+  "approvals": {
+    "noPendingApprovals": "No pending approvals. Nothing to review.",
+    "checkingApprovals": "Checking for approval requests...",
+    "approvalsCouldNotBeLoaded": "Approvals could not be loaded.",
+    "pendingApprovalsHeader": "Pending approvals",
+    "thereIs": "There is",
+    "thereAre": "There are",
+    "pendingApproval": "pending approval",
+    "pendingApprovals": "pending approvals"
+  },
+  "leases": {
+    "loadingLeases": "Loading your leases...",
+    "leasesCannotBeRetrieved": "Your leases can't be retrieved at the moment.",
+    "noLeasesHeader": "You currently don't have any leases.",
+    "noLeasesDescription": "To get started, click below to request a new lease.",
+    "myLeasesDescription": "View a list of your leases",
+    "lease": "Lease"
+  },
+  "sharedLeases": {
+    "loadingSharedLeases": "Loading shared leases...",
+    "sharedLeasesCouldNotBeLoaded": "Shared leases could not be loaded.",
+    "noSharedLeasesHeader": "You currently don't have any shared leases.",
+    "noSharedLeasesDescription": "When someone shares a lease with you, it will appear here.",
+    "sharedLeasesDescription": "View leases shared with you",
+    "status": "Status",
+    "account": "Account",
+    "sharedBy": "Shared by",
+    "duration": "Duration",
+    "sharedOn": "Shared on",
+    "viewDetails": "View Details",
+    "notYetAssigned": "Not yet assigned",
+    "hours": "hours"
+  },
+  "loading": {
+    "loadingPleaseWait": "Loading, please wait.."
+  },
+  "accountStatus": {
+    "available": "Available",
+    "active": "Active",
+    "frozen": "Frozen",
+    "cleanUp": "Clean Up",
+    "quarantine": "Quarantine",
+    "total": "Total",
+    "accounts": "accounts"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "approvals": "Approvals",
+  "pageDescription": "Manage requests to lease sandbox accounts",
+  "approveRequests": "Approve request(s)",
+  "denyRequests": "Deny request(s)",
+  "actionsButton": "Actions",
+  "table": {
+    "headers": {
+      "requestedBy": "Requested by",
+      "leaseTemplate": "Lease Template",
+      "requested": "Requested",
+      "comments": "Comments"
+    }
+  },
+  "common": {
+    "home": "Home"
+  },
+  "breadcrumbs": {
+    "approvals": "Approvals"
+  },
+  "modal": {
+    "approveTitle": "Approve request(s)",
+    "denyTitle": "Deny request(s)"
+  },
+  "actions": {
+    "approve": "Approve",
+    "deny": "Deny"
+  }
+}

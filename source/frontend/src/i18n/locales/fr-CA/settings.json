@@ -1,0 +1,46 @@
+{
+  "settings": "Paramètres",
+  "pageDescription": "Gérer les paramètres globaux ici.",
+  "loadingError": "Il y a eu un problème lors du chargement des paramètres.",
+  "appConfigMessage": "Pour modifier ces paramètres, veuillez aller à",
+  "common": {
+    "home": "Accueil"
+  },
+  "tabs": {
+    "general": "Paramètres généraux",
+    "lease": "Paramètres de bail",
+    "cleanup": "Paramètres de nettoyage"
+  },
+  "general": {
+    "maintenanceMode": "Mode maintenance",
+    "maintenanceModeOn": "Le mode maintenance est ACTIVÉ",
+    "maintenanceModeOff": "Le mode maintenance est DÉSACTIVÉ",
+    "managedRegions": "Régions gérées par Innovation Sandbox",
+    "termsOfService": "Conditions d'utilisation",
+    "notSet": "Non défini"
+  },
+  "lease": {
+    "budget": {
+      "title": "Budget",
+      "maxBudget": "Budget maximum",
+      "requireMaxBudget": "Exiger un budget maximum"
+    },
+    "duration": {
+      "title": "Durée",
+      "maxDuration": "Durée maximale du bail",
+      "requireMaxDuration": "Exiger une durée maximale",
+      "hoursValue": "{{hours}} heures"
+    },
+    "userLimits": {
+      "title": "Limites utilisateur",
+      "maxLeasesPerUser": "Nombre maximum de baux par utilisateur"
+    }
+  },
+  "cleanup": {
+    "waitBeforeRerun": "Attendre avant de relancer une tentative réussie",
+    "failedAttemptsToCancel": "Nombre de tentatives échouées pour annuler le nettoyage",
+    "waitBeforeRetry": "Attendre avant de réessayer une tentative échouée",
+    "successfulAttemptsToFinish": "Nombre de tentatives réussies pour terminer le nettoyage",
+    "secondsValue": "{{seconds}} secondes"
+  }
+}

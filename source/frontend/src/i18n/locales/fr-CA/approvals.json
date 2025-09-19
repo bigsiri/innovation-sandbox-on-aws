@@ -1,0 +1,29 @@
+{
+  "approvals": "Approbations",
+  "pageDescription": "Gérer les demandes de location de comptes sandbox",
+  "approveRequests": "Approuver la(les) demande(s)",
+  "denyRequests": "Refuser la(les) demande(s)",
+  "actionsButton": "Actions",
+  "table": {
+    "headers": {
+      "requestedBy": "Demandé par",
+      "leaseTemplate": "Modèle de bail",
+      "requested": "Demandé",
+      "comments": "Commentaires"
+    }
+  },
+  "common": {
+    "home": "Accueil"
+  },
+  "breadcrumbs": {
+    "approvals": "Approbations"
+  },
+  "modal": {
+    "approveTitle": "Approuver la(les) demande(s)",
+    "denyTitle": "Refuser la(les) demande(s)"
+  },
+  "actions": {
+    "approve": "Approuver",
+    "deny": "Refuser"
+  }
+}

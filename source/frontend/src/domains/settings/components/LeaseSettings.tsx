@@ -10,7 +10,7 @@ import { SettingsContainer } from "@amzn/innovation-sandbox-frontend/domains/set
 import { useGetConfigurations } from "@amzn/innovation-sandbox-frontend/domains/settings/hooks";
 
 export const LeaseSettings = () => {
-  const { t } = useTranslation(['settings']);
+  const { t } = useTranslation(['settings', 'common']);
   const {
     data: config,
     isLoading,

@@ -6,6 +6,7 @@ import {
   SpaceBetween,
   Box,
 } from "@cloudscape-design/components";
+import { useTranslation } from "react-i18next";
 import { useUserSearch } from "@amzn/innovation-sandbox-frontend/domains/leases/hooks";
 
 interface User {
@@ -22,10 +23,13 @@ interface UserSearchInputProps {
 
 export const UserSearchInput = ({
   onUserSelect,
-  placeholder = "Search for users by email...",
+  placeholder,
   disabled = false,
   existingUsers = [],
 }: UserSearchInputProps) => {
+  const { t } = useTranslation(['leases']);
+  const defaultPlaceholder = t("users.addForm.searchPlaceholder");
+  
   const {
     value,
     setValue,
@@ -49,23 +53,23 @@ export const UserSearchInput = ({
         value={value}
         options={options}
         statusType={status}
-        placeholder={placeholder}
+        placeholder={placeholder || defaultPlaceholder}
         disabled={disabled}
         empty={
           value.length >= 2 ? (
             <Box textAlign="center" color="text-body-secondary">
-              No users found
+              {t("users.addForm.noUsersFound")}
             </Box>
           ) : (
             <Box textAlign="center" color="text-body-secondary">
-              Type at least 2 characters to search
+              {t("users.addForm.typeToSearch")}
             </Box>
           )
         }
-        loadingText="Searching users..."
-        errorText="Error loading users"
-        recoveryText="Retry"
-        enteredTextLabel={(value) => `Use "${value}"`}
+        loadingText={t("users.addForm.searchingUsers")}
+        errorText={t("users.addForm.errorLoadingUsers")}
+        recoveryText={t("users.addForm.retry")}
+        enteredTextLabel={(value) => t("users.addForm.useValue", { value })}
       />
     </SpaceBetween>
   );

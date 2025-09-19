@@ -1,0 +1,214 @@
+{
+  "page": {
+    "title": "Leases",
+    "home": "Home",
+    "description": "Manage sandbox account leases"
+  },
+  "table": {
+    "headers": {
+      "user": "User",
+      "leaseTemplate": "Lease Template", 
+      "budget": "Budget",
+      "expiry": "Expiry",
+      "status": "Status",
+      "awsAccount": "AWS Account",
+      "access": "Access"
+    },
+    "cells": {
+      "noCostsAccrued": "No costs accrued",
+      "noExpiry": "No expiry",
+      "noAccountAssigned": "No account assigned"
+    },
+    "noItemsToDisplay": "No items to display.",
+    "noItems": "No items"
+  },
+  "filters": {
+    "title": "Filter Options",
+    "status": "Status",
+    "leaseTemplate": "Lease Template",
+    "chooseOptions": "Choose options",
+    "loading": "Loading...",
+    "noLeasesFound": "No leases found"
+  },
+  "filterGroups": {
+    "active": "Active",
+    "pending": "Pending", 
+    "expired": "Expired"
+  },
+  "actions": {
+    "refresh": "Refresh",
+    "actions": "Actions",
+    "terminate": "Terminate",
+    "freeze": "Freeze",
+    "update": "Update"
+  },
+  "actionReasons": {
+    "onlyActiveOrFrozenCanTerminate": "Only active or frozen leases can be terminated.",
+    "onlyActiveCanFreeze": "Only active leases can be frozen.",
+    "onlySingleCanUpdate": "Only a single lease can be updated at a time."
+  },
+  "modal": {
+    "terminateTitle": "Terminate Leases",
+    "freezeTitle": "Freeze Leases", 
+    "terminateDescription": "lease(s) to terminate",
+    "freezeDescription": "lease(s) to freeze"
+  },
+  "messages": {
+    "leasesTerminatedSuccessfully": "Lease(s) were terminated successfully.",
+    "leasesFrozenSuccessfully": "Lease(s) were frozen successfully.",
+    "actionFailed": "Action failed. Please try again."
+  },
+  "summary": {
+    "title": "Lease Summary",
+    "fields": {
+      "leaseId": "Lease ID",
+      "awsAccountId": "AWS Account ID",
+      "leaseTemplate": "Lease Template",
+      "requestedBy": "Requested by",
+      "approvedBy": "Approved by",
+      "status": "Status",
+      "maxBudget": "Max Budget",
+      "budgetStatus": "Budget Status",
+      "leaseStarted": "Lease started",
+      "leaseExpiry": "Lease expiry",
+      "lastMonitored": "Last monitored",
+      "comments": "Comments from requester"
+    },
+    "status": {
+      "noAccountAssigned": "No account assigned",
+      "autoApproved": "Auto approved",
+      "noComments": "No comments provided"
+    },
+    "copySuccess": {
+      "leaseId": "Copied Lease ID",
+      "awsAccountId": "Copied AWS Account ID"
+    },
+    "copyError": {
+      "leaseId": "Failed to copy Lease ID",
+      "awsAccountId": "Failed to copy AWS Account ID"
+    }
+  },
+  "tabs": {
+    "summary": "Summary",
+    "budget": "Budget",
+    "duration": "Duration",
+    "users": "Users"
+  },
+  "budget": {
+    "title": "Budget",
+    "maximumBudget": "Maximum Budget",
+    "doNotSetBudget": "Do not set a budget",
+    "setMaxBudget": "Set a max budget",
+    "selectOption": "Please select an option",
+    "noBudgetWarning": "If you don't set a max budget, there is a risk that these accounts may have cost overruns.",
+    "maximumBudgetAmount": "Maximum Budget Amount",
+    "maximumBudgetExceeded": "Maximum budget is ${{amount}}",
+    "budgetThresholds": "Budget Thresholds",
+    "budgetThresholdsDescription": "Determine what happens as budget is consumed.",
+    "updateBudgetSettings": "Update Budget Settings"
+  },
+  "duration": {
+    "updateDurationSettings": "Update Duration Settings",
+    "leaseDuration": "Lease Duration",
+    "currentlyExpires": "This lease currently expires",
+    "currentlyNoExpiry": "This lease currently does not expire",
+    "expiryDate": "Expiry Date",
+    "removeExpiryDate": "Remove expiry date",
+    "doNotSetExpiryDate": "Do not set an expiry date",
+    "setExpiryDate": "Set an expiry date",
+    "selectOption": "Please select an option",
+    "enterValidDate": "Please enter a valid date and time",
+    "selectFutureDate": "Please select a date and time at least 1 hour in the future",
+    "durationThresholds": "Duration Thresholds",
+    "durationThresholdsDescription": "Determine what happens as time passes."
+  },
+  "users": {
+    "successfullyAdded": "Successfully added {{count}} user(s)",
+    "mixedResults": "Added {{successCount}} user(s). {{failureCount}} failed.",
+    "failedToAdd": "Failed to add {{count}} user(s)",
+    "failedToAddUser": "Failed to add user",
+    "userRemovedSuccessfully": "User removed successfully",
+    "failedToRemoveUser": "Failed to remove user",
+    "loadingUsers": "Loading users...",
+    "loadingUsersError": "There was a problem loading the users for this lease.",
+    "addUsersDescription": "Add users to share access to this AWS account",
+    "addUser": "Add User",
+    "leaseUsers": "Lease Users",
+    "cannotModifyUsers": "Cannot modify users - lease is not active",
+    "noAdditionalUsers": "No additional users added to this lease",
+    "onlyOwnerAccess": "This lease is currently only accessible by the lease owner. Add users to share access to the AWS account.",
+    "addUserToLease": "Add User to Lease",
+    "closeModal": "Close modal",
+    "email": "Email",
+    "you": "You",
+    "addedBy": "Added By",
+    "addedDate": "Added Date",
+    "status": "Status",
+    "remove": "Remove",
+    "removeUser": "Remove User",
+    "removeUserFromLease": "Remove {{email}} from lease",
+    "confirmRemoveUser": "Are you sure you want to remove <strong>{{email}}</strong> from this lease?",
+    "removeUserWarning": "This action cannot be undone. The user will lose access to the AWS account.",
+    "statusUnknown": "Unknown",
+    "statusActive": "Active",
+    "statusFailed": "Failed",
+    "addForm": {
+      "cancel": "Cancel",
+      "addUsers": "Add Users",
+      "tabs": {
+        "searchUsers": "Search Users",
+        "bulkEntry": "Bulk Entry"
+      },
+      "advanced": "Advanced",
+      "searchLabel": "Search and add users",
+      "searchDescription": "Type to search for users by email or name",
+      "searchPlaceholder": "Search for users by email...",
+      "selectedUsers": "Selected Users ({{count}})",
+      "removeUser": "Remove {{email}}",
+      "bulkLabel": "User Emails",
+      "bulkDescription": "Enter email addresses separated by commas or new lines. Maximum 20 users per request.",
+      "bulkPlaceholder": "user1@example.com, user2@example.com",
+      "noUsersFound": "No users found",
+      "typeToSearch": "Type at least 2 characters to search",
+      "searchingUsers": "Searching users...",
+      "errorLoadingUsers": "Error loading users",
+      "retry": "Retry",
+      "useValue": "Use \"{{value}}\"",
+      "validation": {
+        "atLeastOneEmail": "At least one email is required",
+        "invalidEmails": "Invalid email addresses: {{emails}}",
+        "maxUsers": "Maximum 20 users can be added at once",
+        "selectAtLeastOne": "Please select at least one user"
+      }
+    }
+  },
+  "common": {
+    "time": "Time",
+    "cancel": "Cancel"
+  },
+  "preferences": {
+    "title": "Preferences",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "selectPageSize": "Select page size",
+    "selectVisibleColumns": "Select visible columns",
+    "wrapLines": "Wrap lines",
+    "wrapLinesDescription": "Check to see all the text and wrap the lines",
+    "stripedRows": "Striped rows",
+    "stripedRowsDescription": "Check to add alternating shaded rows"
+  },
+  "thresholds": {
+    "addThreshold": "Add a threshold",
+    "threshold": "Threshold",
+    "thresholdDescription": "When should this threshold be triggered?",
+    "action": "Action",
+    "actionDescription": "What should happen when the threshold is triggered?",
+    "sendAlert": "Send Alert",
+    "freezeAccount": "Freeze Account",
+    "wipeAccount": "Wipe Account",
+    "noThresholdsCreated": "No thresholds created.",
+    "when": "When",
+    "isConsumed": "is consumed",
+    "hoursRemain": "hours remain"
+  }
+}

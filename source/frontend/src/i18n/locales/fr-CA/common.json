@@ -1,0 +1,42 @@
+{
+  "breadcrumbs": {
+    "home": "Accueil",
+    "loading": "Chargement...",
+    "error": "Erreur"
+  },
+  "language": "Langue",
+  "english": "English",
+  "french": "Français (Canada)",
+  "theme": "Thème",
+  "light": "Clair",
+  "dark": "Sombre",
+  "density": "Densité",
+  "comfortable": "Confortable",
+  "compact": "Compact",
+  "settings": "Paramètres",
+  "home": "Accueil",
+  "approvals": "Approbations",
+  "leases": "Baux",
+  "leaseTemplates": "Modèles de bail",
+  "administration": "Administration",
+  "accounts": "Comptes",
+  "documentation": "Documentation",
+  "exit": "Sortir",
+  "yes": "Oui",
+  "no": "Non",
+  "validation": {
+    "invalidNumber": "Veuillez entrer un nombre valide.",
+    "numberGreaterThanZero": "Veuillez entrer un nombre supérieur à 0",
+    "selectAction": "Veuillez sélectionner une action",
+    "fixErrors": "Veuillez corriger les erreurs ci-dessus"
+  },
+  "duration": {
+    "popover": {
+      "expired": "Ce bail a expiré le {{date}}",
+      "willExpire": "Ce bail expirera le {{date}}"
+    },
+    "expiringSoon": "Expire bientôt",
+    "afterApproval": "après approbation",
+    "noExpiry": "Aucune expiration"
+  }
+}

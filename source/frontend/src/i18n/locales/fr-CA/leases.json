@@ -1,0 +1,214 @@
+{
+  "page": {
+    "title": "Baux",
+    "home": "Accueil",
+    "description": "Gérer les baux de comptes sandbox"
+  },
+  "table": {
+    "headers": {
+      "user": "Utilisateur",
+      "leaseTemplate": "Modèle de bail",
+      "budget": "Budget", 
+      "expiry": "Expiration",
+      "status": "Statut",
+      "awsAccount": "Compte AWS",
+      "access": "Accès"
+    },
+    "cells": {
+      "noCostsAccrued": "Aucun coût engagé",
+      "noExpiry": "Aucune expiration",
+      "noAccountAssigned": "Aucun compte assigné"
+    },
+    "noItemsToDisplay": "Aucun élément à afficher.",
+    "noItems": "Aucun élément"
+  },
+  "filters": {
+    "title": "Options de filtrage",
+    "status": "Statut",
+    "leaseTemplate": "Modèle de bail",
+    "chooseOptions": "Choisir les options",
+    "loading": "Chargement...",
+    "noLeasesFound": "Aucun bail trouvé"
+  },
+  "filterGroups": {
+    "active": "Actif",
+    "pending": "En attente",
+    "expired": "Expiré"
+  },
+  "actions": {
+    "refresh": "Actualiser",
+    "actions": "Actions",
+    "terminate": "Terminer",
+    "freeze": "Geler",
+    "update": "Mettre à jour"
+  },
+  "actionReasons": {
+    "onlyActiveOrFrozenCanTerminate": "Seuls les baux actifs ou gelés peuvent être terminés.",
+    "onlyActiveCanFreeze": "Seuls les baux actifs peuvent être gelés.",
+    "onlySingleCanUpdate": "Un seul bail peut être mis à jour à la fois."
+  },
+  "modal": {
+    "terminateTitle": "Terminer les baux",
+    "freezeTitle": "Geler les baux",
+    "terminateDescription": "bail(x) à terminer",
+    "freezeDescription": "bail(x) à geler"
+  },
+  "messages": {
+    "leasesTerminatedSuccessfully": "Le(s) bail(x) ont été terminé(s) avec succès.",
+    "leasesFrozenSuccessfully": "Le(s) bail(x) ont été gelé(s) avec succès.",
+    "actionFailed": "L'action a échoué. Veuillez réessayer."
+  },
+  "summary": {
+    "title": "Résumé du bail",
+    "fields": {
+      "leaseId": "ID du bail",
+      "awsAccountId": "ID du compte AWS",
+      "leaseTemplate": "Modèle de bail",
+      "requestedBy": "Demandé par",
+      "approvedBy": "Approuvé par",
+      "status": "Statut",
+      "maxBudget": "Budget",
+      "budgetStatus": "Statut du budget",
+      "leaseStarted": "Date de début",
+      "leaseExpiry": "Date d'expiration",
+      "lastMonitored": "Dernière vérification",
+      "comments": "Commentaires du demandeur"
+    },
+    "status": {
+      "noAccountAssigned": "Aucun compte assigné",
+      "autoApproved": "Approuvé automatiquement",
+      "noComments": "Aucun commentaire fourni"
+    },
+    "copySuccess": {
+      "leaseId": "ID du bail copié",
+      "awsAccountId": "ID du compte AWS copié"
+    },
+    "copyError": {
+      "leaseId": "Échec de la copie de l'ID du bail",
+      "awsAccountId": "Échec de la copie de l'ID du compte AWS"
+    }
+  },
+  "tabs": {
+    "summary": "Résumé",
+    "budget": "Budget",
+    "duration": "Durée",
+    "users": "Utilisateurs"
+  },
+  "budget": {
+    "title": "Budget",
+    "maximumBudget": "Budget maximum",
+    "doNotSetBudget": "Ne pas définir de budget",
+    "setMaxBudget": "Définir un budget maximum",
+    "selectOption": "Veuillez sélectionner une option",
+    "noBudgetWarning": "Si vous ne définissez pas de budget maximum, il y a un risque de dépassement des coûts pour ces comptes.",
+    "maximumBudgetAmount": "Montant du budget maximum",
+    "maximumBudgetExceeded": "Le budget maximum est de {{amount}} $",
+    "budgetThresholds": "Limites budgétaires",
+    "budgetThresholdsDescription": "Déterminez ce qui se passe lorsque le budget est consommé.",
+    "updateBudgetSettings": "Enregistrer le budget"
+  },
+  "duration": {
+    "updateDurationSettings": "Mettre à jour les paramètres",
+    "leaseDuration": "Durée du bail",
+    "currentlyExpires": "Ce bail expire actuellement",
+    "currentlyNoExpiry": "Ce bail n'expire actuellement pas",
+    "expiryDate": "Date d'expiration",
+    "removeExpiryDate": "Supprimer la date d'expiration",
+    "doNotSetExpiryDate": "Ne pas définir de date d'expiration",
+    "setExpiryDate": "Définir une date d'expiration",
+    "selectOption": "Veuillez sélectionner une option",
+    "enterValidDate": "Veuillez saisir une date et une heure valides",
+    "selectFutureDate": "Veuillez sélectionner une date et une heure d'au moins 1 heure dans le futur",
+    "durationThresholds": "Limites de durée",
+    "durationThresholdsDescription": "Déterminez ce qui se passe au fil du temps."
+  },
+  "users": {
+    "successfullyAdded": "{{count}} utilisateur(s) ajouté(s) avec succès",
+    "mixedResults": "{{successCount}} utilisateur(s) ajouté(s). {{failureCount}} ont échoué.",
+    "failedToAdd": "Échec de l'ajout de {{count}} utilisateur(s)",
+    "failedToAddUser": "Échec de l'ajout de l'utilisateur",
+    "userRemovedSuccessfully": "Utilisateur supprimé avec succès",
+    "failedToRemoveUser": "Échec de la suppression de l'utilisateur",
+    "loadingUsers": "Chargement des utilisateurs...",
+    "loadingUsersError": "Un problème est survenu lors du chargement des utilisateurs pour ce bail.",
+    "addUsersDescription": "Ajoutez des utilisateurs pour partager l'accès à ce compte AWS",
+    "addUser": "Ajouter un utilisateur",
+    "leaseUsers": "Utilisateurs du bail",
+    "cannotModifyUsers": "Impossible de modifier les utilisateurs - le bail n'est pas actif",
+    "noAdditionalUsers": "Aucun utilisateur supplémentaire ajouté à ce bail",
+    "onlyOwnerAccess": "Ce bail n'est actuellement accessible que par le propriétaire du bail. Ajoutez des utilisateurs pour partager l'accès au compte AWS.",
+    "addUserToLease": "Ajouter un utilisateur au bail",
+    "closeModal": "Fermer la fenêtre",
+    "email": "Courriel",
+    "you": "Vous",
+    "addedBy": "Ajouté par",
+    "addedDate": "Date d'ajout",
+    "status": "Statut",
+    "remove": "Supprimer",
+    "removeUser": "Supprimer l'utilisateur",
+    "removeUserFromLease": "Supprimer {{email}} du bail",
+    "confirmRemoveUser": "Êtes-vous sûr de vouloir supprimer <strong>{{email}}</strong> de ce bail ?",
+    "removeUserWarning": "Cette action ne peut pas être annulée. L'utilisateur perdra l'accès au compte AWS.",
+    "statusUnknown": "Inconnu",
+    "statusActive": "Actif",
+    "statusFailed": "Échec",
+    "addForm": {
+      "cancel": "Annuler",
+      "addUsers": "Ajouter des utilisateurs",
+      "tabs": {
+        "searchUsers": "Rechercher des utilisateurs",
+        "bulkEntry": "Saisie groupée"
+      },
+      "advanced": "Avancé",
+      "searchLabel": "Rechercher et ajouter des utilisateurs",
+      "searchDescription": "Tapez pour rechercher des utilisateurs par courriel ou nom",
+      "searchPlaceholder": "Rechercher des utilisateurs par courriel...",
+      "selectedUsers": "Utilisateurs sélectionnés ({{count}})",
+      "removeUser": "Supprimer {{email}}",
+      "bulkLabel": "Courriels des utilisateurs",
+      "bulkDescription": "Entrez les adresses courriel séparées par des virgules ou des nouvelles lignes. Maximum 20 utilisateurs par demande.",
+      "bulkPlaceholder": "utilisateur1@exemple.com, utilisateur2@exemple.com",
+      "noUsersFound": "Aucun utilisateur trouvé",
+      "typeToSearch": "Tapez au moins 2 caractères pour rechercher",
+      "searchingUsers": "Recherche d'utilisateurs...",
+      "errorLoadingUsers": "Erreur lors du chargement des utilisateurs",
+      "retry": "Réessayer",
+      "useValue": "Utiliser \"{{value}}\"",
+      "validation": {
+        "atLeastOneEmail": "Au moins un courriel est requis",
+        "invalidEmails": "Adresses courriel invalides : {{emails}}",
+        "maxUsers": "Maximum 20 utilisateurs peuvent être ajoutés à la fois",
+        "selectAtLeastOne": "Veuillez sélectionner au moins un utilisateur"
+      }
+    }
+  },
+  "common": {
+    "time": "Heure",
+    "cancel": "Annuler"
+  },
+  "preferences": {
+    "title": "Préférences",
+    "confirm": "Confirmer",
+    "cancel": "Annuler",
+    "selectPageSize": "Sélectionner la taille de page",
+    "selectVisibleColumns": "Sélectionner les colonnes visibles",
+    "wrapLines": "Retour à la ligne",
+    "wrapLinesDescription": "Cocher pour afficher tout le texte avec retour à la ligne",
+    "stripedRows": "Lignes alternées",
+    "stripedRowsDescription": "Cocher pour ajouter des lignes ombrées en alternance"
+  },
+  "thresholds": {
+    "addThreshold": "Ajouter une limite",
+    "threshold": "Limite",
+    "thresholdDescription": "Quand cette limite doit-elle être atteinte ?",
+    "action": "Action",
+    "actionDescription": "Que doit-il se passer lorsque la limite est atteinte ?",
+    "sendAlert": "Envoyer une alerte",
+    "freezeAccount": "Geler le compte",
+    "wipeAccount": "Nettoyer le compte",
+    "noThresholdsCreated": "Aucune limite créée.",
+    "when": "Quand",
+    "isConsumed": "est consommé",
+    "hoursRemain": "heures restantes"
+  }
+}

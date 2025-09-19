@@ -1,0 +1,46 @@
+{
+  "settings": "Settings",
+  "pageDescription": "Manage global settings here.",
+  "loadingError": "There was a problem loading settings.",
+  "appConfigMessage": "To change these settings, please go to",
+  "common": {
+    "home": "Home"
+  },
+  "tabs": {
+    "general": "General Settings",
+    "lease": "Lease Settings",
+    "cleanup": "Clean Up Settings"
+  },
+  "general": {
+    "maintenanceMode": "Maintenance Mode",
+    "maintenanceModeOn": "Maintenance mode is ON",
+    "maintenanceModeOff": "Maintenance mode is OFF",
+    "managedRegions": "Innovation Sandbox Managed Regions",
+    "termsOfService": "Terms of Service",
+    "notSet": "Not set"
+  },
+  "lease": {
+    "budget": {
+      "title": "Budget",
+      "maxBudget": "Max Budget",
+      "requireMaxBudget": "Require Max Budget"
+    },
+    "duration": {
+      "title": "Duration",
+      "maxDuration": "Max Lease Duration",
+      "requireMaxDuration": "Require Max Lease Duration",
+      "hoursValue": "{{hours}} hours"
+    },
+    "userLimits": {
+      "title": "User limits",
+      "maxLeasesPerUser": "Max leases per user"
+    }
+  },
+  "cleanup": {
+    "waitBeforeRerun": "Wait before Rerun Successful Attempt",
+    "failedAttemptsToCancel": "Number of failed attempts to cancel cleanup",
+    "waitBeforeRetry": "Wait before retrying failed attempt",
+    "successfulAttemptsToFinish": "Number of successful attempts to finish cleanup",
+    "secondsValue": "{{seconds}} seconds"
+  }
+}

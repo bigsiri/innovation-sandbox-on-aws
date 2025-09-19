@@ -1,0 +1,63 @@
+{
+  "accounts": "Comptes",
+  "addAccounts": "Ajouter des comptes",
+  "pageDescription": "Gérer les comptes AWS enregistrés dans le pool de comptes",
+  "ejectAccounts": "Éjecter le(s) compte(s)",
+  "cleanupAccounts": "Nettoyer le(s) compte(s)",
+  "ejectAccount": "Éjecter le compte",
+  "retryCleanup": "Réessayer le nettoyage",
+  "notAvailable": "N/D",
+  "ejectDescription": "{{count}} compte(s) à éjecter",
+  "cleanupDescription": "{{count}} compte(s) à nettoyer à nouveau",
+  "ejectSuccessMessage": "Le(s) compte(s) ont été éjectés avec succès du pool de comptes.",
+  "ejectErrorMessage": "Un ou plusieurs comptes n'ont pas pu être éjectés, veuillez réessayer.",
+  "ejectErrorTitle": "Échec de l'éjection du/des compte(s)",
+  "cleanupSuccessMessage": "Le(s) compte(s) ont été envoyés avec succès pour réessayer le nettoyage",
+  "cleanupErrorMessage": "Un ou plusieurs comptes n'ont pas pu réessayer le nettoyage, veuillez réessayer.",
+  "cleanupErrorTitle": "Échec du nettoyage du/des compte(s)",
+  "breadcrumbs": {
+    "accounts": "Comptes"
+  },
+  "addAccounts": {
+    "breadcrumb": "Ajouter des comptes",
+    "table": {
+      "header": "Ajouter des comptes",
+      "headers": {
+        "accountId": "ID du compte AWS",
+        "email": "Courriel",
+        "name": "Nom"
+      },
+      "actions": {
+        "register": "Enregistrer"
+      }
+    },
+    "modal": {
+      "header": "Réviser les comptes à enregistrer",
+      "description": "{{count}} compte(s) seront ajoutés au pool de comptes",
+      "warning": {
+        "header": "Avertissement",
+        "content": "Les comptes listés ci-dessus seront nettoyés, ce qui signifie que toutes les ressources du compte seront supprimées définitivement.",
+        "undoable": "Cette action ne peut pas être annulée !"
+      },
+      "success": "Les comptes ont été enregistrés avec succès dans la solution et sont maintenant en cours de nettoyage.",
+      "error": {
+        "title": "Échec de l'enregistrement des comptes",
+        "message": "Un ou plusieurs comptes n'ont pas pu être enregistrés, veuillez réessayer l'enregistrement."
+      }
+    }
+  },
+  "common": {
+    "home": "Accueil"
+  },
+  "table": {
+    "headers": {
+      "accountId": "ID du compte",
+      "status": "Statut",
+      "added": "Ajouté",
+      "lastModified": "Dernière modification",
+      "name": "Nom",
+      "email": "Courriel",
+      "access": "Accès"
+    }
+  }
+}

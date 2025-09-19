@@ -1,0 +1,42 @@
+{
+  "breadcrumbs": {
+    "home": "Home",
+    "loading": "Loading...",
+    "error": "Error"
+  },
+  "language": "Language",
+  "english": "English",
+  "french": "Français (Canada)",
+  "theme": "Theme",
+  "light": "Light",
+  "dark": "Dark",
+  "density": "Density",
+  "comfortable": "Comfortable",
+  "compact": "Compact",
+  "settings": "Settings",
+  "home": "Home",
+  "approvals": "Approvals",
+  "leases": "Leases",
+  "leaseTemplates": "Lease Templates",
+  "administration": "Administration",
+  "accounts": "Accounts",
+  "documentation": "Documentation",
+  "exit": "Exit",
+  "yes": "Yes",
+  "no": "No",
+  "validation": {
+    "invalidNumber": "Please enter a valid number.",
+    "numberGreaterThanZero": "Please enter a number larger than 0",
+    "selectAction": "Please select an action",
+    "fixErrors": "Please fix the above errors"
+  },
+  "duration": {
+    "popover": {
+      "expired": "This lease expired on {{date}}",
+      "willExpire": "This lease will expire on {{date}}"
+    },
+    "expiringSoon": "Expiring soon",
+    "afterApproval": "after approval",
+    "noExpiry": "No expiry"
+  }
+}

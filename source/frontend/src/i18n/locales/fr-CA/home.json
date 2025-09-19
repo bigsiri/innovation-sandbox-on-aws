@@ -1,0 +1,98 @@
+{
+  "page": {
+    "welcome": "Bienvenue dans Innovation Sandbox sur AWS",
+    "home": "Accueil"
+  },
+  "actions": {
+    "requestNewLease": "Obtenir un bail",
+    "loginToAccount": "Se connecter au compte",
+    "manageUsers": "Gérer les utilisateurs",
+    "viewAllApprovals": "Voir toutes les approbations",
+    "refresh": "Actualiser",
+    "manageAccounts": "Gérer les comptes"
+  },
+  "sections": {
+    "myLeases": "Mes baux",
+    "approvals": "Approbations",
+    "accounts": "Comptes",
+    "sharedSandboxes": "Baux partagés",
+    "administration": "Administration",
+    "accountPoolSummary": "État du pool de comptes"
+  },
+  "table": {
+    "awsAccountId": "ID du compte AWS",
+    "users": "Utilisateurs",
+    "user": "utilisateur",
+    "expiry": "Expiration",
+    "budget": "Budget",
+    "accountStatus": "Statut du compte",
+    "count": "Nombre"
+  },
+  "status": {
+    "active": "Actif",
+    "frozen": "Gelé - Limite atteinte",
+    "pendingApproval": "En attente d'approbation",
+    "approvalDenied": "Approbation refusée",
+    "expired": "Durée du bail expirée",
+    "budgetExceeded": "Budget dépassé",
+    "manuallyTerminated": "Bail terminé manuellement",
+    "accountQuarantined": "Compte en quarantaine",
+    "ejected": "Compte éjecté manuellement",
+    "accountPendingApproval": "En attente d'approbation",
+    "noAccountAssigned": "Aucun compte assigné",
+    "noAccountAssignedYet": "pour le moment"
+  },
+  "duration": {
+    "expiringSoon": "expire bientôt",
+    "expired": "expiré",
+    "willExpire": "expirera",
+    "afterApproval": "après approbation",
+    "noExpiry": "Aucune expiration",
+    "thisLease": "Ce bail"
+  },
+  "approvals": {
+    "noPendingApprovals": "Aucune approbation en attente. Rien à réviser.",
+    "checkingApprovals": "Vérification des demandes d'approbation...",
+    "approvalsCouldNotBeLoaded": "Les approbations n'ont pas pu être chargées.",
+    "pendingApprovalsHeader": "Approbations en attente",
+    "thereIs": "Il y a",
+    "thereAre": "Il y a",
+    "pendingApproval": "approbation en attente",
+    "pendingApprovals": "approbations en attente"
+  },
+  "leases": {
+    "loadingLeases": "Chargement de vos baux...",
+    "leasesCannotBeRetrieved": "Vos baux ne peuvent pas être récupérés pour le moment.",
+    "noLeasesHeader": "Vous n'avez actuellement aucun bail.",
+    "noLeasesDescription": "Pour commencer, cliquez ci-dessous pour obtenir un nouveau bail.",
+    "myLeasesDescription": "Voir la liste de vos baux",
+    "lease": "Bail"
+  },
+  "sharedLeases": {
+    "loadingSharedLeases": "Chargement des baux partagés...",
+    "sharedLeasesCouldNotBeLoaded": "Les baux partagés n'ont pas pu être chargés.",
+    "noSharedLeasesHeader": "Vous n'avez actuellement aucun bail partagé.",
+    "noSharedLeasesDescription": "Lorsque quelqu'un partage un bail avec vous, il apparaîtra ici.",
+    "sharedLeasesDescription": "Voir les baux partagés avec vous",
+    "status": "Statut",
+    "account": "Compte",
+    "sharedBy": "Partagé par",
+    "duration": "Durée",
+    "sharedOn": "Partagé le",
+    "viewDetails": "Voir les détails",
+    "notYetAssigned": "Pas encore assigné",
+    "hours": "heures"
+  },
+  "loading": {
+    "loadingPleaseWait": "Chargement, veuillez patienter.."
+  },
+  "accountStatus": {
+    "available": "Disponible",
+    "active": "Actif",
+    "frozen": "Gelé",
+    "cleanUp": "Nettoyage",
+    "quarantine": "Quarantaine",
+    "total": "Total",
+    "accounts": "comptes"
+  }
+}

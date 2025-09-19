@@ -1,0 +1,63 @@
+{
+  "accounts": "Accounts",
+  "addAccounts": "Add Accounts",
+  "pageDescription": "Manage registered AWS accounts in the account pool",
+  "ejectAccounts": "Eject Account(s)",
+  "cleanupAccounts": "Clean Up Account(s)",
+  "ejectAccount": "Eject account",
+  "retryCleanup": "Retry cleanup",
+  "notAvailable": "N/A",
+  "ejectDescription": "{{count}} account(s) to eject",
+  "cleanupDescription": "{{count}} account(s) to retry cleanup",
+  "ejectSuccessMessage": "Account(s) were successfully ejected from the account pool.",
+  "ejectErrorMessage": "One or more accounts failed to eject, try resubmitting.",
+  "ejectErrorTitle": "Failed to eject account(s)",
+  "cleanupSuccessMessage": "Account(s) were successfully sent to retry cleanup",
+  "cleanupErrorMessage": "One or more accounts failed to retry cleanup, try resubmitting.",
+  "cleanupErrorTitle": "Failed to retry cleanup on account(s)",
+  "breadcrumbs": {
+    "accounts": "Accounts"
+  },
+  "addAccounts": {
+    "breadcrumb": "Add Accounts",
+    "table": {
+      "header": "Add Accounts",
+      "headers": {
+        "accountId": "AWS Account ID",
+        "email": "Email",
+        "name": "Name"
+      },
+      "actions": {
+        "register": "Register"
+      }
+    },
+    "modal": {
+      "header": "Review Accounts to Register",
+      "description": "{{count}} account(s) will be added to the account pool",
+      "warning": {
+        "header": "Warning",
+        "content": "The accounts listed above will be nuked meaning all resources in the account will be deleted permanently.",
+        "undoable": "This action cannot be undone!"
+      },
+      "success": "Accounts were successfully registered with the solution and are now in cleanup.",
+      "error": {
+        "title": "Failed to register accounts",
+        "message": "One or more accounts failed to register, try resubmitting registration."
+      }
+    }
+  },
+  "common": {
+    "home": "Home"
+  },
+  "table": {
+    "headers": {
+      "accountId": "Account ID",
+      "status": "Status",
+      "added": "Added",
+      "lastModified": "Last Modified",
+      "name": "Name",
+      "email": "Email",
+      "access": "Access"
+    }
+  }
+}
