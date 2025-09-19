@@ -3,6 +3,7 @@
 
 import { componentTypes, validatorTypes } from "@aws-northstar/ui";
 import { FormField } from "@cloudscape-design/components";
+import { useTranslation } from "react-i18next";
 
 import { Divider } from "@amzn/innovation-sandbox-frontend/components/Divider";
 import { NumberFormField } from "@amzn/innovation-sandbox-frontend/components/NumberFormField";
@@ -15,81 +16,85 @@ interface DurationFieldsProps {
   globalMaxDuration?: number;
 }
 
-export const durationFields = (props?: DurationFieldsProps) => ({
-  name: "duration",
-  title: "Lease Duration",
-  fields: [
-    {
-      component: componentTypes.RADIO,
-      name: "maxDurationEnabled",
-      label: <FormField label="Maximum Duration" />,
-      options: [
-        {
-          label: "Do not set a maximum duration",
-          value: false,
-        },
-        {
-          label: "Set a maximum duration",
-          value: true,
-        },
-      ],
-      validate: [
-        {
-          type: validatorTypes.REQUIRED,
-          message: "Please select an option",
-        },
-      ],
-    },
-    {
-      component: componentTypes.CUSTOM,
-      CustomComponent: NumberFormField,
-      isCurrency: false,
-      name: "leaseDurationInHours",
-      showError: props?.alwaysShowValidationErrors,
-      label: <FormField label="Maximum Lease Duration (in hours)" />,
-      validate: [
-        validateNumber,
-        (val: number) =>
-          !!props?.globalMaxDuration && val > props.globalMaxDuration
-            ? `Maximum lease duration is ${props.globalMaxDuration} hours`
-            : undefined,
-      ],
-      condition: {
-        when: "maxDurationEnabled",
-        is: true,
-        then: {
-          visible: true,
+export const durationFields = (props?: DurationFieldsProps) => {
+  const { t } = useTranslation(['leaseTemplates']);
+  
+  return {
+    name: "duration",
+    title: t("leaseDuration"),
+    fields: [
+      {
+        component: componentTypes.RADIO,
+        name: "maxDurationEnabled",
+        label: <FormField label={t("maximumDuration")} />,
+        options: [
+          {
+            label: t("doNotSetMaxDuration"),
+            value: false,
+          },
+          {
+            label: t("setMaxDuration"),
+            value: true,
+          },
+        ],
+        validate: [
+          {
+            type: validatorTypes.REQUIRED,
+            message: t("selectOption"),
+          },
+        ],
+      },
+      {
+        component: componentTypes.CUSTOM,
+        CustomComponent: NumberFormField,
+        isCurrency: false,
+        name: "leaseDurationInHours",
+        showError: props?.alwaysShowValidationErrors,
+        label: <FormField label={t("maximumLeaseDurationHours")} />,
+        validate: [
+          (val: any) => validateNumber(val, t),
+          (val: number) =>
+            !!props?.globalMaxDuration && val > props.globalMaxDuration
+              ? t("maximumDurationExceeded", { hours: props.globalMaxDuration })
+              : undefined,
+        ],
+        condition: {
+          when: "maxDurationEnabled",
+          is: true,
+          then: {
+            visible: true,
+          },
         },
       },
-    },
-    {
-      component: componentTypes.PLAIN_TEXT,
-      name: "divider",
-      label: <Divider />,
-      condition: {
-        when: "maxDurationEnabled",
-        is: true,
-        then: {
-          visible: true,
+      {
+        component: componentTypes.PLAIN_TEXT,
+        name: "divider",
+        label: <Divider />,
+        condition: {
+          when: "maxDurationEnabled",
+          is: true,
+          then: {
+            visible: true,
+          },
         },
       },
-    },
-    {
-      component: componentTypes.CUSTOM,
-      CustomComponent: ThresholdSettings,
-      name: "durationThresholds",
-      label: "Duration Thresholds",
-      description: "Determine what happens as time passes.",
-      thresholdType: "duration",
-      validate: [thresholdValidator("duration")],
-      showError: props?.alwaysShowValidationErrors,
-      condition: {
-        when: "maxDurationEnabled",
-        is: true,
-        then: {
-          visible: true,
+      {
+        component: componentTypes.CUSTOM,
+        CustomComponent: ThresholdSettings,
+        name: "durationThresholds",
+        label: t("durationThresholds"),
+        description: t("durationThresholdsDescription"),
+        thresholdType: "duration",
+        validate: [thresholdValidator("duration", t)],
+        showError: props?.alwaysShowValidationErrors,
+        condition: {
+          when: "maxDurationEnabled",
+          is: true,
+          then: {
+            visible: true,
+          },
         },
       },
-    },
-  ],
-});
+    ],
+  };
+};

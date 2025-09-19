@@ -6,6 +6,7 @@ import {
   KeyValuePairs,
   StatusIndicator,
 } from "@cloudscape-design/components";
+import { useTranslation } from "react-i18next";
 
 import { ErrorPanel } from "@amzn/innovation-sandbox-frontend/components/ErrorPanel";
 import { Loader } from "@amzn/innovation-sandbox-frontend/components/Loader";
@@ -13,6 +14,7 @@ import { SettingsContainer } from "@amzn/innovation-sandbox-frontend/domains/set
 import { useGetConfigurations } from "@amzn/innovation-sandbox-frontend/domains/settings/hooks";
 
 export const GeneralSettings = () => {
+  const { t } = useTranslation(['settings']);
   const {
     data: config,
     isLoading,
@@ -28,7 +30,7 @@ export const GeneralSettings = () => {
   if (loadingError || !config) {
     return (
       <ErrorPanel
-        description="There was a problem loading settings."
+        description={t("loadingError")}
         retry={refetch}
         error={error as Error}
       />
@@ -40,19 +42,19 @@ export const GeneralSettings = () => {
       <KeyValuePairs
         items={[
           {
-            label: "Maintenance Mode",
+            label: t("general.maintenanceMode"),
             value: config.maintenanceMode ? (
               <StatusIndicator type="warning">
-                Maintenance mode is ON
+                {t("general.maintenanceModeOn")}
               </StatusIndicator>
             ) : (
               <StatusIndicator type="success">
-                Maintenance mode is OFF
+                {t("general.maintenanceModeOff")}
               </StatusIndicator>
             ),
           },
           {
-            label: "Innovation Sandbox Managed Regions",
+            label: t("general.managedRegions"),
             value:
               (config.isbManagedRegions || []).length > 0 ? (
                 <ul data-list>
@@ -61,11 +63,11 @@ export const GeneralSettings = () => {
                   ))}
                 </ul>
               ) : (
-                <StatusIndicator type="warning">Not set</StatusIndicator>
+                <StatusIndicator type="warning">{t("general.notSet")}</StatusIndicator>
               ),
           },
           {
-            label: "Terms of Service",
+            label: t("general.termsOfService"),
             value: (
               <Container>
                 <pre>{config.termsOfService}</pre>

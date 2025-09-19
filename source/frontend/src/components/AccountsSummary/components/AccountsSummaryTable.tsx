@@ -4,6 +4,7 @@
 import { SpaceBetween, Table } from "@cloudscape-design/components";
 import classNames from "classnames";
 import { ReactNode, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   SandboxAccount,
@@ -96,14 +97,16 @@ export const AccountsSummaryTable = ({
   filter,
   onClick,
 }: AccountsSummaryTableProps) => {
+  const { t } = useTranslation('home');
+  
   // memoise summary
   const summary = useMemo(() => {
-    const summary = convertAccountsToSummary(accounts);
+    const summary = convertAccountsToSummary(accounts, t);
 
     // add footer row to show total accounts
-    summary.push({ title: "Total", value: accounts?.length ?? 0 });
+    summary.push({ title: t("accountStatus.total"), value: accounts?.length ?? 0 });
     return summary;
-  }, [accounts]);
+  }, [accounts, t]);
 
   const handleClick = (item: AccountStatusDatum) => {
     if (filter === item.status) {
@@ -122,7 +125,7 @@ export const AccountsSummaryTable = ({
       columnDefinitions={[
         {
           id: "name",
-          header: "Account Status",
+          header: t("table.accountStatus"),
           sortingField: "name",
           // prettier-ignore
           cell: (item) => ( // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
@@ -131,7 +134,7 @@ export const AccountsSummaryTable = ({
         },
         {
           id: "value",
-          header: <HeaderCell>Count</HeaderCell>,
+          header: <HeaderCell>{t("table.count")}</HeaderCell>,
           sortingField: "value",
           // prettier-ignore
           cell: (item) => ( // NOSONAR typescript:S6478 - the way the table component works requires defining component during render

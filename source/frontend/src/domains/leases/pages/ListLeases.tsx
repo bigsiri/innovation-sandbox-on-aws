@@ -1,6 +1,9 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Table } from "@aws-northstar/ui";
 import {
   Box,
@@ -17,9 +20,13 @@ import {
   SpaceBetween,
   StatusIndicator,
 } from "@cloudscape-design/components";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-
+import { InfoLink } from "@amzn/innovation-sandbox-frontend/components/InfoLink";
+import { Markdown } from "@amzn/innovation-sandbox-frontend/components/Markdown";
+import { TextLink } from "@amzn/innovation-sandbox-frontend/components/TextLink";
+import { DurationStatus } from "@amzn/innovation-sandbox-frontend/components/DurationStatus";
+import { BudgetProgressBar } from "@amzn/innovation-sandbox-frontend/components/BudgetProgressBar";
+import { AccountLoginLink } from "@amzn/innovation-sandbox-frontend/components/AccountLoginLink";
+import { BatchActionReview } from "@amzn/innovation-sandbox-frontend/components/MultiSelectTableActionReview";
 import {
   ApprovalDeniedLeaseStatusSchema,
   ExpiredLeaseStatusSchema,
@@ -32,20 +39,13 @@ import {
   MonitoredLeaseStatusSchema,
   PendingLeaseStatusSchema,
 } from "@amzn/innovation-sandbox-commons/data/lease/lease";
-import { AccountLoginLink } from "@amzn/innovation-sandbox-frontend/components/AccountLoginLink";
-import { BudgetProgressBar } from "@amzn/innovation-sandbox-frontend/components/BudgetProgressBar";
-import { DurationStatus } from "@amzn/innovation-sandbox-frontend/components/DurationStatus";
-import { InfoLink } from "@amzn/innovation-sandbox-frontend/components/InfoLink";
-import { Markdown } from "@amzn/innovation-sandbox-frontend/components/Markdown";
-import { BatchActionReview } from "@amzn/innovation-sandbox-frontend/components/MultiSelectTableActionReview";
-import { TextLink } from "@amzn/innovation-sandbox-frontend/components/TextLink";
 import {
   showErrorToast,
   showSuccessToast,
 } from "@amzn/innovation-sandbox-frontend/components/Toast";
 import { LeaseStatusBadge } from "@amzn/innovation-sandbox-frontend/domains/leases/components/LeaseStatusBadge";
 import {
-  getLeaseStatusDisplayName,
+  useLeaseStatusDisplayName,
   leaseStatusSortingComparator,
 } from "@amzn/innovation-sandbox-frontend/domains/leases/helpers";
 import {
@@ -56,35 +56,6 @@ import {
 import { useBreadcrumb } from "@amzn/innovation-sandbox-frontend/hooks/useBreadcrumb";
 import { useModal } from "@amzn/innovation-sandbox-frontend/hooks/useModal";
 import { useAppLayoutContext } from "@aws-northstar/ui/components/AppLayout";
-
-const filterOptions: SelectProps.Options = [
-  {
-    label: "Active",
-    options: MonitoredLeaseStatusSchema.options.map((status) => ({
-      label: getLeaseStatusDisplayName(status as LeaseStatus),
-      value: status,
-    })),
-  },
-  {
-    label: "Pending",
-    options: [
-      {
-        label: getLeaseStatusDisplayName(PendingLeaseStatusSchema.value),
-        value: PendingLeaseStatusSchema.value,
-      },
-    ],
-  },
-  {
-    label: "Expired",
-    options: [
-      ...ExpiredLeaseStatusSchema.options,
-      ApprovalDeniedLeaseStatusSchema.value,
-    ].map((status) => ({
-      label: getLeaseStatusDisplayName(status as LeaseStatus),
-      value: status,
-    })),
-  },
-];
 
 const UserCell = ({
   lease,
@@ -99,18 +70,26 @@ const UserCell = ({
     lease.userEmail
   );
 
-const BudgetCell = ({ lease }: { lease: Lease }) => {
+const AccessCell = ({ lease }: { lease: Lease }) => (
+  <>
+    {isMonitoredLease(lease) && (
+      <AccountLoginLink accountId={lease.awsAccountId} />
+    )}
+  </>
+);
+
+const BudgetCell = ({ lease, t }: { lease: Lease; t: any }) => {
   return isMonitoredLease(lease) || isExpiredLease(lease) ? (
     <BudgetProgressBar
       currentValue={lease.totalCostAccrued}
       maxValue={lease.maxSpend}
     />
   ) : (
-    "No costs accrued"
+    t("table.cells.noCostsAccrued", { ns: "leases" })
   );
 };
 
-const ExpiryCell = ({ lease }: { lease: Lease }) => {
+const ExpiryCell = ({ lease, t }: { lease: Lease; t: any }) => {
   if (isPendingLease(lease) || isApprovalDeniedLease(lease)) {
     return <DurationStatus durationInHours={lease.leaseDurationInHours} />;
   } else if (isMonitoredLease(lease)) {
@@ -120,7 +99,7 @@ const ExpiryCell = ({ lease }: { lease: Lease }) => {
         durationInHours={lease.leaseDurationInHours}
       />
     ) : (
-      <StatusIndicator type="info">No expiry</StatusIndicator>
+      <StatusIndicator type="info">{t("table.cells.noExpiry", { ns: "leases" })}</StatusIndicator>
     );
   } else if (isExpiredLease(lease)) {
     return <DurationStatus date={lease.endDate} expired={true} />;
@@ -128,111 +107,134 @@ const ExpiryCell = ({ lease }: { lease: Lease }) => {
   return null;
 };
 
-const AwsAccountCell = ({ lease }: { lease: Lease }) =>
+const AwsAccountCell = ({ lease, t }: { lease: Lease; t: any }) =>
   isMonitoredLease(lease) || isExpiredLease(lease) ? (
     lease.awsAccountId
   ) : (
-    <StatusIndicator type="warning">No account assigned</StatusIndicator>
+    <StatusIndicator type="warning">{t("table.cells.noAccountAssigned", { ns: "leases" })}</StatusIndicator>
   );
 
-const AccessCell = ({ lease }: { lease: Lease }) => (
-  <>
-    {isMonitoredLease(lease) && (
-      <AccountLoginLink accountId={lease.awsAccountId} />
-    )}
-  </>
-);
+const createColumnDefinitions = (includeLinks: boolean, t: any) => [
+  {
+    id: "user",
+    header: t("table.headers.user", { ns: "leases" }),
+    sortingField: "userEmail",
+    cell: (lease: Lease) => <UserCell lease={lease} includeLinks={includeLinks} />,
+  },
+  {
+    id: "originalLeaseTemplateName", 
+    header: t("table.headers.leaseTemplate", { ns: "leases" }),
+    sortingField: "originalLeaseTemplateName",
+    cell: (lease: Lease) => lease.originalLeaseTemplateName,
+  },
+  {
+    id: "budget",
+    header: t("table.headers.budget", { ns: "leases" }),
+    sortingField: "totalCostAccrued",
+    cell: (lease: Lease) => <BudgetCell lease={lease} t={t} />,
+  },
+  {
+    id: "expirationDate",
+    header: t("table.headers.expiry", { ns: "leases" }),
+    sortingField: "expirationDate", 
+    cell: (lease: Lease) => <ExpiryCell lease={lease} t={t} />,
+  },
+  {
+    id: "status",
+    header: t("table.headers.status", { ns: "leases" }),
+    sortingComparator: leaseStatusSortingComparator,
+    cell: (lease: Lease) => <LeaseStatusBadge lease={lease} />,
+  },
+  {
+    id: "awsAccountId",
+    header: t("table.headers.awsAccount", { ns: "leases" }),
+    sortingField: "awsAccountId",
+    cell: (lease: Lease) => <AwsAccountCell lease={lease} t={t} />,
+  },
+  {
+    id: "link", 
+    header: t("table.headers.access", { ns: "leases" }),
+    cell: (lease: Lease) => <AccessCell lease={lease} />,
+  },
+].filter((column) => includeLinks || column.id !== "link");
 
 type ActionModalContentProps = {
   selectedLeases: Lease[];
   action: "terminate" | "freeze";
   onAction: (leaseId: string) => Promise<any>;
+  t: any;
+  columnDefinitions: any[];
 };
-
-const createColumnDefinitions = (includeLinks: boolean) =>
-  [
-    {
-      id: "user",
-      header: "User",
-      sortingField: "userEmail",
-      cell: (lease: Lease) => (
-        <UserCell lease={lease} includeLinks={includeLinks} />
-      ), // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
-    },
-    {
-      id: "originalLeaseTemplateName",
-      header: "Lease Template",
-      sortingField: "originalLeaseTemplateName",
-      cell: (lease: Lease) => lease.originalLeaseTemplateName,
-    },
-    {
-      id: "budget",
-      header: "Budget",
-      sortingField: "totalCostAccrued",
-      cell: (lease: Lease) => <BudgetCell lease={lease} />, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
-    },
-    {
-      id: "expirationDate",
-      header: "Expiry",
-      sortingField: "expirationDate",
-      cell: (lease: Lease) => <ExpiryCell lease={lease} />, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
-    },
-    {
-      id: "status",
-      header: "Status",
-      sortingComparator: leaseStatusSortingComparator,
-      cell: (lease: Lease) => <LeaseStatusBadge lease={lease} />, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
-    },
-    {
-      id: "awsAccountId",
-      header: "AWS Account",
-      sortingField: "awsAccountId",
-      cell: (lease: Lease) => <AwsAccountCell lease={lease} />, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
-    },
-    {
-      id: "link",
-      header: "Access",
-      cell: (lease: Lease) => <AccessCell lease={lease} />, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
-    },
-  ].filter((column) => includeLinks || column.id !== "link");
 
 const ActionModalContent = ({
   selectedLeases,
   action,
   onAction,
+  t,
+  columnDefinitions,
 }: ActionModalContentProps) => {
   return (
     <BatchActionReview
       items={selectedLeases}
-      description={`${selectedLeases.length} lease(s) to ${action}`}
-      columnDefinitions={createColumnDefinitions(false)}
+      description={`${selectedLeases.length} ${action === "terminate" ? t("modal.terminateDescription", { ns: "leases" }) : t("modal.freezeDescription", { ns: "leases" })}`}
+      columnDefinitions={columnDefinitions}
       identifierKey="leaseId"
       onSubmit={async (lease: Lease) => {
         await onAction(lease.leaseId);
       }}
       onSuccess={() => {
         showSuccessToast(
-          `Leases(s) were ${action === "terminate" ? "terminated" : "frozen"} successfully.`,
+          action === "terminate" ? t("messages.leasesTerminatedSuccessfully", { ns: "leases" }) : t("messages.leasesFrozenSuccessfully", { ns: "leases" })
         );
       }}
       onError={() =>
-        showErrorToast(
-          `One or more leases failed to ${action}, try resubmitting.`,
-          `Failed to ${action} lease(s)`,
-        )
+        showErrorToast(t("messages.actionFailed", { ns: "leases" }))
       }
     />
   );
 };
 
 export const ListLeases = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
+  const getLeaseStatusDisplayName = useLeaseStatusDisplayName();
   const { setTools } = useAppLayoutContext();
   const setBreadcrumb = useBreadcrumb();
+  const { showModal } = useModal();
+
+  // Create filter options with translations
+  const filterOptions: SelectProps.Options = [
+    {
+      label: t("filterGroups.active", { ns: "leases" }),
+      options: MonitoredLeaseStatusSchema.options.map((status: string) => ({
+        label: getLeaseStatusDisplayName(status as LeaseStatus),
+        value: status,
+      })),
+    },
+    {
+      label: t("filterGroups.pending", { ns: "leases" }),
+      options: [
+        {
+          label: getLeaseStatusDisplayName(PendingLeaseStatusSchema.value),
+          value: PendingLeaseStatusSchema.value,
+        },
+      ],
+    },
+    {
+      label: t("filterGroups.expired", { ns: "leases" }),
+      options: [
+        ...ExpiredLeaseStatusSchema.options,
+        ApprovalDeniedLeaseStatusSchema.value,
+      ].map((status) => ({
+        label: getLeaseStatusDisplayName(status as LeaseStatus),
+        value: status,
+      })),
+    },
+  ];
+
   const [filteredLeases, setFilteredLeases] = useState<Lease[]>([]);
   const [selectedLeases, setSelectedLeases] = useState<Lease[]>([]);
   const [leaseTemplates, setLeaseTemplates] = useState<SelectProps.Options>([]);
-  const { showModal } = useModal();
 
   // default status filter to active leases
   const [statusFilter, setStatusFilter] = useState<SelectProps.Options>(
@@ -249,8 +251,8 @@ export const ListLeases = () => {
 
   const init = async () => {
     setBreadcrumb([
-      { text: "Home", href: "/" },
-      { text: "Leases", href: "/leases" },
+      { text: t("page.home", { ns: "leases" }), href: "/" },
+      { text: t("page.title", { ns: "leases" }), href: "/leases" },
     ]);
     setTools(<Markdown file="leases" />);
   };
@@ -277,64 +279,68 @@ export const ListLeases = () => {
     return filterByLeaseTemplate;
   };
 
-  useEffect(() => {
-    if (leases) {
-      // get list of unique lease template names from list of leases
-      const uniqueLeaseTemplateNames: string[] = [
-        ...new Set(leases.map((lease) => lease.originalLeaseTemplateName)),
-      ];
-      const leaseTemplateOptions: SelectProps.Options =
-        uniqueLeaseTemplateNames.map((type) => ({ value: type, label: type }));
-
-      // populate lease template filter dropdown
-      setLeaseTemplates(leaseTemplateOptions);
-
-      // update filtered list of leases
-      setFilteredLeases(filterLeases(leases));
-    }
-  }, [leases]);
-
-  useEffect(() => {
-    // update filtered list of leases
-    setFilteredLeases(filterLeases(leases ?? []));
-  }, [statusFilter, leaseTemplateFilter]);
-
-  useEffect(() => {
-    init();
-  }, []);
-
-  const handleSelectionChange = ({ detail }: { detail: any }) => {
-    const approvals = detail.selectedItems as Lease[];
-    setSelectedLeases(approvals);
+  const handleSelectionChange = ({ detail }: any) => {
+    setSelectedLeases(detail.selectedItems);
   };
 
   const showTerminateModal = () => {
     showModal({
-      header: "Terminate Lease(s)",
+      header: t("modal.terminateTitle", { ns: "leases" }),
       content: (
         <ActionModalContent
           selectedLeases={selectedLeases}
           action="terminate"
           onAction={terminateLease}
+          t={t}
+          columnDefinitions={createColumnDefinitions(false, t)}
         />
       ),
-      size: "max",
     });
   };
 
   const showFreezeModal = () => {
     showModal({
-      header: "Freeze Lease(s)",
+      header: t("modal.freezeTitle", { ns: "leases" }),
       content: (
         <ActionModalContent
           selectedLeases={selectedLeases}
           action="freeze"
           onAction={freezeLease}
+          t={t}
+          columnDefinitions={createColumnDefinitions(false, t)}
         />
       ),
-      size: "max",
     });
   };
+
+  useEffect(() => {
+    init();
+  }, []);
+
+  useEffect(() => {
+    if (filterOptions.length > 0 && statusFilter.length === 0) {
+      // Set default status filter to active leases
+      setStatusFilter((filterOptions[0] as SelectProps.OptionGroup).options);
+    }
+  }, [filterOptions, statusFilter.length]);
+
+  useEffect(() => {
+    if (leases) {
+      const filtered = filterLeases(leases);
+      setFilteredLeases(filtered);
+
+      // Extract unique lease template names for filter
+      const uniqueTemplates = Array.from(
+        new Set(leases.map((lease) => lease.originalLeaseTemplateName)),
+      );
+      setLeaseTemplates(
+        uniqueTemplates.map((template) => ({
+          label: template,
+          value: template,
+        })),
+      );
+    }
+  }, [leases, statusFilter, leaseTemplateFilter]);
 
   return (
     <ContentLayout
@@ -342,17 +348,17 @@ export const ListLeases = () => {
         <Header
           variant="h1"
           info={<InfoLink markdown="leases" />}
-          description="Manage sandbox account leases"
+          description={t("page.description", { ns: "leases" })}
         >
-          Leases
+          {t("page.title", { ns: "leases" })}
         </Header>
       }
     >
       <SpaceBetween size="s">
-        <Container header={<Header variant="h3">Filter Options</Header>}>
+        <Container header={<Header variant="h3">{t("filters.title", { ns: "leases" })}</Header>}>
           <ColumnLayout columns={3}>
             <Box>
-              <FormField label="Status" />
+              <FormField label={t("filters.status", { ns: "leases" })} />
               <Multiselect
                 data-testid="status-filter"
                 selectedOptions={statusFilter}
@@ -362,11 +368,11 @@ export const ListLeases = () => {
                   )
                 }
                 options={filterOptions}
-                placeholder="Choose options"
+                placeholder={t("filters.chooseOptions", { ns: "leases" })}
               />
             </Box>
             <Box>
-              <FormField label="Lease Template" />
+              <FormField label={t("filters.leaseTemplate", { ns: "leases" })} />
               <Multiselect
                 selectedOptions={leaseTemplateFilter}
                 onChange={({ detail }) =>
@@ -375,9 +381,9 @@ export const ListLeases = () => {
                   )
                 }
                 options={leaseTemplates}
-                placeholder="Choose options"
-                loadingText="Loading..."
-                empty="No leases found"
+                placeholder={t("filters.chooseOptions", { ns: "leases" })}
+                loadingText={t("filters.loading", { ns: "leases" })}
+                empty={t("filters.noLeasesFound", { ns: "leases" })}
                 statusType={isFetching ? "loading" : undefined}
               />
             </Box>
@@ -386,18 +392,19 @@ export const ListLeases = () => {
         <Table
           stripedRows
           trackBy="leaseId"
-          columnDefinitions={createColumnDefinitions(true)}
-          header="Leases"
+          columnDefinitions={createColumnDefinitions(true, t)}
+          header={t("page.title", { ns: "leases" })}
           totalItemsCount={(filteredLeases || []).length}
           items={filteredLeases || []}
           selectedItems={selectedLeases}
           onSelectionChange={handleSelectionChange}
           loading={isFetching}
+          empty={t("table.noItemsToDisplay", { ns: "leases" })}
           actions={
-            <SpaceBetween direction="horizontal" size="s">
+            <SpaceBetween direction="horizontal" size="xs">
               <Button
                 iconName="refresh"
-                ariaLabel="Refresh"
+                ariaLabel={t("actions.refresh", { ns: "leases" })}
                 onClick={() => refetch()}
                 disabled={isFetching}
               />
@@ -405,29 +412,27 @@ export const ListLeases = () => {
                 disabled={selectedLeases.length === 0}
                 items={[
                   {
-                    text: "Terminate",
+                    text: t("actions.terminate", { ns: "leases" }),
                     id: "terminate",
                     disabled: !selectedLeases.every(
                       (lease) =>
                         lease.status === "Active" || lease.status === "Frozen",
                     ),
-                    disabledReason:
-                      "Only active or frozen leases can be terminated.",
+                    disabledReason: t("actionReasons.onlyActiveOrFrozenCanTerminate", { ns: "leases" }),
                   },
                   {
-                    text: "Freeze",
+                    text: t("actions.freeze", { ns: "leases" }),
                     id: "freeze",
                     disabled: !selectedLeases.every(
                       (lease) => lease.status === "Active",
                     ),
-                    disabledReason: "Only active leases can be frozen.",
+                    disabledReason: t("actionReasons.onlyActiveCanFreeze", { ns: "leases" }),
                   },
                   {
-                    text: "Update",
+                    text: t("actions.update", { ns: "leases" }),
                     id: "update",
                     disabled: selectedLeases.length > 1,
-                    disabledReason:
-                      "Only a single lease can be updated at a time.",
+                    disabledReason: t("actionReasons.onlySingleCanUpdate", { ns: "leases" }),
                   },
                 ]}
                 onItemClick={({ detail }) => {
@@ -444,7 +449,7 @@ export const ListLeases = () => {
                   }
                 }}
               >
-                Actions
+                {t("actions.actions", { ns: "leases" })}
               </ButtonDropdown>
             </SpaceBetween>
           }

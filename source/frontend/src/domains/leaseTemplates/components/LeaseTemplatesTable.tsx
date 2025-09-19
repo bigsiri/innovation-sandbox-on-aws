@@ -7,12 +7,15 @@ import {
   Box,
   Button,
   ButtonDropdown,
+  CollectionPreferences,
   SpaceBetween,
   StatusIndicator,
   TextContent,
 } from "@cloudscape-design/components";
 import moment from "moment";
+import "moment/locale/fr";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { LeaseTemplate } from "@amzn/innovation-sandbox-commons/data/lease-template/lease-template";
 import { ErrorPanel } from "@amzn/innovation-sandbox-frontend/components/ErrorPanel";
@@ -35,27 +38,44 @@ const NameCell = ({ item }: { item: LeaseTemplate }) => (
   </>
 );
 
-const MaxSpendCell = ({ item }: { item: LeaseTemplate }) => (
-  <>
-    {item.maxSpend ? (
-      formatCurrency(item.maxSpend)
-    ) : (
-      <StatusIndicator type="info">No max budget</StatusIndicator>
-    )}
-  </>
-);
+const MaxSpendCell = ({ item }: { item: LeaseTemplate }) => {
+  const { t } = useTranslation(['leaseTemplates']);
+  return (
+    <>
+      {item.maxSpend ? (
+        formatCurrency(item.maxSpend)
+      ) : (
+        <StatusIndicator type="info">{t("noMaxBudget")}</StatusIndicator>
+      )}
+    </>
+  );
+};
 
-const ExpiryCell = ({ item }: { item: LeaseTemplate }) => (
-  <>
-    {item.leaseDurationInHours ? (
-      `after ${moment.duration(item.leaseDurationInHours, "hours").humanize()}`
-    ) : (
-      <StatusIndicator type="info">No expiry</StatusIndicator>
-    )}
-  </>
-);
+const ExpiryCell = ({ item }: { item: LeaseTemplate }) => {
+  const { t } = useTranslation(['leaseTemplates']);
+  return (
+    <>
+      {item.leaseDurationInHours ? (
+        `${t("after")} ${moment.duration(item.leaseDurationInHours, "hours").humanize()}`
+      ) : (
+        <StatusIndicator type="info">{t("noExpiry")}</StatusIndicator>
+      )}
+    </>
+  );
+};
 
 export const LeaseTemplatesTable = () => {
+  const { t, i18n } = useTranslation(['leaseTemplates']);
+
+  // Ensure moment locale is set correctly
+  useEffect(() => {
+    if (i18n.language === 'fr-CA') {
+      moment.locale('fr');
+    } else {
+      moment.locale('en');
+    }
+  }, [i18n.language]);
+
   // get lease templates using react query hook
   const {
     data: leaseTemplates,
@@ -96,7 +116,7 @@ export const LeaseTemplatesTable = () => {
     await deleteLeaseTemplates(selectedIds);
     setSelectedItems([]);
     setDeleteModalVisible(false);
-    showSuccessToast("Lease template(s) deleted.");
+    showSuccessToast(t("deleteSuccess"));
   };
 
   if (isError) {
@@ -112,13 +132,57 @@ export const LeaseTemplatesTable = () => {
   return (
     <>
       <Table
-        header="Lease Templates"
+        header={t("leaseTemplates")}
         stripedRows
         resizableColumns
         trackBy="uuid"
         loading={isFetching}
         items={leaseTemplates || []}
         totalItemsCount={(leaseTemplates || []).length}
+        preferences={
+          <CollectionPreferences
+            title={t("preferences")}
+            confirmLabel={t("confirm")}
+            cancelLabel={t("cancel")}
+            preferences={{
+              pageSize: 10,
+              wrapLines: false,
+              stripedRows: true,
+              visibleContent: ["name", "createdBy", "maxSpend", "leaseDurationInHours", "meta.lastEditTime"]
+            }}
+            pageSizePreference={{
+              title: t("selectPageSize"),
+              options: [
+                { value: 10, label: "10" },
+                { value: 20, label: "20" },
+                { value: 50, label: "50" }
+              ]
+            }}
+            wrapLinesPreference={{
+              label: t("wrapLines"),
+              description: t("wrapLinesDescription")
+            }}
+            stripedRowsPreference={{
+              label: t("stripedRows"),
+              description: t("stripedRowsDescription")
+            }}
+            visibleContentPreference={{
+              title: t("selectVisibleColumns"),
+              options: [
+                { 
+                  label: t("mainProperties"),
+                  options: [
+                    { id: "name", label: t("name") },
+                    { id: "createdBy", label: t("createdBy") },
+                    { id: "maxSpend", label: t("maxBudget") },
+                    { id: "leaseDurationInHours", label: t("expiry") },
+                    { id: "meta.lastEditTime", label: t("lastUpdated") }
+                  ]
+                }
+              ]
+            }}
+          />
+        }
         selectedItems={selectedItems}
         onSelectionChange={({ detail }) =>
           setSelectedItems(detail.selectedItems)
@@ -126,31 +190,31 @@ export const LeaseTemplatesTable = () => {
         columnDefinitions={[
           {
             id: "name",
-            header: "Name",
+            header: t("name"),
             sortingField: "name",
             cell: (item: LeaseTemplate) => <NameCell item={item} />, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
           },
           {
             id: "createdBy",
-            header: "Created by",
+            header: t("createdBy"),
             sortingField: "createdBy",
             cell: (item: LeaseTemplate) => item.createdBy,
           },
           {
             id: "maxSpend",
-            header: "Max Budget",
+            header: t("maxBudget"),
             sortingField: "maxSpend",
             cell: (item: LeaseTemplate) => <MaxSpendCell item={item} />, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
           },
           {
             id: "leaseDurationInHours",
-            header: "Expiry",
+            header: t("expiry"),
             sortingField: "leaseDurationInHours",
             cell: (item: LeaseTemplate) => <ExpiryCell item={item} />, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
           },
           {
             id: "meta.lastEditTime",
-            header: "Last Updated",
+            header: t("lastUpdated"),
             sortingField: "meta.lastEditTime",
             cell: (item: LeaseTemplate) =>
               moment(item.meta?.lastEditTime).fromNow(),
@@ -166,14 +230,14 @@ export const LeaseTemplatesTable = () => {
             />
             <ButtonDropdown
               disabled={selectedItems.length === 0}
-              items={[{ text: "Delete", id: "delete" }]}
+              items={[{ text: t("delete"), id: "delete" }]}
               onItemClick={({ detail }) => {
                 if (detail.id === "delete") {
                   setDeleteModalVisible(true);
                 }
               }}
             >
-              Actions
+              {t("actions")}
             </ButtonDropdown>
           </SpaceBetween>
         }
@@ -182,18 +246,18 @@ export const LeaseTemplatesTable = () => {
       <DeleteConfirmationDialog
         variant="confirmation"
         visible={isDeleteModalVisible}
-        title="Remove lease templates"
+        title={t("removeLeaseTemplates")}
         onCancelClicked={() => setDeleteModalVisible(false)}
         onDeleteClicked={handleDelete}
         loading={isDeleting}
       >
         <TextContent>
-          Are you sure you want to remove these lease template(s)?
+          {t("confirmDelete")}
         </TextContent>
 
         {showDeleteError && (
           <ErrorPanel
-            description="An error occurred. Please try again."
+            description={t("deleteError")}
             error={deleteError as Error}
           />
         )}

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { Box } from "@cloudscape-design/components";
+import { useTranslation } from "react-i18next";
 
 import styles from "./styles.module.scss";
 
@@ -12,25 +13,27 @@ interface ThresholdListContainerProps {
 export const ThresholdListContainer = ({
   children,
 }: ThresholdListContainerProps) => {
+  const { t } = useTranslation();
+  
   return (
     <div className={styles.container}>
       <div className={styles.row}>
         <Box>
           <Box>
-            <strong>Threshold</strong>
+            <strong>{t("thresholds.threshold", { ns: "leases" })}</strong>
           </Box>
           <Box>
-            <small data-muted>When should this threshold be triggered?</small>
+            <small data-muted>{t("thresholds.thresholdDescription", { ns: "leases" })}</small>
           </Box>
         </Box>
         <Box />
         <Box>
           <Box>
-            <strong>Action</strong>
+            <strong>{t("thresholds.action", { ns: "leases" })}</strong>
           </Box>
           <Box>
             <small data-muted>
-              What should happen when the threshold is triggered?
+              {t("thresholds.actionDescription", { ns: "leases" })}
             </small>
           </Box>
         </Box>

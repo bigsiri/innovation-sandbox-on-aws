@@ -8,13 +8,14 @@ import {
   Header,
   SpaceBetween,
 } from "@cloudscape-design/components";
+import { useTranslation } from "react-i18next";
 
 import {
   BudgetThreshold,
   DurationThreshold,
 } from "@amzn/innovation-sandbox-commons/data/lease-template/lease-template";
 import { useFormContext } from "@amzn/innovation-sandbox-frontend/components/Form/context";
-import { ThresholdTypes } from "@amzn/innovation-sandbox-frontend/components/ThresholdSettings/constants";
+import { getThresholdTypes } from "@amzn/innovation-sandbox-frontend/components/ThresholdSettings/constants";
 import { ThresholdListContainer } from "@amzn/innovation-sandbox-frontend/components/ThresholdSettings/ThresholdsListContainer";
 import { ThresholdsListItem } from "@amzn/innovation-sandbox-frontend/components/ThresholdSettings/ThresholdsListItem";
 import { Threshold } from "@amzn/innovation-sandbox-frontend/components/ThresholdSettings/types";
@@ -44,7 +45,9 @@ export const ThresholdSettings = ({
   thresholdType,
   meta: { error, submitFailed },
 }: ThresholdSettingsProps) => {
-  const type = ThresholdTypes[thresholdType];
+  const { t } = useTranslation();
+  const thresholdTypes = getThresholdTypes(t);
+  const type = thresholdTypes[thresholdType];
 
   // get max value from other form field
   const {
@@ -96,7 +99,7 @@ export const ThresholdSettings = ({
       </Header>
       {(() => {
         if (thresholds.length === 0 && !maxValue) {
-          return <Alert type="info">No thresholds created.</Alert>;
+          return <Alert type="info">{t("thresholds.noThresholdsCreated", { ns: "leases" })}</Alert>;
         }
 
         return (
@@ -133,7 +136,7 @@ export const ThresholdSettings = ({
       })()}
 
       <Button iconName="add-plus" onClick={onAdd}>
-        Add a threshold
+        {t("thresholds.addThreshold", { ns: "leases" })}
       </Button>
     </SpaceBetween>
   );

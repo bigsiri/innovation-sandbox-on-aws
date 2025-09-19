@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { componentTypes } from "@aws-northstar/ui";
+import { useTranslation } from "react-i18next";
 
 import { LeaseTemplate } from "@amzn/innovation-sandbox-commons/data/lease-template/lease-template";
 import { Form } from "@amzn/innovation-sandbox-frontend/components/Form";
@@ -30,6 +31,8 @@ export const DurationForm = ({
   isUpdating,
   globalMaxDuration,
 }: DurationFormProps) => {
+  const { t } = useTranslation(['leaseTemplates']);
+  
   return (
     <Form
       insideTab
@@ -58,7 +61,7 @@ export const DurationForm = ({
         }
       }}
       schema={{
-        submitLabel: "Update Duration Settings",
+        submitLabel: t("updateDurationSettings"),
         fields: [
           {
             component: componentTypes.SUB_FORM,

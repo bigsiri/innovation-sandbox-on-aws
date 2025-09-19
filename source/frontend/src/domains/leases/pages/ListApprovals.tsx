@@ -10,7 +10,9 @@ import {
   SpaceBetween,
 } from "@cloudscape-design/components";
 import moment from "moment";
+import "moment/locale/fr";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { LeaseWithLeaseId as Lease } from "@amzn/innovation-sandbox-commons/data/lease/lease";
 import { InfoLink } from "@amzn/innovation-sandbox-frontend/components/InfoLink";
@@ -53,12 +55,13 @@ type ReviewModalContentProps = {
   selectedRequests: Lease[];
   mode: "approve" | "deny";
   reviewLease: (params: { leaseId: string; approve: boolean }) => Promise<any>;
+  t: any;
 };
 
-const createColumnDefinitions = (includeLinks: boolean) => [
+const createColumnDefinitions = (includeLinks: boolean, t: any) => [
   {
     id: "requestor",
-    header: "Requested by",
+    header: t("table.headers.requestedBy"),
     sortingField: "requestor.name",
     cell: (
       lease: Lease, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
@@ -66,19 +69,19 @@ const createColumnDefinitions = (includeLinks: boolean) => [
   },
   {
     id: "originalLeaseTemplateName",
-    header: "Lease Template",
+    header: t("table.headers.leaseTemplate"),
     sortingField: "originalLeaseTemplateName",
     cell: (lease: Lease) => lease.originalLeaseTemplateName,
   },
   {
     id: "dateRequested",
-    header: "Requested",
+    header: t("table.headers.requested"),
     sortingField: "dateRequested",
     cell: (lease: Lease) => <DateRequestedCell lease={lease} />, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
   },
   {
     id: "comments",
-    header: "Comments",
+    header: t("table.headers.comments"),
     sortingField: "comments",
     cell: (lease: Lease) => <CommentsCell lease={lease} />, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
   },
@@ -88,12 +91,13 @@ const ReviewModalContent = ({
   selectedRequests,
   mode,
   reviewLease,
+  t,
 }: ReviewModalContentProps) => {
   return (
     <BatchActionReview
       items={selectedRequests}
       description={`${selectedRequests.length} lease request(s) to review`}
-      columnDefinitions={createColumnDefinitions(false)}
+      columnDefinitions={createColumnDefinitions(false, t)}
       identifierKey="leaseId"
       onSubmit={async (lease: Lease) => {
         await reviewLease({
@@ -122,6 +126,16 @@ export const ListApprovals = () => {
   // base ui hooks
   const setBreadcrumb = useBreadcrumb();
   const { setTools } = useAppLayoutContext();
+  const { t, i18n } = useTranslation(['approvals']);
+
+  // Set moment locale based on current language
+  useEffect(() => {
+    if (i18n.language === 'fr-CA') {
+      moment.locale('fr');
+    } else {
+      moment.locale('en');
+    }
+  }, [i18n.language]);
 
   // modal hook
   const { showModal } = useModal();
@@ -135,8 +149,8 @@ export const ListApprovals = () => {
 
   const init = async () => {
     setBreadcrumb([
-      { text: "Home", href: "/" },
-      { text: "Approvals", href: "/approvals" },
+      { text: t("common.home"), href: "/" },
+      { text: t("approvals"), href: "/approvals" },
     ]);
     setTools(<Markdown file="approvals" />);
   };
@@ -147,12 +161,13 @@ export const ListApprovals = () => {
 
   const showReviewModal = (mode: "approve" | "deny") => {
     showModal({
-      header: mode === "approve" ? "Approve request(s)" : "Deny request(s)",
+      header: mode === "approve" ? t("approveRequests") : t("denyRequests"),
       content: (
         <ReviewModalContent
           selectedRequests={selectedRequests}
           mode={mode}
           reviewLease={reviewLease}
+          t={t}
         />
       ),
       size: "max",
@@ -170,17 +185,17 @@ export const ListApprovals = () => {
         <Header
           variant="h1"
           info={<InfoLink markdown="approvals" />}
-          description="Manage requests to lease sandbox accounts"
+          description={t("pageDescription")}
         >
-          Approvals
+          {t("approvals")}
         </Header>
       }
     >
       <Table
         stripedRows
         trackBy="leaseId"
-        columnDefinitions={createColumnDefinitions(true)}
-        header="Approvals"
+        columnDefinitions={createColumnDefinitions(true, t)}
+        header={t("approvals")}
         totalItemsCount={(requests || []).length}
         items={requests || []}
         selectedItems={selectedRequests}
@@ -196,14 +211,14 @@ export const ListApprovals = () => {
             <ButtonDropdown
               disabled={selectedRequests.length === 0}
               items={[
-                { text: "Approve request(s)", id: "approve" },
-                { text: "Deny request(s)", id: "deny" },
+                { text: t("approveRequests"), id: "approve" },
+                { text: t("denyRequests"), id: "deny" },
               ]}
               onItemClick={({ detail }) => {
                 showReviewModal(detail.id === "approve" ? "approve" : "deny");
               }}
             >
-              Actions
+              {t("actionsButton")}
             </ButtonDropdown>
           </SpaceBetween>
         }

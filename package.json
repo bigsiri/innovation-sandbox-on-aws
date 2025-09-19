@@ -87,5 +87,8 @@
       "classProperties",
       "[\"decorators\", { \"decoratorsBeforeExport\": true }]"
     ]
+  },
+  "dependencies": {
+    "date-fns": "^4.1.0"
   }
 }

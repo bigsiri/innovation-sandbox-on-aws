@@ -7,27 +7,33 @@ import {
   SpaceBetween,
   Badge,
 } from "@cloudscape-design/components";
+import { useTranslation } from "react-i18next";
+import moment from "moment";
 
 import { SharedLease } from "@amzn/innovation-sandbox-frontend/domains/leases/service";
 import { AccountLoginLink } from "@amzn/innovation-sandbox-frontend/components/AccountLoginLink";
+import { useLeaseStatusDisplayName } from "@amzn/innovation-sandbox-frontend/domains/leases/helpers";
 
 interface SharedLeaseCardProps {
   lease: SharedLease;
 }
 
 export const SharedLeaseCard = ({ lease }: SharedLeaseCardProps) => {
+  const { t } = useTranslation('home');
+  const getStatusDisplayName = useLeaseStatusDisplayName();
+
   const getStatusBadge = (status: string) => {
-    const statusMap = {
-      Active: { color: "green" as const, text: "Active" },
-      PendingApproval: { color: "blue" as const, text: "Pending Approval" },
-      Frozen: { color: "red" as const, text: "Frozen" },
-      Expired: { color: "grey" as const, text: "Expired" },
-      BudgetExceeded: { color: "red" as const, text: "Budget Exceeded" },
-      ManuallyTerminated: { color: "grey" as const, text: "Terminated" },
+    const colorMap = {
+      Active: "green" as const,
+      PendingApproval: "blue" as const,
+      Frozen: "red" as const,
+      Expired: "grey" as const,
+      BudgetExceeded: "red" as const,
+      ManuallyTerminated: "grey" as const,
     };
 
-    const { color, text } = statusMap[status as keyof typeof statusMap] || { color: "grey" as const, text: status };
-    return <Badge color={color}>{text}</Badge>;
+    const color = colorMap[status as keyof typeof colorMap] || "grey" as const;
+    return <Badge color={color}>{getStatusDisplayName(status as any)}</Badge>;
   };
 
   const formatCurrency = (amount: number) => {
@@ -39,6 +45,10 @@ export const SharedLeaseCard = ({ lease }: SharedLeaseCardProps) => {
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString();
+  };
+
+  const formatDuration = (hours: number) => {
+    return moment.duration(hours, "hours").humanize();
   };
 
   const getActionButton = () => {
@@ -57,7 +67,7 @@ export const SharedLeaseCard = ({ lease }: SharedLeaseCardProps) => {
         href={`/leases/${lease.leaseId}`}
         external={false}
       >
-        View Details
+        {t("sharedLeases.viewDetails")}
       </Button>
     );
   };
@@ -75,32 +85,32 @@ export const SharedLeaseCard = ({ lease }: SharedLeaseCardProps) => {
     >
       <ColumnLayout columns={3} variant="text-grid">
         <SpaceBetween size="xs">
-          <Box variant="awsui-key-label">Status</Box>
+          <Box variant="awsui-key-label">{t("sharedLeases.status")}</Box>
           <div>{getStatusBadge(lease.status)}</div>
         </SpaceBetween>
 
         <SpaceBetween size="xs">
-          <Box variant="awsui-key-label">Account</Box>
-          <div>{lease.awsAccountId || "Not yet assigned"}</div>
+          <Box variant="awsui-key-label">{t("sharedLeases.account")}</Box>
+          <div>{lease.awsAccountId || t("sharedLeases.notYetAssigned")}</div>
         </SpaceBetween>
 
         <SpaceBetween size="xs">
-          <Box variant="awsui-key-label">Shared by</Box>
+          <Box variant="awsui-key-label">{t("sharedLeases.sharedBy")}</Box>
           <div>{lease.ownerEmail}</div>
         </SpaceBetween>
 
         <SpaceBetween size="xs">
-          <Box variant="awsui-key-label">Budget</Box>
+          <Box variant="awsui-key-label">{t("table.budget")}</Box>
           <div>{formatCurrency(lease.maxSpend)}</div>
         </SpaceBetween>
 
         <SpaceBetween size="xs">
-          <Box variant="awsui-key-label">Duration</Box>
-          <div>{lease.leaseDurationInHours} hours</div>
+          <Box variant="awsui-key-label">{t("sharedLeases.duration")}</Box>
+          <div>{formatDuration(lease.leaseDurationInHours)}</div>
         </SpaceBetween>
 
         <SpaceBetween size="xs">
-          <Box variant="awsui-key-label">Shared on</Box>
+          <Box variant="awsui-key-label">{t("sharedLeases.sharedOn")}</Box>
           <div>{formatDate(lease.sharedAt)}</div>
         </SpaceBetween>
       </ColumnLayout>

@@ -4,7 +4,7 @@
 import { Badge } from "@cloudscape-design/components";
 
 import { Lease } from "@amzn/innovation-sandbox-commons/data/lease/lease";
-import { getLeaseStatusDisplayName } from "@amzn/innovation-sandbox-frontend/domains/leases/helpers";
+import { useLeaseStatusDisplayName } from "@amzn/innovation-sandbox-frontend/domains/leases/helpers";
 
 const getBadgeColor = (status: string) => {
   if (status === "Active") {
@@ -24,9 +24,11 @@ const getBadgeColor = (status: string) => {
 };
 
 export const LeaseStatusBadge = ({ lease }: { lease: Lease }) => {
+  const getStatusDisplayName = useLeaseStatusDisplayName();
+  
   return (
     <Badge color={getBadgeColor(lease.status)} data-badge>
-      {getLeaseStatusDisplayName(lease.status)}
+      {getStatusDisplayName(lease.status)}
     </Badge>
   );
 };

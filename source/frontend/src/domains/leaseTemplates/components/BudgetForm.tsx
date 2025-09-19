@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { componentTypes } from "@aws-northstar/ui";
+import { useTranslation } from "react-i18next";
 
 import { LeaseTemplate } from "@amzn/innovation-sandbox-commons/data/lease-template/lease-template";
 import { Form } from "@amzn/innovation-sandbox-frontend/components/Form";
@@ -31,6 +32,8 @@ export const BudgetForm = ({
   isUpdating,
   globalMaxBudget,
 }: BudgetFormProps) => {
+  const { t } = useTranslation(['leaseTemplates']);
+
   return (
     <Form
       insideTab
@@ -58,7 +61,7 @@ export const BudgetForm = ({
         }
       }}
       schema={{
-        submitLabel: "Update Budget Settings",
+        submitLabel: t("updateBudgetSettings"),
         fields: [
           {
             component: componentTypes.SUB_FORM,

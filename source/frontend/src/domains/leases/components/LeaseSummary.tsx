@@ -12,6 +12,8 @@ import {
   SpaceBetween,
   StatusIndicator,
 } from "@cloudscape-design/components";
+import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
 
 import {
   isExpiredLease,
@@ -24,8 +26,19 @@ import { BudgetStatus } from "@amzn/innovation-sandbox-frontend/components/Budge
 import { DurationStatus } from "@amzn/innovation-sandbox-frontend/components/DurationStatus";
 import { LeaseStatusBadge } from "@amzn/innovation-sandbox-frontend/domains/leases/components/LeaseStatusBadge";
 import moment from "moment";
+import "moment/locale/fr";
 
 export const LeaseSummary = ({ lease }: { lease: Lease }) => {
+  const { t, i18n } = useTranslation();
+
+  // Ensure moment locale is set correctly
+  useEffect(() => {
+    if (i18n.language === 'fr-CA') {
+      moment.locale('fr');
+    } else {
+      moment.locale('en');
+    }
+  }, [i18n.language]);
   const isPending = isPendingLease(lease);
   const isMonitored = isMonitoredLease(lease);
   const isExpired = isExpiredLease(lease);
@@ -43,48 +56,48 @@ export const LeaseSummary = ({ lease }: { lease: Lease }) => {
   );
 
   return (
-    <Container header={<Header>Lease Summary</Header>}>
+    <Container header={<Header>{t("summary.title", { ns: "leases" })}</Header>}>
       <ColumnLayout columns={2}>
         <SpaceBetween size="l">
           <Box>
-            <FormField label="Lease ID" />
+            <FormField label={t("summary.fields.leaseId", { ns: "leases" })} />
             <CopyToClipboard
               variant="inline"
               textToCopy={lease.uuid}
-              copySuccessText="Copied Lease ID"
-              copyErrorText="Failed to copy Lease ID"
+              copySuccessText={t("summary.copySuccess.leaseId", { ns: "leases" })}
+              copyErrorText={t("summary.copyError.leaseId", { ns: "leases" })}
             />
           </Box>
           <Box>
-            <FormField label="AWS Account ID" />
+            <FormField label={t("summary.fields.awsAccountId", { ns: "leases" })} />
             {isMonitoredOrExpired ? (
               <CopyToClipboard
                 variant="inline"
                 textToCopy={lease.awsAccountId}
-                copySuccessText="Copied AWS Account ID"
-                copyErrorText="Failed to copy AWS Account ID"
+                copySuccessText={t("summary.copySuccess.awsAccountId", { ns: "leases" })}
+                copyErrorText={t("summary.copyError.awsAccountId", { ns: "leases" })}
               />
             ) : (
               <StatusIndicator type="warning">
-                No account assigned
+                {t("summary.status.noAccountAssigned", { ns: "leases" })}
               </StatusIndicator>
             )}
           </Box>
           <Box>
-            <FormField label="Lease Template" />
+            <FormField label={t("summary.fields.leaseTemplate", { ns: "leases" })} />
             <Box>{lease.originalLeaseTemplateName}</Box>
           </Box>
           <Box>
-            <FormField label="Requested by" />
+            <FormField label={t("summary.fields.requestedBy", { ns: "leases" })} />
             <Box>{lease.userEmail}</Box>
           </Box>
           {isMonitoredOrExpired && (
             <Box>
-              <FormField label="Approved by" />
+              <FormField label={t("summary.fields.approvedBy", { ns: "leases" })} />
               <Box>
                 {lease.approvedBy === "AUTO_APPROVED" ? (
                   <StatusIndicator type="success">
-                    Auto approved
+                    {t("summary.status.autoApproved", { ns: "leases" })}
                   </StatusIndicator>
                 ) : (
                   lease.approvedBy
@@ -93,7 +106,7 @@ export const LeaseSummary = ({ lease }: { lease: Lease }) => {
             </Box>
           )}
           <Box>
-            <FormField label="Status" />
+            <FormField label={t("summary.fields.status", { ns: "leases" })} />
             <Box>
               <LeaseStatusBadge lease={lease} />
             </Box>
@@ -101,7 +114,7 @@ export const LeaseSummary = ({ lease }: { lease: Lease }) => {
         </SpaceBetween>
         <SpaceBetween size="l">
           <Box>
-            <FormField label={isPending ? "Max Budget" : "Budget Status"} />
+            <FormField label={isPending ? t("summary.fields.maxBudget", { ns: "leases" }) : t("summary.fields.budgetStatus", { ns: "leases" })} />
             {isPending ? (
               <BudgetStatus maxSpend={lease.maxSpend} />
             ) : (
@@ -116,13 +129,13 @@ export const LeaseSummary = ({ lease }: { lease: Lease }) => {
 
           {isMonitoredOrExpired && (
             <Box>
-              <FormField label="Lease started" />
+              <FormField label={t("summary.fields.leaseStarted", { ns: "leases" })} />
               {renderTimePopover(lease.startDate)}
             </Box>
           )}
 
           <Box>
-            <FormField label="Lease expiry" />
+            <FormField label={t("summary.fields.leaseExpiry", { ns: "leases" })} />
             <DurationStatus
               date={isMonitoredOrExpired ? lease.expirationDate : undefined}
               durationInHours={lease.leaseDurationInHours}
@@ -131,18 +144,18 @@ export const LeaseSummary = ({ lease }: { lease: Lease }) => {
 
           {isMonitoredOrExpired && (
             <Box>
-              <FormField label="Last monitored" />
+              <FormField label={t("summary.fields.lastMonitored", { ns: "leases" })} />
               {renderTimePopover(lease.lastCheckedDate)}
             </Box>
           )}
 
           <Box>
-            <FormField label="Comments from requester" />
+            <FormField label={t("summary.fields.comments", { ns: "leases" })} />
             {lease.comments ? (
               lease.comments
             ) : (
               <StatusIndicator type="info">
-                No comments provided
+                {t("summary.status.noComments", { ns: "leases" })}
               </StatusIndicator>
             )}
           </Box>

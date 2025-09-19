@@ -10,6 +10,7 @@ import {
   SpaceBetween,
 } from "@cloudscape-design/components";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { ErrorPanel } from "@amzn/innovation-sandbox-frontend/components/ErrorPanel";
 import { Loader } from "@amzn/innovation-sandbox-frontend/components/Loader";
@@ -17,6 +18,7 @@ import { useGetPendingApprovals } from "@amzn/innovation-sandbox-frontend/domain
 
 export const ApprovalsPanel = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation('home');
   const {
     data: approvals,
     isFetching,
@@ -29,7 +31,7 @@ export const ApprovalsPanel = () => {
     if (isFetching) {
       return (
         <Container>
-          <Loader label="Checking for approval requests..." />
+          <Loader label={t("approvals.checkingApprovals")} />
         </Container>
       );
     }
@@ -37,7 +39,7 @@ export const ApprovalsPanel = () => {
     if (isError || !approvals) {
       return (
         <ErrorPanel
-          description="Approvals could not be loaded."
+          description={t("approvals.approvalsCouldNotBeLoaded")}
           retry={refetch}
           error={error as Error}
         />
@@ -46,25 +48,25 @@ export const ApprovalsPanel = () => {
 
     if (approvals.length === 0) {
       return (
-        <Alert type="success">No pending approvals. Nothing to review.</Alert>
+        <Alert type="success">{t("approvals.noPendingApprovals")}</Alert>
       );
     }
 
     return (
-      <Alert type="warning" header="Pending approvals">
+      <Alert type="warning" header={t("approvals.pendingApprovalsHeader")}>
         <Box margin={{ top: "xs" }}>
           {approvals.length === 1 ? (
             <>
-              There is <strong>1</strong> pending approval.
+              {t("approvals.thereIs")} <strong>1</strong> {t("approvals.pendingApproval")}.
             </>
           ) : (
             <>
-              There are <strong>{approvals.length} pending approvals.</strong>
+              {t("approvals.thereAre")} <strong>{approvals.length}</strong> {t("approvals.pendingApprovals")}.
             </>
           )}
         </Box>
         <Box margin={{ top: "s" }}>
-          <Button onClick={() => navigate("/approvals")}>View approvals</Button>
+          <Button onClick={() => navigate("/approvals")}>{t("actions.viewAllApprovals")}</Button>
         </Box>
       </Alert>
     );
@@ -77,13 +79,13 @@ export const ApprovalsPanel = () => {
         actions={
           <Button
             iconName="refresh"
-            ariaLabel="Refresh"
+            ariaLabel={t("actions.refresh")}
             disabled={isFetching}
             onClick={() => refetch()}
           />
         }
       >
-        Approvals
+        {t("sections.approvals")}
       </Header>
       {body()}
     </SpaceBetween>

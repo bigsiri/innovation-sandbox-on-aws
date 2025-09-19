@@ -3,62 +3,65 @@
 
 import { componentTypes, validatorTypes } from "@aws-northstar/ui";
 import { Alert, Box } from "@cloudscape-design/components";
+import { useTranslation } from "react-i18next";
 
-export const basicFormFields = () => ({
-  name: "basic",
-  title: "Basic Details",
-  fields: [
-    {
-      component: componentTypes.TEXT_FIELD,
-      name: "name",
-      label: "Name",
-      isRequired: true,
-      validate: [
-        {
-          type: validatorTypes.REQUIRED,
-          message: "Please enter a name for this lease template",
-        },
-      ],
-    },
-    {
-      component: componentTypes.TEXTAREA,
-      name: "description",
-      label: "Description",
-      description: "Optional",
-    },
-    {
-      component: componentTypes.SWITCH,
-      name: "requiresApproval",
-      label: "Approval required",
-    },
-    {
-      component: componentTypes.SWITCH,
-      name: "allowOwnerUserManagement",
-      label: "Allow lease owners to manage users",
-      description: "When enabled, lease owners can add and remove users from their leases. Disabled by default for security.",
-      initialValue: false,
-    },
-    {
-      component: componentTypes.PLAIN_TEXT,
-      name: "warning",
-      label: (
-        <Box data-inline-block>
-          <Alert type="warning">
-            When a user requests this lease template, an account will
-            automatically be provided to the user if one is available in the
-            account pool.
-          </Alert>
-        </Box>
-      ),
-      condition: {
-        not: {
-          when: "requiresApproval",
-          is: true,
-        },
-        then: {
-          visible: true,
+export const basicFormFields = () => {
+  const { t } = useTranslation(['leaseTemplates']);
+  
+  return {
+    name: "basic",
+    title: t("basicDetails"),
+    fields: [
+      {
+        component: componentTypes.TEXT_FIELD,
+        name: "name",
+        label: t("name"),
+        isRequired: true,
+        validate: [
+          {
+            type: validatorTypes.REQUIRED,
+            message: t("nameRequired"),
+          },
+        ],
+      },
+      {
+        component: componentTypes.TEXTAREA,
+        name: "description",
+        label: t("description"),
+        description: t("optional"),
+      },
+      {
+        component: componentTypes.SWITCH,
+        name: "requiresApproval",
+        label: t("approvalRequired"),
+      },
+      {
+        component: componentTypes.SWITCH,
+        name: "allowOwnerUserManagement",
+        label: t("allowOwnerUserManagement"),
+        description: t("allowOwnerUserManagementDescription"),
+        initialValue: false,
+      },
+      {
+        component: componentTypes.PLAIN_TEXT,
+        name: "warning",
+        label: (
+          <Box data-inline-block>
+            <Alert type="warning">
+              {t("automaticAccountWarning")}
+            </Alert>
+          </Box>
+        ),
+        condition: {
+          not: {
+            when: "requiresApproval",
+            is: true,
+          },
+          then: {
+            visible: true,
+          },
         },
       },
-    },
-  ],
-});
+    ],
+  };
+};

@@ -3,6 +3,7 @@
 
 import { Button, ButtonProps } from "@cloudscape-design/components";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { showErrorToast } from "@amzn/innovation-sandbox-frontend/components/Toast";
 import { useGetConfigurations } from "@amzn/innovation-sandbox-frontend/domains/settings/hooks";
@@ -18,6 +19,7 @@ export const AccountLoginLink = ({
 }: AccountLoginLinkProps) => {
   const [clicked, setClicked] = useState(false);
   const [baseUrl, setBaseUrl] = useState<string>();
+  const { t } = useTranslation('home');
 
   // fetch config from app config
   const {
@@ -78,14 +80,14 @@ export const AccountLoginLink = ({
   if (clicked && isFetching) {
     return (
       <Button disabled={true} iconName="external" variant={variant} loading>
-        Loading, please wait..
+        {t("loading.loadingPleaseWait")}
       </Button>
     );
   }
 
   return (
     <Button onClick={onClick} iconName="external" variant={variant}>
-      Login to account
+      {t("actions.loginToAccount")}
     </Button>
   );
 };

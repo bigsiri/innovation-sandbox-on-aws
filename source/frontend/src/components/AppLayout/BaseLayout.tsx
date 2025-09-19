@@ -11,12 +11,7 @@ import { IsbUser } from "@amzn/innovation-sandbox-commons/types/isb-types";
 import logo from "@amzn/innovation-sandbox-frontend/assets/images/logo.png";
 import { useAppContext } from "@amzn/innovation-sandbox-frontend/components/AppContext/context";
 import { AppLayoutProps } from "@amzn/innovation-sandbox-frontend/components/AppLayout";
-import {
-  adminNavItems,
-  commonNavItems,
-  managerNavItems,
-  userNavItems,
-} from "@amzn/innovation-sandbox-frontend/components/AppLayout/constants";
+import { useNavItems } from "@amzn/innovation-sandbox-frontend/components/AppLayout/constants";
 import { NavHeader } from "@amzn/innovation-sandbox-frontend/components/AppLayout/NavHeader";
 import { FullPageLoader } from "@amzn/innovation-sandbox-frontend/components/FullPageLoader";
 import { MaintenanceBanner } from "@amzn/innovation-sandbox-frontend/components/MaintenanceBanner";
@@ -29,6 +24,7 @@ export const BaseLayout = ({ children }: AppLayoutProps) => {
   const { breadcrumb } = useAppContext();
   const [user, setUser] = useState<IsbUser | undefined>();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const { commonNavItems, userNavItems, managerNavItems, adminNavItems } = useNavItems();
 
   const onExit = () => {
     setIsLoggingOut(true);
@@ -51,7 +47,7 @@ export const BaseLayout = ({ children }: AppLayoutProps) => {
     }
 
     return [...userNavItems, ...commonNavItems];
-  }, [user?.roles]);
+  }, [user?.roles, adminNavItems, commonNavItems, managerNavItems, userNavItems]);
 
   if (isLoggingOut) {
     return <FullPageLoader label="Signing out..." />;

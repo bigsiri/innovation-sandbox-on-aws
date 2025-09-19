@@ -9,10 +9,11 @@ import {
   SpaceBetween,
 } from "@cloudscape-design/components";
 import { FaArrowRight } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 import { ThresholdAction } from "@amzn/innovation-sandbox-commons/data/lease-template/lease-template";
 import { NumberInput } from "@amzn/innovation-sandbox-frontend/components/NumberInput";
-import { ThresholdActionOptions } from "@amzn/innovation-sandbox-frontend/components/ThresholdSettings/constants";
+import { getThresholdActionOptions } from "@amzn/innovation-sandbox-frontend/components/ThresholdSettings/constants";
 import { Threshold } from "@amzn/innovation-sandbox-frontend/components/ThresholdSettings/types";
 
 import styles from "./styles.module.scss";
@@ -38,11 +39,14 @@ export const ThresholdsListItem = ({
   onChange,
   onDelete,
 }: ThresholdsListItemProps) => {
+  const { t } = useTranslation();
+  const thresholdActionOptions = getThresholdActionOptions(t);
+  
   return (
     <div className={styles.row}>
       <Box>
         <SpaceBetween size="xs" direction="horizontal" alignItems="start">
-          <div className={styles.cell}>When</div>
+          <div className={styles.cell}>{t("thresholds.when", { ns: "leases" })}</div>
           <Box>
             <FormField errorText={valueError}>
               <SpaceBetween size="xs" direction="horizontal" alignItems="start">
@@ -70,16 +74,20 @@ export const ThresholdsListItem = ({
       <FormField errorText={actionError}>
         {isReadOnly && (
           <Select
-            selectedOption={{ value: "Wipe Account" }}
+            selectedOption={
+              thresholdActionOptions.find(
+                (x) => x.value === threshold.action,
+              ) ?? null
+            }
             onChange={() => {}}
             readOnly
           />
         )}
         {!isReadOnly && (
           <Select
-            options={ThresholdActionOptions}
+            options={thresholdActionOptions}
             selectedOption={
-              ThresholdActionOptions.find(
+              thresholdActionOptions.find(
                 (x) => x.value === threshold.action,
               ) ?? null
             }

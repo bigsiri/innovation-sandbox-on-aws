@@ -13,6 +13,7 @@ import {
   TokenGroup,
 } from "@cloudscape-design/components";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { UserSearchInput } from "../user-search/UserSearchInput";
 
 interface User {
@@ -33,6 +34,7 @@ export const AddUserForm = ({
   isLoading = false,
   error,
 }: AddUserFormProps) => {
+  const { t } = useTranslation(['leases']);
   const [activeTab, setActiveTab] = useState("search");
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [bulkEmails, setBulkEmails] = useState("");
@@ -56,7 +58,7 @@ export const AddUserForm = ({
       .filter(email => email.length > 0);
 
     if (emails.length === 0) {
-      setEmailError("At least one email is required");
+      setEmailError(t("users.addForm.validation.atLeastOneEmail"));
       return [];
     }
 
@@ -64,12 +66,12 @@ export const AddUserForm = ({
     const invalidEmails = emails.filter(email => !emailRegex.test(email));
     
     if (invalidEmails.length > 0) {
-      setEmailError(`Invalid email addresses: ${invalidEmails.join(', ')}`);
+      setEmailError(t("users.addForm.validation.invalidEmails", { emails: invalidEmails.join(', ') }));
       return [];
     }
 
     if (emails.length > 20) {
-      setEmailError("Maximum 20 users can be added at once");
+      setEmailError(t("users.addForm.validation.maxUsers"));
       return [];
     }
 
@@ -82,7 +84,7 @@ export const AddUserForm = ({
 
     if (activeTab === "search") {
       if (selectedUsers.length === 0) {
-        setEmailError("Please select at least one user");
+        setEmailError(t("users.addForm.validation.selectAtLeastOne"));
         return;
       }
       emails = selectedUsers.map(u => u.email);
@@ -107,7 +109,7 @@ export const AddUserForm = ({
       actions={
         <SpaceBetween direction="horizontal" size="xs">
           <Button variant="link" onClick={onCancel}>
-            Cancel
+            {t("users.addForm.cancel")}
           </Button>
           <Button
             variant="primary"
@@ -115,7 +117,7 @@ export const AddUserForm = ({
             loading={isLoading}
             disabled={!canSubmit}
           >
-            Add Users
+            {t("users.addForm.addUsers")}
           </Button>
         </SpaceBetween>
       }
@@ -133,12 +135,12 @@ export const AddUserForm = ({
           tabs={[
             {
               id: "search",
-              label: "Search Users",
+              label: t("users.addForm.tabs.searchUsers"),
               content: (
                 <SpaceBetween size="m">
                   <FormField
-                    label="Search and add users"
-                    description="Type to search for users by email or name"
+                    label={t("users.addForm.searchLabel")}
+                    description={t("users.addForm.searchDescription")}
                     errorText={activeTab === "search" ? emailError : undefined}
                   >
                     <UserSearchInput
@@ -149,12 +151,12 @@ export const AddUserForm = ({
                   </FormField>
 
                   {selectedUsers.length > 0 && (
-                    <FormField label={`Selected Users (${selectedUsers.length})`}>
+                    <FormField label={t("users.addForm.selectedUsers", { count: selectedUsers.length })}>
                       <TokenGroup
                         items={selectedUsers.map(user => ({
                           label: user.displayName || user.email,
                           description: user.displayName ? user.email : undefined,
-                          dismissLabel: `Remove ${user.email}`,
+                          dismissLabel: t("users.addForm.removeUser", { email: user.email }),
                         }))}
                         onDismiss={({ detail }) => {
                           const userToRemove = selectedUsers[detail.itemIndex];
@@ -170,20 +172,20 @@ export const AddUserForm = ({
               id: "bulk",
               label: (
                 <SpaceBetween direction="horizontal" size="xs">
-                  Bulk Entry
-                  <Badge color="grey">Advanced</Badge>
+                  {t("users.addForm.tabs.bulkEntry")}
+                  <Badge color="grey">{t("users.addForm.advanced")}</Badge>
                 </SpaceBetween>
               ),
               content: (
                 <FormField
-                  label="User Emails"
-                  description="Enter email addresses separated by commas or new lines. Maximum 20 users per request."
+                  label={t("users.addForm.bulkLabel")}
+                  description={t("users.addForm.bulkDescription")}
                   errorText={activeTab === "bulk" ? emailError : undefined}
                 >
                   <Textarea
                     value={bulkEmails}
                     onChange={({ detail }) => setBulkEmails(detail.value)}
-                    placeholder="user1@example.com, user2@example.com"
+                    placeholder={t("users.addForm.bulkPlaceholder")}
                     rows={4}
                     disabled={isLoading}
                   />

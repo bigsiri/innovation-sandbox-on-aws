@@ -9,18 +9,21 @@ import {
   SpaceBetween,
 } from "@cloudscape-design/components";
 import { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 
 interface SettingsContainerProps {
   children: ReactNode;
 }
 
 export const SettingsContainer = ({ children }: SettingsContainerProps) => {
+  const { t } = useTranslation(['settings']);
+  
   return (
     <Box data-top data-settings-form>
       <Container>
         <SpaceBetween size="l">
           <Alert type="info">
-            To change these settings, please go to{" "}
+            {t("appConfigMessage")}{" "}
             <Link
               external
               href="https://console.aws.amazon.com/systems-manager/appconfig/applications"

@@ -6,6 +6,7 @@ import {
   Header,
   SpaceBetween,
 } from "@cloudscape-design/components";
+import { useTranslation } from "react-i18next";
 
 import { ErrorPanel } from "@amzn/innovation-sandbox-frontend/components/ErrorPanel";
 import { InfoPanel } from "@amzn/innovation-sandbox-frontend/components/InfoPanel";
@@ -14,6 +15,7 @@ import { SharedLeaseCard } from "./SharedLeaseCard";
 import { useGetSharedLeases } from "@amzn/innovation-sandbox-frontend/domains/leases/hooks";
 
 export const SharedLeasesSection = () => {
+  const { t } = useTranslation('home');
   const {
     data: sharedLeasesData,
     isFetching,
@@ -30,13 +32,13 @@ export const SharedLeasesSection = () => {
 
   const body = () => {
     if (isFetching) {
-      return <Loader label="Loading shared leases..." />;
+      return <Loader label={t("sharedLeases.loadingSharedLeases")} />;
     }
 
     if (isError) {
       return (
         <ErrorPanel
-          description="Shared leases could not be loaded."
+          description={t("sharedLeases.sharedLeasesCouldNotBeLoaded")}
           retry={refetch}
           error={error as Error}
         />
@@ -46,8 +48,8 @@ export const SharedLeasesSection = () => {
     if (sharedLeases.length === 0) {
       return (
         <InfoPanel
-          header="You currently don't have any shared leases."
-          description="When someone shares an active lease with you, it will appear here."
+          header={t("sharedLeases.noSharedLeasesHeader")}
+          description={t("sharedLeases.noSharedLeasesDescription")}
         />
       );
     }
@@ -71,17 +73,17 @@ export const SharedLeasesSection = () => {
     <SpaceBetween size="m">
       <Header
         variant="h2"
-        description="View active leases shared with you"
+        description={t("sharedLeases.sharedLeasesDescription")}
         actions={
           <Button
             iconName="refresh"
-            ariaLabel="Refresh"
+            ariaLabel={t("actions.refresh")}
             disabled={isFetching}
             onClick={() => refetch()}
           />
         }
       >
-        Shared Leases {count()}
+        {t("sections.sharedSandboxes")} {count()}
       </Header>
       {body()}
     </SpaceBetween>

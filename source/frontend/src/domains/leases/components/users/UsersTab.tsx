@@ -11,6 +11,7 @@ import {
   Box,
 } from "@cloudscape-design/components";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { ErrorPanel } from "@amzn/innovation-sandbox-frontend/components/ErrorPanel";
 import { Loader } from "@amzn/innovation-sandbox-frontend/components/Loader";
@@ -34,6 +35,7 @@ export const UsersTab = ({
   currentUserEmail,
   isLeaseActive = true 
 }: UsersTabProps) => {
+  const { t } = useTranslation();
   const [showAddUserForm, setShowAddUserForm] = useState(false);
   const [addUserError, setAddUserError] = useState<string | null>(null);
 
@@ -67,20 +69,20 @@ export const UsersTab = ({
       
       if (response.successCount > 0 && response.failureCount === 0) {
         // All users added successfully
-        showSuccessToast(`Successfully added ${response.successCount} user(s)`);
+        showSuccessToast(t("users.successfullyAdded", { ns: "leases", count: response.successCount }));
       } else if (response.successCount > 0 && response.failureCount > 0) {
         // Mixed results
-        showSuccessToast(`Added ${response.successCount} user(s). ${response.failureCount} failed.`);
+        showSuccessToast(t("users.mixedResults", { ns: "leases", successCount: response.successCount, failureCount: response.failureCount }));
       } else if (response.failureCount > 0) {
         // All failed
-        showErrorToast(`Failed to add ${response.failureCount} user(s)`);
+        showErrorToast(t("users.failedToAdd", { ns: "leases", count: response.failureCount }));
       }
       
       // Refresh the user list to show any successfully added users
       refetchUsers();
     } catch (error) {
       setShowAddUserForm(false);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to add user';
+      const errorMessage = error instanceof Error ? error.message : t("users.failedToAddUser", { ns: "leases" });
       showErrorToast(errorMessage);
     }
   };
@@ -88,21 +90,21 @@ export const UsersTab = ({
   const handleRemoveUser = async (userEmail: string) => {
     try {
       await removeUser({ leaseId, userEmail });
-      showSuccessToast('User removed successfully');
+      showSuccessToast(t("users.userRemovedSuccessfully", { ns: "leases" }));
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to remove user';
+      const errorMessage = error instanceof Error ? error.message : t("users.failedToRemoveUser", { ns: "leases" });
       showErrorToast(errorMessage);
     }
   };
 
   if (isLoadingUsers) {
-    return <Loader label="Loading users..." />;
+    return <Loader label={t("users.loadingUsers", { ns: "leases" })} />;
   }
 
   if (isUsersError) {
     return (
       <ErrorPanel
-        description="There was a problem loading the users for this lease."
+        description={t("users.loadingUsersError", { ns: "leases" })}
         retry={refetchUsers}
         error={usersError as Error}
       />
@@ -114,7 +116,7 @@ export const UsersTab = ({
       header={
         <Header
           variant="h2"
-          description="Add users to share access to this AWS account"
+          description={t("users.addUsersDescription", { ns: "leases" })}
           actions={
             isLeaseActive && (
               <Button
@@ -122,27 +124,27 @@ export const UsersTab = ({
                 onClick={() => setShowAddUserForm(true)}
                 disabled={isAddingUser || isRemovingUser}
               >
-                Add User
+                {t("users.addUser", { ns: "leases" })}
               </Button>
             )
           }
         >
-          Lease Users
+          {t("users.leaseUsers", { ns: "leases" })}
         </Header>
       }
     >
       <SpaceBetween size="l">
         {!isLeaseActive && (
           <Alert type="warning">
-            Cannot modify users - lease is not active
+            {t("users.cannotModifyUsers", { ns: "leases" })}
           </Alert>
         )}
 
         {users.length === 0 ? (
           <Box textAlign="center" color="text-body-secondary">
             <SpaceBetween size="s">
-              <div>No additional users added to this lease</div>
-              <div>This lease is currently only accessible by the lease owner. Add users to share access to the AWS account.</div>
+              <div>{t("users.noAdditionalUsers", { ns: "leases" })}</div>
+              <div>{t("users.onlyOwnerAccess", { ns: "leases" })}</div>
             </SpaceBetween>
           </Box>
         ) : (
@@ -158,8 +160,8 @@ export const UsersTab = ({
         <Modal
           visible={showAddUserForm}
           onDismiss={() => setShowAddUserForm(false)}
-          header="Add User to Lease"
-          closeAriaLabel="Close modal"
+          header={t("users.addUserToLease", { ns: "leases" })}
+          closeAriaLabel={t("users.closeModal", { ns: "leases" })}
         >
           <AddUserForm
             onSubmit={handleAddUser}

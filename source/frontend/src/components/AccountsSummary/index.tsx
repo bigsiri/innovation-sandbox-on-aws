@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { Container, Grid, Header } from "@cloudscape-design/components";
+import { useTranslation } from "react-i18next";
 
 import {
   SandboxAccount,
@@ -26,6 +27,8 @@ export const AccountsSummary = ({
   isLoading = false,
   onFilterUpdated,
 }: AccountsSummaryProps) => {
+  const { t } = useTranslation('home');
+
   if (isLoading) {
     return <AccountsLoading />;
   }
@@ -43,7 +46,7 @@ export const AccountsSummary = ({
         ]}
       >
         <Container
-          header={<Header variant="h3">Account Pool Summary</Header>}
+          header={<Header variant="h3">{t("sections.accountPoolSummary")}</Header>}
           fitHeight
         >
           <AccountsSummaryTable

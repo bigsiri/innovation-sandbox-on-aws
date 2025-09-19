@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   SandboxAccount,
@@ -17,16 +18,18 @@ interface AccountsPieChartProps {
 }
 
 export const AccountsPieChart = ({ accounts }: AccountsPieChartProps) => {
+  const { t } = useTranslation('home');
+  
   const summary = useMemo(() => {
-    return convertAccountsToSummary(accounts).filter((item) => item.value > 0);
-  }, [accounts]);
+    return convertAccountsToSummary(accounts, t).filter((item) => item.value > 0);
+  }, [accounts, t]);
 
   return (
     <PieChart
       data={summary}
       variant="donut"
       segmentDescription={(datum, sum) =>
-        `${datum.value} accounts, ${((datum.value / sum) * 100).toFixed(0)}%`
+        `${datum.value} ${t("accountStatus.accounts")}, ${((datum.value / sum) * 100).toFixed(0)}%`
       }
       hideFilter={true}
       hideLegend

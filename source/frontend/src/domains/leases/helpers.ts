@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { UseQueryResult } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 
 import {
   Lease,
@@ -13,6 +14,35 @@ const splitCamelCase = (str: string): string => {
   return str
     .replace(/([a-z])([A-Z0-9])/g, "$1 $2")
     .replace(/([A-Z])([A-Z][a-z])/g, "$1 $2");
+};
+
+export const useLeaseStatusDisplayName = () => {
+  const { t } = useTranslation('home');
+  
+  return (status: LeaseStatus): string => {
+    switch (status) {
+      case "Active":
+        return t("status.active");
+      case "Frozen":
+        return t("status.frozen");
+      case "PendingApproval":
+        return t("status.pendingApproval");
+      case "ApprovalDenied":
+        return t("status.approvalDenied");
+      case "Expired":
+        return t("status.expired");
+      case "BudgetExceeded":
+        return t("status.budgetExceeded");
+      case "ManuallyTerminated":
+        return t("status.manuallyTerminated");
+      case "AccountQuarantined":
+        return t("status.accountQuarantined");
+      case "Ejected":
+        return t("status.ejected");
+      default:
+        return splitCamelCase(status);
+    }
+  };
 };
 
 export const getLeaseStatusDisplayName = (status: LeaseStatus): string => {

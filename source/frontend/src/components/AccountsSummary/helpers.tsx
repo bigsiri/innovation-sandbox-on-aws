@@ -33,7 +33,7 @@ export const getColor = (status?: SandboxAccountStatus) => {
   }
 };
 
-export const convertAccountsToSummary = (accounts: SandboxAccount[]) => {
+export const convertAccountsToSummary = (accounts: SandboxAccount[], t?: any) => {
   return Object.values(
     accounts.reduce(
       (summary, account) => {
@@ -42,31 +42,31 @@ export const convertAccountsToSummary = (accounts: SandboxAccount[]) => {
       },
       {
         Available: {
-          title: "Available",
+          title: t ? t("accountStatus.available") : "Available",
           status: "Available",
           value: 0,
           color: getColor("Available"),
         },
         Active: {
-          title: "Active",
+          title: t ? t("accountStatus.active") : "Active",
           status: "Active",
           value: 0,
           color: getColor("Active"),
         },
         Frozen: {
-          title: "Frozen",
+          title: t ? t("accountStatus.frozen") : "Frozen",
           status: "Frozen",
           value: 0,
           color: getColor("Frozen"),
         },
         CleanUp: {
-          title: "Clean Up",
+          title: t ? t("accountStatus.cleanUp") : "Clean Up",
           status: "CleanUp",
           value: 0,
           color: getColor("CleanUp"),
         },
         Quarantine: {
-          title: "Quarantine",
+          title: t ? t("accountStatus.quarantine") : "Quarantine",
           status: "Quarantine",
           value: 0,
           color: getColor("Quarantine"),

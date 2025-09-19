@@ -10,6 +10,7 @@ import {
   Modal,
 } from "@cloudscape-design/components";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { LeaseUser } from "@amzn/innovation-sandbox-frontend/domains/leases/service";
 import { UserStatusBadge } from "./UserStatusBadge";
@@ -29,6 +30,7 @@ export const UserList = ({
   isRemoving = false,
   currentUserEmail,
 }: UserListProps) => {
+  const { t } = useTranslation();
   const [selectedUser, setSelectedUser] = useState<LeaseUser | null>(null);
   const [showRemoveModal, setShowRemoveModal] = useState(false);
 
@@ -52,13 +54,13 @@ export const UserList = ({
   const columnDefinitions = [
     {
       id: "userEmail",
-      header: "Email",
+      header: t("users.email", { ns: "leases" }),
       cell: (item: LeaseUser) => (
         <SpaceBetween direction="horizontal" size="xs">
           <span>{item.userEmail}</span>
           {item.userEmail === currentUserEmail && (
             <Box color="text-body-secondary" fontSize="body-s">
-              (You)
+              ({t("users.you", { ns: "leases" })})
             </Box>
           )}
         </SpaceBetween>
@@ -68,19 +70,19 @@ export const UserList = ({
     },
     {
       id: "addedBy",
-      header: "Added By",
+      header: t("users.addedBy", { ns: "leases" }),
       cell: (item: LeaseUser) => item.addedBy,
       sortingField: "addedBy",
     },
     {
       id: "addedDate",
-      header: "Added Date",
+      header: t("users.addedDate", { ns: "leases" }),
       cell: (item: LeaseUser) => new Date(item.addedDate).toLocaleDateString(),
       sortingField: "addedDate",
     },
     {
       id: "status",
-      header: "Status",
+      header: t("users.status", { ns: "leases" }),
       cell: (item: LeaseUser) => (
         <UserStatusBadge 
           status={item.assignmentStatus?.status}
@@ -98,9 +100,9 @@ export const UserList = ({
           onClick={() => handleRemoveClick(item)}
           loading={isRemoving}
           disabled={item.userEmail === currentUserEmail}
-          ariaLabel={`Remove ${item.userEmail} from lease`}
+          ariaLabel={t("users.removeUserFromLease", { ns: "leases", email: item.userEmail })}
         >
-          Remove
+          {t("users.remove", { ns: "leases" })}
         </Button>
       ),
     },
@@ -136,20 +138,20 @@ export const UserList = ({
       <Modal
         visible={showRemoveModal}
         onDismiss={() => setShowRemoveModal(false)}
-        header="Remove User"
-        closeAriaLabel="Close modal"
+        header={t("users.removeUser", { ns: "leases" })}
+        closeAriaLabel={t("users.closeModal", { ns: "leases" })}
         footer={
           <Box float="right">
             <SpaceBetween direction="horizontal" size="xs">
               <Button variant="link" onClick={() => setShowRemoveModal(false)}>
-                Cancel
+                {t("common.cancel", { ns: "leases" })}
               </Button>
               <Button
                 variant="primary"
                 onClick={handleConfirmRemove}
                 loading={isRemoving}
               >
-                Remove User
+                {t("users.removeUser", { ns: "leases" })}
               </Button>
             </SpaceBetween>
           </Box>
@@ -157,10 +159,10 @@ export const UserList = ({
       >
         <SpaceBetween size="m">
           <Box variant="span">
-            Are you sure you want to remove <strong>{selectedUser?.userEmail}</strong> from this lease?
+            {t("users.confirmRemoveUser", { ns: "leases", email: selectedUser?.userEmail })}
           </Box>
           <Box variant="span" color="text-body-secondary">
-            This action cannot be undone. The user will lose access to the AWS account.
+            {t("users.removeUserWarning", { ns: "leases" })}
           </Box>
         </SpaceBetween>
       </Modal>

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { Badge, Box, SpaceBetween } from "@cloudscape-design/components";
+import { useTranslation } from "react-i18next";
 
 interface UserStatusBadgeProps {
   status?: "SUCCEEDED" | "FAILED";
@@ -9,13 +10,15 @@ interface UserStatusBadgeProps {
 }
 
 export const UserStatusBadge = ({ status, message }: UserStatusBadgeProps) => {
+  const { t } = useTranslation();
+  
   if (!status) {
-    return <Badge color="grey">Unknown</Badge>;
+    return <Badge color="grey">{t("users.statusUnknown", { ns: "leases" })}</Badge>;
   }
 
   const badgeProps = {
-    SUCCEEDED: { color: "green" as const, text: "Active" },
-    FAILED: { color: "red" as const, text: "Failed" },
+    SUCCEEDED: { color: "green" as const, text: t("users.statusActive", { ns: "leases" }) },
+    FAILED: { color: "red" as const, text: t("users.statusFailed", { ns: "leases" }) },
   };
 
   const { color, text } = badgeProps[status];

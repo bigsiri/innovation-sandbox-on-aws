@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { KeyValuePairs } from "@cloudscape-design/components";
+import { useTranslation } from "react-i18next";
 
 import { ErrorPanel } from "@amzn/innovation-sandbox-frontend/components/ErrorPanel";
 import { Loader } from "@amzn/innovation-sandbox-frontend/components/Loader";
@@ -9,6 +10,7 @@ import { SettingsContainer } from "@amzn/innovation-sandbox-frontend/domains/set
 import { useGetConfigurations } from "@amzn/innovation-sandbox-frontend/domains/settings/hooks";
 
 export const LeaseSettings = () => {
+  const { t } = useTranslation(['settings']);
   const {
     data: config,
     isLoading,
@@ -24,7 +26,7 @@ export const LeaseSettings = () => {
   if (loadingError || !config) {
     return (
       <ErrorPanel
-        description="There was a problem loading settings."
+        description={t("loadingError")}
         retry={refetch}
         error={error as Error}
       />
@@ -38,38 +40,38 @@ export const LeaseSettings = () => {
         items={[
           {
             type: "group",
-            title: "Budget",
+            title: t("lease.budget.title"),
             items: [
               {
-                label: "Max Budget",
+                label: t("lease.budget.maxBudget"),
                 value: `$${config.leases.maxBudget} USD`,
               },
               {
-                label: "Require Max Budget",
-                value: config.leases.requireMaxBudget.toString(),
+                label: t("lease.budget.requireMaxBudget"),
+                value: config.leases.requireMaxBudget ? t("common.yes") : t("common.no"),
               },
             ],
           },
           {
             type: "group",
-            title: "Duration",
+            title: t("lease.duration.title"),
             items: [
               {
-                label: "Max Lease Duration",
-                value: `${config.leases.maxDurationHours} hours`,
+                label: t("lease.duration.maxDuration"),
+                value: t("lease.duration.hoursValue", { hours: config.leases.maxDurationHours }),
               },
               {
-                label: "Require Max Lease Duration",
-                value: config.leases.requireMaxDuration.toString(),
+                label: t("lease.duration.requireMaxDuration"),
+                value: config.leases.requireMaxDuration ? t("common.yes") : t("common.no"),
               },
             ],
           },
           {
             type: "group",
-            title: "User limits",
+            title: t("lease.userLimits.title"),
             items: [
               {
-                label: "Max leases per user",
+                label: t("lease.userLimits.maxLeasesPerUser"),
                 value: config.leases.maxLeasesPerUser,
               },
             ],

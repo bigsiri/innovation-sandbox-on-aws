@@ -3,6 +3,7 @@
 
 import { componentTypes } from "@aws-northstar/ui";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { LeaseTemplate } from "@amzn/innovation-sandbox-commons/data/lease-template/lease-template";
 import { Form } from "@amzn/innovation-sandbox-frontend/components/Form";
@@ -16,6 +17,7 @@ interface BasicDetailsFormProps {
 
 export const BasicDetailsForm = ({ leaseTemplate }: BasicDetailsFormProps) => {
   const navigate = useNavigate();
+  const { t } = useTranslation(['leaseTemplates']);
 
   const { mutateAsync: updateLeaseTemplate, isPending: isUpdating } =
     useUpdateLeaseTemplate();
@@ -40,7 +42,7 @@ export const BasicDetailsForm = ({ leaseTemplate }: BasicDetailsFormProps) => {
         ...leaseTemplate,
       }}
       schema={{
-        submitLabel: "Update Basic Details",
+        submitLabel: t("updateBasicDetails"),
         fields: [
           {
             component: componentTypes.SUB_FORM,

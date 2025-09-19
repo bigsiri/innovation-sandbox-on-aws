@@ -6,6 +6,7 @@ import TopNavigation, {
 } from "@cloudscape-design/components/top-navigation";
 import { Density, Mode } from "@cloudscape-design/global-styles";
 import { FC, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import { IsbUser } from "@amzn/innovation-sandbox-commons/types/isb-types";
 import { useAppContext } from "@amzn/innovation-sandbox-frontend/components/AppContext/context";
@@ -29,27 +30,58 @@ export const NavHeader: FC<NavHeaderProps> = ({
 }) => {
   const { theme, density, setTheme, setDensity } = useAppContext();
   const { setToolsOpen, setToolsHide } = useAppLayoutContext();
+  const { t, i18n } = useTranslation('common');
 
   const utilities: TopNavigationProps.Utility[] = useMemo(() => {
     const menu: TopNavigationProps.Utility[] = [
+      // Language selector as separate dropdown
+      {
+        type: "menu-dropdown",
+        iconName: "globe",
+        text: i18n.language === 'fr-CA' ? t("french") : t("english"),
+        ariaLabel: t("language"),
+        items: [
+          {
+            id: "language.en",
+            text: t("english"),
+            iconName: i18n.language === 'en' ? "check" : undefined,
+            iconSvg: i18n.language !== 'en' ? spacerSvg : undefined,
+          },
+          {
+            id: "language.fr-CA",
+            text: t("french"),
+            iconName: i18n.language === 'fr-CA' ? "check" : undefined,
+            iconSvg: i18n.language !== 'fr-CA' ? spacerSvg : undefined,
+          },
+        ],
+        onItemClick: ({ detail }) => {
+          console.log('Language item clicked:', detail.id);
+          if (detail.id === "language.en") {
+            i18n.changeLanguage('en');
+          } else if (detail.id === "language.fr-CA") {
+            i18n.changeLanguage('fr-CA');
+          }
+        },
+      },
+      // Settings dropdown (theme/density only)
       {
         type: "menu-dropdown",
         iconName: "settings",
-        ariaLabel: "Settings",
+        ariaLabel: t("settings"),
         items: [
           {
             id: "theme",
-            text: "Theme",
+            text: t("theme"),
             items: [
               {
                 id: "theme.light",
-                text: "Light",
+                text: t("light"),
                 iconName: theme === Mode.Light ? "check" : undefined,
                 iconSvg: theme !== Mode.Light ? spacerSvg : undefined,
               },
               {
                 id: "theme.dark",
-                text: "Dark",
+                text: t("dark"),
                 iconName: theme === Mode.Dark ? "check" : undefined,
                 iconSvg: theme !== Mode.Dark ? spacerSvg : undefined,
               },
@@ -57,18 +89,18 @@ export const NavHeader: FC<NavHeaderProps> = ({
           },
           {
             id: "density",
-            text: "Density",
+            text: t("density"),
             items: [
               {
                 id: "density.comfortable",
-                text: "Comfortable",
+                text: t("comfortable"),
                 iconName: density === Density.Comfortable ? "check" : undefined,
                 iconSvg:
                   density !== Density.Comfortable ? spacerSvg : undefined,
               },
               {
                 id: "density.compact",
-                text: "Compact",
+                text: t("compact"),
                 iconName: density === Density.Compact ? "check" : undefined,
                 iconSvg: density !== Density.Compact ? spacerSvg : undefined,
               },
@@ -110,13 +142,13 @@ export const NavHeader: FC<NavHeaderProps> = ({
         text: user.displayName,
         description: user.email,
         iconName: "user-profile",
-        items: [{ id: "exit", text: "Exit" }],
+        items: [{ id: "exit", text: t("exit") }],
         onItemClick: onExit,
       });
     }
 
     return menu;
-  }, [theme, density, setDensity, setTheme, user, onExit]);
+  }, [theme, density, setDensity, setTheme, user, onExit, t, i18n.language]);
 
   const topNavLogo = logo ? { src: logo, alt: title } : undefined;
 
@@ -126,11 +158,11 @@ export const NavHeader: FC<NavHeaderProps> = ({
         <TopNavigation
           utilities={utilities}
           i18nStrings={{
-            overflowMenuTitleText: title,
-            overflowMenuTriggerText: title,
+            overflowMenuTitleText: i18n.language === 'fr-CA' ? "Innovation Sandbox sur AWS" : title,
+            overflowMenuTriggerText: i18n.language === 'fr-CA' ? "Innovation Sandbox sur AWS" : title,
           }}
           identity={{
-            title: title,
+            title: i18n.language === 'fr-CA' ? "Innovation Sandbox sur AWS" : title,
             href: href,
             logo: topNavLogo,
           }}

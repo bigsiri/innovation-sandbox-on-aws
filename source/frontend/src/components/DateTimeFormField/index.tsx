@@ -11,6 +11,7 @@ import {
 } from "@cloudscape-design/components";
 import moment from "moment";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface DateTimeFormFieldProps {
   input: FieldInputProps<string>;
@@ -30,6 +31,7 @@ export const DateTimeFormField = ({
   showError,
   meta: { error, submitFailed },
 }: DateTimeFormFieldProps) => {
+  const { t } = useTranslation();
   const shouldShowError = showError || (error && submitFailed);
 
   // Track date and time separately
@@ -81,7 +83,7 @@ export const DateTimeFormField = ({
             />
           </Box>
           <Box>
-            <small data-muted>Time</small>
+            <small data-muted>{t("common.time", { ns: "leases" })}</small>
             <TimeInput
               invalid={!!shouldShowError && !!error}
               onChange={({ detail: { value } }) => onTimeChange(value)}

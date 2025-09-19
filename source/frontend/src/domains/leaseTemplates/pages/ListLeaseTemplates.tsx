@@ -3,6 +3,7 @@
 
 import { Button, ContentLayout, Header } from "@cloudscape-design/components";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { InfoLink } from "@amzn/innovation-sandbox-frontend/components/InfoLink";
 import { Markdown } from "@amzn/innovation-sandbox-frontend/components/Markdown";
@@ -15,12 +16,13 @@ export const ListLeaseTemplates = () => {
   const navigate = useNavigate();
   const setBreadcrumb = useBreadcrumb();
   const { setTools } = useAppLayoutContext();
+  const { t } = useTranslation(['leaseTemplates']);
 
   // set page breadcrumb on page init
   useInit(() => {
     setBreadcrumb([
-      { text: "Home", href: "/" },
-      { text: "Lease Templates", href: "/lease_templates" },
+      { text: t("common.home"), href: "/" },
+      { text: t("leaseTemplates"), href: "/lease_templates" },
     ]);
     setTools(<Markdown file="lease-templates" />);
   });
@@ -38,12 +40,12 @@ export const ListLeaseTemplates = () => {
           info={<InfoLink markdown="lease-templates" />}
           actions={
             <Button onClick={onCreateClick} variant="primary">
-              Add new lease template
+              {t("addNewLeaseTemplate")}
             </Button>
           }
-          description="Manage the available templates to request leases from"
+          description={t("pageDescription")}
         >
-          Lease Templates
+          {t("leaseTemplates")}
         </Header>
       }
     >

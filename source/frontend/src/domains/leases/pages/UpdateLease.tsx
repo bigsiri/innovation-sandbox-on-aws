@@ -4,6 +4,7 @@
 import { ContentLayout, Header, Tabs } from "@cloudscape-design/components";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { isMonitoredLease } from "@amzn/innovation-sandbox-commons/data/lease/lease";
 import { IsbUser } from "@amzn/innovation-sandbox-commons/types/isb-types";
@@ -33,6 +34,7 @@ import { useBreadcrumb } from "@amzn/innovation-sandbox-frontend/hooks/useBreadc
 import { useInit } from "@amzn/innovation-sandbox-frontend/hooks/useInit";
 
 export const UpdateLease = () => {
+  const { t } = useTranslation();
   const { leaseId } = useParams();
   const navigate = useNavigate();
   const setBreadcrumb = useBreadcrumb();
@@ -192,7 +194,7 @@ export const UpdateLease = () => {
     // Build tabs based on user role and template settings
     const tabs = [
       {
-        label: "Summary",
+        label: t("tabs.summary", { ns: "leases" }),
         id: "summary",
         content: <LeaseSummary lease={lease} />,
       },
@@ -201,7 +203,7 @@ export const UpdateLease = () => {
     // Add Users tab if user has permission
     if (canManageUsers()) {
       tabs.push({
-        label: "Users",
+        label: t("tabs.users", { ns: "leases" }),
         id: "users",
         content: (
           <UsersTab
@@ -217,7 +219,7 @@ export const UpdateLease = () => {
     if (isManagerOrAdmin()) {
       tabs.splice(-1, 0, // Insert before Users tab (or at end if no Users tab)
         {
-          label: "Budget",
+          label: t("tabs.budget", { ns: "leases" }),
           id: "budget",
           content: (
             <BudgetForm
@@ -231,7 +233,7 @@ export const UpdateLease = () => {
           ),
         },
         {
-          label: "Duration",
+          label: t("tabs.duration", { ns: "leases" }),
           id: "duration",
           content: (
             <LeaseDurationForm

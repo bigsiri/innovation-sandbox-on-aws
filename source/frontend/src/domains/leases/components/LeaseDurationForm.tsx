@@ -4,6 +4,7 @@
 import { componentTypes, validatorTypes } from "@aws-northstar/ui";
 import { Alert, FormField } from "@cloudscape-design/components";
 import moment from "moment";
+import { useTranslation } from "react-i18next";
 
 import { MonitoredLease } from "@amzn/innovation-sandbox-commons/data/lease/lease";
 import { DateTimeFormField } from "@amzn/innovation-sandbox-frontend/components/DateTimeFormField";
@@ -34,6 +35,7 @@ export const LeaseDurationForm = ({
   onCancel,
   isUpdating,
 }: LeaseDurationFormProps) => {
+  const { t } = useTranslation();
   return (
     <Form
       insideTab
@@ -61,12 +63,12 @@ export const LeaseDurationForm = ({
         }
       }}
       schema={{
-        submitLabel: "Update Duration Settings",
+        submitLabel: t("duration.updateDurationSettings", { ns: "leases" }),
         fields: [
           {
             component: componentTypes.SUB_FORM,
             name: "duration",
-            title: "Lease Duration",
+            title: t("duration.leaseDuration", { ns: "leases" }),
             fields: [
               {
                 component: componentTypes.PLAIN_TEXT,
@@ -75,11 +77,11 @@ export const LeaseDurationForm = ({
                   <Alert type="info">
                     {expirationDate ? (
                       <>
-                        This lease currently expires{" "}
+                        {t("duration.currentlyExpires", { ns: "leases" })}{" "}
                         <DurationStatus date={expirationDate} />
                       </>
                     ) : (
-                      <>This lease currently does not expire</>
+                      <>{t("duration.currentlyNoExpiry", { ns: "leases" })}</>
                     )}
                   </Alert>
                 ),
@@ -87,23 +89,23 @@ export const LeaseDurationForm = ({
               {
                 component: componentTypes.RADIO,
                 name: "expiryDateEnabled",
-                label: <FormField label="Expiry Date" />,
+                label: <FormField label={t("duration.expiryDate", { ns: "leases" })} />,
                 options: [
                   {
                     label: expirationDate
-                      ? "Remove expiry date"
-                      : "Do not set an expiry date",
+                      ? t("duration.removeExpiryDate", { ns: "leases" })
+                      : t("duration.doNotSetExpiryDate", { ns: "leases" }),
                     value: false,
                   },
                   {
-                    label: "Set an expiry date",
+                    label: t("duration.setExpiryDate", { ns: "leases" }),
                     value: true,
                   },
                 ],
                 validate: [
                   {
                     type: validatorTypes.REQUIRED,
-                    message: "Please select an option",
+                    message: t("duration.selectOption", { ns: "leases" }),
                   },
                 ],
               },
@@ -116,7 +118,7 @@ export const LeaseDurationForm = ({
                 validate: [
                   (date: Date) => {
                     if (!date) {
-                      return "Please enter a valid date and time";
+                      return t("duration.enterValidDate", { ns: "leases" });
                     }
 
                     // Convert to moment object for easier comparison
@@ -125,7 +127,7 @@ export const LeaseDurationForm = ({
 
                     // Check if the date/time is at least 1 hour in the future
                     if (selectedDateTime.isBefore(oneHourFromNow)) {
-                      return "Please select a date and time at least 1 hour in the future";
+                      return t("duration.selectFutureDate", { ns: "leases" });
                     }
                   },
                 ],
@@ -153,8 +155,8 @@ export const LeaseDurationForm = ({
                 component: componentTypes.CUSTOM,
                 CustomComponent: ThresholdSettings,
                 name: "durationThresholds",
-                label: "Duration Thresholds",
-                description: "Determine what happens as time passes.",
+                label: t("duration.durationThresholds", { ns: "leases" }),
+                description: t("duration.durationThresholdsDescription", { ns: "leases" }),
                 thresholdType: "duration",
                 validate: [thresholdValidator("duration")],
                 showError: true,

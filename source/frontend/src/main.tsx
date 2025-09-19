@@ -5,6 +5,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 
 import { App } from "@amzn/innovation-sandbox-frontend/App";
+import "@amzn/innovation-sandbox-frontend/i18n";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

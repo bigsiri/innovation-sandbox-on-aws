@@ -3,6 +3,7 @@
 
 import { Button, Header, SpaceBetween } from "@cloudscape-design/components";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import {
   isApprovalDeniedLease,
@@ -21,6 +22,7 @@ import { useMemo } from "react";
 
 export const MyLeases = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation('home');
   const {
     data: leases,
     isFetching,
@@ -73,13 +75,13 @@ export const MyLeases = () => {
 
   const body = () => {
     if (isFetching) {
-      return <Loader label="Loading your leases..." />;
+      return <Loader label={t("leases.loadingLeases")} />;
     }
 
     if (isError) {
       return (
         <ErrorPanel
-          description="Your leases can't be retrieved at the moment."
+          description={t("leases.leasesCannotBeRetrieved")}
           retry={refetch}
           error={error as Error}
         />
@@ -89,9 +91,9 @@ export const MyLeases = () => {
     if ((filteredLeases || []).length === 0) {
       return (
         <InfoPanel
-          header="You currently don't have any leases."
-          description="To get started, click below to request a new lease."
-          actionLabel="Request a new lease"
+          header={t("leases.noLeasesHeader")}
+          description={t("leases.noLeasesDescription")}
+          actionLabel={t("actions.requestNewLease")}
           action={() => navigate("/request")}
         />
       );
@@ -116,17 +118,17 @@ export const MyLeases = () => {
     <SpaceBetween size="m">
       <Header
         variant="h2"
-        description="View a list of your leases"
+        description={t("leases.myLeasesDescription")}
         actions={
           <Button
             iconName="refresh"
-            ariaLabel="Refresh"
+            ariaLabel={t("actions.refresh")}
             disabled={isFetching}
             onClick={() => refetch()}
           />
         }
       >
-        My Leases {count()}
+        {t("sections.myLeases")} {count()}
       </Header>
       {body()}
     </SpaceBetween>

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { ContentLayout, Header, Tabs } from "@cloudscape-design/components";
+import { useTranslation } from "react-i18next";
 
 import { InfoLink } from "@amzn/innovation-sandbox-frontend/components/InfoLink";
 import { Markdown } from "@amzn/innovation-sandbox-frontend/components/Markdown";
@@ -15,11 +16,12 @@ import { useAppLayoutContext } from "@aws-northstar/ui/components/AppLayout";
 export const Settings = () => {
   const setBreadcrumb = useBreadcrumb();
   const { setTools } = useAppLayoutContext();
+  const { t } = useTranslation(['settings']);
 
   useInit(() => {
     setBreadcrumb([
-      { text: "Home", href: "/" },
-      { text: "Settings", href: "/settings" },
+      { text: t("common.home"), href: "/" },
+      { text: t("settings"), href: "/settings" },
     ]);
     setTools(<Markdown file="settings" />);
   });
@@ -30,26 +32,26 @@ export const Settings = () => {
         <Header
           variant="h1"
           info={<InfoLink markdown="settings" />}
-          description="Manage global settings here."
+          description={t("pageDescription")}
         >
-          Settings
+          {t("settings")}
         </Header>
       }
     >
       <Tabs
         tabs={[
           {
-            label: "General Settings",
+            label: t("tabs.general"),
             id: "general",
             content: <GeneralSettings />,
           },
           {
-            label: "Lease Settings",
+            label: t("tabs.lease"),
             id: "lease",
             content: <LeaseSettings />,
           },
           {
-            label: "Clean Up Settings",
+            label: t("tabs.cleanup"),
             id: "clean",
             content: <CleanupSettings />,
           },

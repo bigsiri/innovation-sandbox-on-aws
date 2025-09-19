@@ -13,6 +13,7 @@ import {
 } from "@cloudscape-design/components";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   isExpiredLease,
@@ -37,6 +38,7 @@ interface LeasePanelProps {
 export const LeasePanel = ({ lease }: LeasePanelProps) => {
   const navigate = useNavigate();
   const [user, setUser] = useState<IsbUser>();
+  const { t } = useTranslation('home');
 
   // Get lease template to check user management permission
   const { data: leaseTemplate } = useGetLeaseTemplateById(
@@ -79,14 +81,14 @@ export const LeasePanel = ({ lease }: LeasePanelProps) => {
       );
     }
 
-    if ((lease.status === "Active" || lease.status === "PendingApproval") && canManageUsers()) {
+    if (lease.status === "Active" && canManageUsers()) {
       actions.push(
         <Button
           key="manage-users"
           variant="normal"
           onClick={() => navigate(`/leases/edit/${lease.leaseId}?tab=users`)}
         >
-          Manage Users
+          {t("actions.manageUsers")}
         </Button>
       );
     }
@@ -94,12 +96,17 @@ export const LeasePanel = ({ lease }: LeasePanelProps) => {
     if (lease.status === "PendingApproval") {
       actions.push(
         <StatusIndicator key="pending" type="info">
-          Your account is pending approval
+          {t("status.accountPendingApproval")}
         </StatusIndicator>
       );
     }
 
     return actions;
+  };
+
+  const getUsersCount = () => {
+    const count = (lease.users?.length || 0) + 1;
+    return `${count} ${count === 1 ? t("table.user") : t("table.users")}`;
   };
 
   return (
@@ -110,29 +117,29 @@ export const LeasePanel = ({ lease }: LeasePanelProps) => {
           actions={<SpaceBetween direction="horizontal" size="xs">{getActions()}</SpaceBetween>}
           description={<LeaseStatusBadge lease={lease} />}
         >
-          {lease.originalLeaseTemplateName || `Lease ${lease.uuid}`}
+          {lease.originalLeaseTemplateName || `${t("leases.lease")} ${lease.uuid}`}
         </Header>
         <Divider marginBottom="s" />
         <ColumnLayout columns={4} variant="text-grid">
           <Box>
-            <FormField label="AWS Account ID" />
+            <FormField label={t("table.awsAccountId")} />
             {isMonitoredLease(lease) ? (
               lease.awsAccountId
             ) : (
               <StatusIndicator type="warning">
-                No account assigned{" "}
-                {lease.status === "PendingApproval" && "yet"}
+                {t("status.noAccountAssigned")}{" "}
+                {lease.status === "PendingApproval" && t("status.noAccountAssignedYet")}
               </StatusIndicator>
             )}
           </Box>
 
           <Box>
-            <FormField label="Users" />
-            <div>{(lease.users?.length || 0) + 1} user{((lease.users?.length || 0) + 1) !== 1 ? 's' : ''}</div>
+            <FormField label={t("table.users")} />
+            <div>{getUsersCount()}</div>
           </Box>
 
           <Box>
-            <FormField label="Expiry" />
+            <FormField label={t("table.expiry")} />
             <DurationStatus
               date={(lease as MonitoredLease).expirationDate}
               durationInHours={lease.leaseDurationInHours}
@@ -140,7 +147,7 @@ export const LeasePanel = ({ lease }: LeasePanelProps) => {
           </Box>
 
           <Box>
-            <FormField label="Budget" />
+            <FormField label={t("table.budget")} />
             <SpaceBetween size="m">
               <BudgetProgressBar
                 currentValue={

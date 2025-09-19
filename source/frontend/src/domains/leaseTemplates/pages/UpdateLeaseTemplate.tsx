@@ -10,6 +10,7 @@ import {
 } from "@cloudscape-design/components";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { LeaseTemplate } from "@amzn/innovation-sandbox-commons/data/lease-template/lease-template";
 import { ErrorPanel } from "@amzn/innovation-sandbox-frontend/components/ErrorPanel";
@@ -34,6 +35,7 @@ import { useBreadcrumb } from "@amzn/innovation-sandbox-frontend/hooks/useBreadc
 export const UpdateLeaseTemplate = () => {
   const { uuid } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation(['leaseTemplates']);
   const setBreadcrumb = useBreadcrumb();
 
   // get leaseTemplate hook
@@ -139,12 +141,12 @@ export const UpdateLeaseTemplate = () => {
           tabs={[
             {
               id: "basic",
-              label: "Basic Details",
+              label: t("basicDetails"),
               content: <BasicDetailsForm leaseTemplate={leaseTemplate} />,
             },
             {
               id: "budget",
-              label: "Budget",
+              label: t("budget"),
               content: (
                 <BudgetForm
                   maxSpend={leaseTemplate.maxSpend}
@@ -158,7 +160,7 @@ export const UpdateLeaseTemplate = () => {
             },
             {
               id: "duration",
-              label: "Duration",
+              label: t("duration"),
               content: (
                 <DurationForm
                   leaseDurationInHours={leaseTemplate.leaseDurationInHours}

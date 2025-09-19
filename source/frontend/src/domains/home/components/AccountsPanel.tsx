@@ -3,12 +3,14 @@
 
 import { Button, Header, SpaceBetween } from "@cloudscape-design/components";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { AccountsSummary } from "@amzn/innovation-sandbox-frontend/components/AccountsSummary";
 import { useGetAccounts } from "@amzn/innovation-sandbox-frontend/domains/accounts/hooks";
 
 export const AccountsPanel = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation('home');
   const { data: accounts, isFetching, refetch } = useGetAccounts();
 
   return (
@@ -19,17 +21,17 @@ export const AccountsPanel = () => {
           <SpaceBetween size="xs" direction="horizontal">
             <Button
               iconName="refresh"
-              ariaLabel="Refresh"
+              ariaLabel={t("actions.refresh")}
               disabled={isFetching}
               onClick={() => refetch()}
             />
             <Button onClick={() => navigate("/accounts")}>
-              Manage accounts
+              {t("actions.manageAccounts")}
             </Button>
           </SpaceBetween>
         }
       >
-        Administration
+        {t("sections.administration")}
       </Header>
       <AccountsSummary accounts={accounts} isLoading={isFetching} />
     </SpaceBetween>

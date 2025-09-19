@@ -9,6 +9,7 @@ import {
 } from "@cloudscape-design/components";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { IsbUser } from "@amzn/innovation-sandbox-commons/types/isb-types";
 import { Divider } from "@amzn/innovation-sandbox-frontend/components/Divider";
@@ -28,9 +29,10 @@ export const Home = () => {
   const setBreadcrumb = useBreadcrumb();
   const [user, setUser] = useState<IsbUser>();
   const { setTools } = useAppLayoutContext();
+  const { t } = useTranslation('home');
 
   useInit(async () => {
-    setBreadcrumb([{ text: "Home", href: "/" }]);
+    setBreadcrumb([{ text: t("page.home"), href: "/" }]);
     setTools(<Markdown file={"home"} />);
 
     // get user details
@@ -84,12 +86,12 @@ export const Home = () => {
           variant="h1"
           actions={
             <Button onClick={() => navigate("/request")} variant="primary">
-              Request a new lease
+              {t("actions.requestNewLease")}
             </Button>
           }
           info={<InfoLink markdown="home" />}
         >
-          Welcome to Innovation Sandbox on AWS
+          {t("page.welcome")}
         </Header>
       }
     >

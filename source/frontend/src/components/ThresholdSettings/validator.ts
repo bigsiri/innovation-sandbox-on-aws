@@ -9,7 +9,7 @@ import { ThresholdTypes } from "@amzn/innovation-sandbox-frontend/components/Thr
 import { validateNumber } from "@amzn/innovation-sandbox-frontend/helpers/validators";
 
 // Validate the list of thresholds - either return an error message or null if no errors
-export const thresholdValidator = (type: "budget" | "duration") => {
+export const thresholdValidator = (type: "budget" | "duration", t?: (key: string, options?: any) => string) => {
   return (
     thresholds: BudgetThreshold[] | DurationThreshold[] | undefined,
     form: any,
@@ -21,13 +21,14 @@ export const thresholdValidator = (type: "budget" | "duration") => {
       ? form[maxValueAttributeName]
       : undefined;
 
-    return validateAllThresholds(thresholds, maxValue);
+    return validateAllThresholds(thresholds, maxValue, t);
   };
 };
 
 export const validateAllThresholds = (
   thresholds: BudgetThreshold[] | DurationThreshold[] | undefined,
   maxValue?: number,
+  t?: (key: string, options?: any) => string,
 ): string | null => {
   // undefined thresholds mean unlimited budget / time
   if (thresholds === undefined) {
@@ -39,10 +40,11 @@ export const validateAllThresholds = (
       thresholds,
       index,
       maxValue,
+      t,
     );
 
     if (valueError || actionError) {
-      return "Please fix the above errors";
+      return t ? t("validation.fixErrors") : "Please fix the above errors";
     }
   }
 
@@ -67,6 +69,7 @@ export const validateThreshold = (
   thresholds: (BudgetThreshold | DurationThreshold)[],
   index: number,
   maxValue?: number,
+  t?: (key: string, options?: any) => string,
 ): { valueError: string | null; actionError: string | null } => {
   const threshold = thresholds[index];
   const { action } = threshold;
@@ -76,7 +79,7 @@ export const validateThreshold = (
 
   const valueError: string | null = (() => {
     // not a number
-    const invalidNumber = validateNumber(value);
+    const invalidNumber = validateNumber(value, t);
     if (invalidNumber) {
       return invalidNumber;
     }
@@ -98,7 +101,7 @@ export const validateThreshold = (
 
   const actionError: string | null = (() => {
     if (!action) {
-      return "Please select an action";
+      return t ? t("validation.selectAction") : "Please select an action";
     }
 
     // freeze actions
