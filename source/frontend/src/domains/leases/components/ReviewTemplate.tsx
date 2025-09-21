@@ -9,6 +9,7 @@ import {
   SpaceBetween,
   StatusIndicator,
 } from "@cloudscape-design/components";
+import { useTranslation } from "react-i18next";
 
 import { BudgetStatus } from "@amzn/innovation-sandbox-frontend/components/BudgetStatus";
 import { DurationStatus } from "@amzn/innovation-sandbox-frontend/components/DurationStatus";
@@ -20,6 +21,7 @@ type ReviewTemplateProps = {
 };
 
 export const ReviewTemplate = (props: ReviewTemplateProps) => {
+  const { t } = useTranslation('leases');
   const {
     data: leaseTemplate,
     isLoading,
@@ -34,8 +36,8 @@ export const ReviewTemplate = (props: ReviewTemplateProps) => {
   if (isError) {
     return (
       <Alert type="error">
-        Error loading lease template:{" "}
-        {error instanceof Error ? error.message : "Unknown error"}
+        {t('request.review.errorLoading')}{" "}
+        {error instanceof Error ? error.message : t('request.review.unknownError')}
       </Alert>
     );
   }
@@ -47,7 +49,7 @@ export const ReviewTemplate = (props: ReviewTemplateProps) => {
   return (
     <SpaceBetween size="s">
       <KeyValuePair
-        label="Lease Template Selected"
+        label={t('request.review.templateSelected')}
         value={
           <Box margin={{ top: "xs" }}>
             <Container>
@@ -62,23 +64,23 @@ export const ReviewTemplate = (props: ReviewTemplateProps) => {
                 </Box>
 
                 <Box data-muted>
-                  <strong>Expires: </strong>
+                  <strong>{t('request.review.expires')} </strong>
                   <DurationStatus
                     durationInHours={leaseTemplate.leaseDurationInHours}
                   />
                 </Box>
                 <Box data-muted>
-                  <strong>Max budget: </strong>
+                  <strong>{t('request.review.maxBudget')} </strong>
                   <BudgetStatus maxSpend={leaseTemplate.maxSpend} />
                 </Box>
                 <Box>
                   {!leaseTemplate.requiresApproval ? (
                     <StatusIndicator type="success">
-                      No approval required
+                      {t('request.review.noApprovalRequired')}
                     </StatusIndicator>
                   ) : (
                     <StatusIndicator type="warning">
-                      Requires approval
+                      {t('request.review.requiresApproval')}
                     </StatusIndicator>
                   )}
                 </Box>

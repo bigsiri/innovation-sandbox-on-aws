@@ -2,19 +2,21 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { DeleteConfirmationDialog } from "@aws-northstar/ui";
-import Table from "@aws-northstar/ui/components/Table";
 import {
   Box,
   Button,
   ButtonDropdown,
   CollectionPreferences,
+  Header,
   SpaceBetween,
   StatusIndicator,
+  Table,
   TextContent,
+  TextFilter,
 } from "@cloudscape-design/components";
 import moment from "moment";
 import "moment/locale/fr";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { LeaseTemplate } from "@amzn/innovation-sandbox-commons/data/lease-template/lease-template";
@@ -87,10 +89,23 @@ export const LeaseTemplatesTable = () => {
 
   // selected items state
   const [selectedItems, setSelectedItems] = useState<LeaseTemplate[]>([]);
+  const [filteringText, setFilteringText] = useState("");
 
   // state to show/hide delete modal dialog
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [showDeleteError, setShowDeleteError] = useState(false);
+
+  // Filter lease templates based on search text
+  const filteredLeaseTemplates = useMemo(() => {
+    if (!leaseTemplates) return [];
+    if (!filteringText) return leaseTemplates;
+    
+    return leaseTemplates.filter(template =>
+      template.name.toLowerCase().includes(filteringText.toLowerCase()) ||
+      (template.description && template.description.toLowerCase().includes(filteringText.toLowerCase())) ||
+      template.createdBy.toLowerCase().includes(filteringText.toLowerCase())
+    );
+  }, [leaseTemplates, filteringText]);
 
   // hook to delete lease templates
   const {
@@ -132,13 +147,84 @@ export const LeaseTemplatesTable = () => {
   return (
     <>
       <Table
-        header={t("leaseTemplates")}
+        header={
+          <Header
+            actions={
+              <SpaceBetween direction="horizontal" size="s">
+                <Button
+                  data-testid="refresh-button"
+                  iconName="refresh"
+                  onClick={() => refetch()}
+                  disabled={isFetching}
+                />
+                <ButtonDropdown
+                  disabled={selectedItems.length === 0}
+                  items={[{ text: t("delete"), id: "delete" }]}
+                  onItemClick={({ detail }) => {
+                    if (detail.id === "delete") {
+                      setDeleteModalVisible(true);
+                    }
+                  }}
+                >
+                  {t("actions")}
+                </ButtonDropdown>
+              </SpaceBetween>
+            }
+          >
+            {t("leaseTemplates")}
+          </Header>
+        }
         stripedRows
         resizableColumns
         trackBy="uuid"
         loading={isFetching}
-        items={leaseTemplates || []}
-        totalItemsCount={(leaseTemplates || []).length}
+        items={filteredLeaseTemplates || []}
+        selectedItems={selectedItems}
+        onSelectionChange={({ detail }) =>
+          setSelectedItems(detail.selectedItems)
+        }
+        selectionType="multi"
+        filter={
+          <TextFilter
+            filteringPlaceholder={t("filteringPlaceholder")}
+            filteringText={filteringText}
+            onChange={({ detail }) => setFilteringText(detail.filteringText)}
+            filteringAriaLabel={t("filteringAriaLabel")}
+          />
+        }
+        columnDefinitions={[
+          {
+            id: "name",
+            header: t("name"),
+            sortingField: "name",
+            cell: (item: LeaseTemplate) => <NameCell item={item} />, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
+          },
+          {
+            id: "createdBy",
+            header: t("createdBy"),
+            sortingField: "createdBy",
+            cell: (item: LeaseTemplate) => item.createdBy,
+          },
+          {
+            id: "maxSpend",
+            header: t("maxBudget"),
+            sortingField: "maxSpend",
+            cell: (item: LeaseTemplate) => <MaxSpendCell item={item} />, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
+          },
+          {
+            id: "leaseDurationInHours",
+            header: t("expiry"),
+            sortingField: "leaseDurationInHours",
+            cell: (item: LeaseTemplate) => <ExpiryCell item={item} />, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
+          },
+          {
+            id: "meta.lastEditTime",
+            header: t("lastUpdated"),
+            sortingField: "meta.lastEditTime",
+            cell: (item: LeaseTemplate) =>
+              moment(item.meta?.lastEditTime).fromNow(),
+          },
+        ]}
         preferences={
           <CollectionPreferences
             title={t("preferences")}
@@ -182,64 +268,6 @@ export const LeaseTemplatesTable = () => {
               ]
             }}
           />
-        }
-        selectedItems={selectedItems}
-        onSelectionChange={({ detail }) =>
-          setSelectedItems(detail.selectedItems)
-        }
-        columnDefinitions={[
-          {
-            id: "name",
-            header: t("name"),
-            sortingField: "name",
-            cell: (item: LeaseTemplate) => <NameCell item={item} />, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
-          },
-          {
-            id: "createdBy",
-            header: t("createdBy"),
-            sortingField: "createdBy",
-            cell: (item: LeaseTemplate) => item.createdBy,
-          },
-          {
-            id: "maxSpend",
-            header: t("maxBudget"),
-            sortingField: "maxSpend",
-            cell: (item: LeaseTemplate) => <MaxSpendCell item={item} />, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
-          },
-          {
-            id: "leaseDurationInHours",
-            header: t("expiry"),
-            sortingField: "leaseDurationInHours",
-            cell: (item: LeaseTemplate) => <ExpiryCell item={item} />, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
-          },
-          {
-            id: "meta.lastEditTime",
-            header: t("lastUpdated"),
-            sortingField: "meta.lastEditTime",
-            cell: (item: LeaseTemplate) =>
-              moment(item.meta?.lastEditTime).fromNow(),
-          },
-        ]}
-        actions={
-          <SpaceBetween direction="horizontal" size="s">
-            <Button
-              data-testid="refresh-button"
-              iconName="refresh"
-              onClick={() => refetch()}
-              disabled={isFetching}
-            />
-            <ButtonDropdown
-              disabled={selectedItems.length === 0}
-              items={[{ text: t("delete"), id: "delete" }]}
-              onItemClick={({ detail }) => {
-                if (detail.id === "delete") {
-                  setDeleteModalVisible(true);
-                }
-              }}
-            >
-              {t("actions")}
-            </ButtonDropdown>
-          </SpaceBetween>
         }
       />
 

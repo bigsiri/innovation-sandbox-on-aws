@@ -71,8 +71,18 @@ i18n.on('languageChanged', (lng) => {
   }
 });
 
-// Set initial moment locale
-if (i18n.language === 'fr-CA') {
+// Set initial moment locale after i18n is initialized
+i18n.on('initialized', () => {
+  if (i18n.language === 'fr-CA') {
+    moment.locale('fr');
+  } else {
+    moment.locale('en');
+  }
+});
+
+// Set initial moment locale immediately
+const currentLang = i18n.language || localStorage.getItem('i18nextLng') || 'en';
+if (currentLang === 'fr-CA') {
   moment.locale('fr');
 } else {
   moment.locale('en');

@@ -92,7 +92,7 @@ export const UserList = ({
     },
     {
       id: "actions",
-      header: "Actions",
+      header: t("users.actions", { ns: "leases" }),
       cell: (item: LeaseUser) => (
         <Button
           variant="normal"
@@ -130,7 +130,7 @@ export const UserList = ({
           <Header
             counter={`(${users.length})`}
           >
-            Users
+            {t("users.users", { ns: "leases" })}
           </Header>
         }
       />

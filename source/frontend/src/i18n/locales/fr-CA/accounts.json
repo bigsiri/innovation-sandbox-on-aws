@@ -1,7 +1,20 @@
 {
   "accounts": "Comptes",
-  "addAccounts": "Ajouter des comptes",
   "pageDescription": "Gérer les comptes AWS enregistrés dans le pool de comptes",
+  "searchPlaceholder": "Rechercher des comptes",
+  "filteringAriaLabel": "Filtrer les comptes",
+  "loading": "Chargement...",
+  "actions": "Actions",
+  "preferences": "Préférences",
+  "confirm": "Confirmer",
+  "cancel": "Annuler",
+  "selectPageSize": "Sélectionner la taille de page",
+  "selectVisibleColumns": "Sélectionner les colonnes visibles",
+  "wrapLines": "Retour à la ligne",
+  "wrapLinesDescription": "Cochez pour voir tout le texte et faire le retour à la ligne",
+  "stripedRows": "Lignes rayées",
+  "stripedRowsDescription": "Cochez pour ajouter des lignes ombrées alternées",
+  "mainProperties": "Propriétés principales",
   "ejectAccounts": "Éjecter le(s) compte(s)",
   "cleanupAccounts": "Nettoyer le(s) compte(s)",
   "ejectAccount": "Éjecter le compte",
@@ -58,6 +71,17 @@
       "name": "Nom",
       "email": "Courriel",
       "access": "Accès"
-    }
+    },
+    "noItemsToDisplay": "Aucun élément à afficher."
+  },
+  "status": {
+    "available": "Disponible",
+    "active": "Actif",
+    "frozen": "Gelé",
+    "cleanup": "Nettoyage",
+    "quarantine": "Quarantaine",
+    "cleanupInProgress": "Ce compte est en cours de nettoyage et sera bientôt prêt à utiliser.",
+    "cleanupStuck": "Le processus de nettoyage peut être bloqué, veuillez réessayer.",
+    "cleanupInitiated": "Nettoyage initié"
   }
 }

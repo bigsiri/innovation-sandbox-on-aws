@@ -4,6 +4,70 @@
     "home": "Accueil",
     "description": "Gérer les baux de comptes sandbox"
   },
+  "request": {
+    "title": "Demander un bail",
+    "description": "Demander un bail pour un compte sandbox AWS.",
+    "successMessage": "Votre demande de nouveau bail a été soumise.",
+    "stepNumber": "Étape {{stepNumber}}",
+    "stepNumberText": "Étape",
+    "steps": {
+      "selectTemplate": "Sélectionner un modèle de bail",
+      "termsOfService": "Conditions d'utilisation",
+      "reviewSubmit": "Réviser et soumettre"
+    },
+    "templateQuestion": "Quel modèle de bail souhaitez-vous utiliser pour demander un bail ?",
+    "acceptTerms": "J'accepte les conditions d'utilisation ci-dessus.",
+    "comments": {
+      "label": "Commentaires",
+      "description": "Optionnel - ajoutez des commentaires supplémentaires pour appuyer votre demande"
+    },
+    "validation": {
+      "selectTemplate": "Veuillez sélectionner une option pour continuer",
+      "acceptTerms": "Veuillez accepter les conditions d'utilisation pour continuer"
+    },
+    "buttons": {
+      "submit": "Soumettre",
+      "previous": "Précédent",
+      "next": "Suivant"
+    },
+    "template": {
+      "loading": "Chargement des modèles de bail...",
+      "loadError": "Impossible de charger les modèles de bail pour le moment.",
+      "noTemplatesHeader": "Aucun modèle de bail configuré.",
+      "noTemplatesMessage": "Veuillez contacter votre administrateur système.",
+      "searchPlaceholder": "Rechercher par nom de modèle",
+      "searchAriaLabel": "Rechercher des modèles de bail",
+      "nextPage": "Page suivante",
+      "previousPage": "Page précédente",
+      "pageLabel": "Page {{pageNumber}} sur {{totalPages}}",
+      "noMatchingHeader": "Aucun modèle correspondant",
+      "noMatchingMessage": "Aucun modèle de bail ne correspond à votre recherche. Essayez une recherche différente.",
+      "maxBudget": "Budget max :",
+      "expires": "Expire :",
+      "approval": "Approbation :",
+      "noMaxBudget": "Aucun budget maximum",
+      "afterDuration": "après {{duration}}",
+      "noExpiry": "Aucune expiration",
+      "requiresApproval": "Nécessite une approbation",
+      "noApprovalRequired": "Aucune approbation requise"
+    },
+    "review": {
+      "errorLoading": "Erreur lors du chargement du modèle de bail :",
+      "unknownError": "Erreur inconnue",
+      "templateSelected": "Modèle de bail sélectionné",
+      "expires": "Expire :",
+      "maxBudget": "Budget max :",
+      "requiresApproval": "Nécessite une approbation",
+      "noApprovalRequired": "Aucune approbation requise"
+    },
+    "terms": {
+      "loading": "Chargement des conditions d'utilisation...",
+      "loadError": "Impossible de récupérer les conditions d'utilisation.",
+      "reviewMessage": "Avant de continuer, veuillez examiner les conditions d'utilisation ci-dessous.",
+      "notConfiguredHeader": "Les conditions d'utilisation n'ont pas encore été configurées.",
+      "notConfiguredMessage": "Veuillez contacter votre administrateur !"
+    }
+  },
   "table": {
     "headers": {
       "user": "Utilisateur",
@@ -30,6 +94,18 @@
     "loading": "Chargement...",
     "noLeasesFound": "Aucun bail trouvé"
   },
+  "searchPlaceholder": "Rechercher des baux",
+  "filteringAriaLabel": "Filtrer les baux",
+  "preferences": "Préférences",
+  "confirm": "Confirmer",
+  "cancel": "Annuler",
+  "selectPageSize": "Sélectionner la taille de page",
+  "selectVisibleColumns": "Sélectionner les colonnes visibles",
+  "wrapLines": "Retour à la ligne",
+  "wrapLinesDescription": "Cochez pour voir tout le texte et faire le retour à la ligne",
+  "stripedRows": "Lignes rayées",
+  "stripedRowsDescription": "Cochez pour ajouter des lignes ombrées alternées",
+  "mainProperties": "Propriétés principales",
   "filterGroups": {
     "active": "Actif",
     "pending": "En attente",
@@ -123,6 +199,8 @@
     "durationThresholdsDescription": "Déterminez ce qui se passe au fil du temps."
   },
   "users": {
+    "users": "Utilisateurs",
+    "actions": "Actions",
     "successfullyAdded": "{{count}} utilisateur(s) ajouté(s) avec succès",
     "mixedResults": "{{successCount}} utilisateur(s) ajouté(s). {{failureCount}} ont échoué.",
     "failedToAdd": "Échec de l'ajout de {{count}} utilisateur(s)",

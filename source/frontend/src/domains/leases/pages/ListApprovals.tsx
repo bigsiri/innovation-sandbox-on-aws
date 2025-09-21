@@ -1,17 +1,19 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-import { Table } from "@aws-northstar/ui";
 import {
   Button,
   ButtonDropdown,
+  CollectionPreferences,
   ContentLayout,
   Header,
   SpaceBetween,
+  Table,
+  TextFilter,
 } from "@cloudscape-design/components";
 import moment from "moment";
 import "moment/locale/fr";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { LeaseWithLeaseId as Lease } from "@amzn/innovation-sandbox-commons/data/lease/lease";
@@ -29,11 +31,13 @@ import {
 } from "@amzn/innovation-sandbox-frontend/domains/leases/hooks";
 import { useBreadcrumb } from "@amzn/innovation-sandbox-frontend/hooks/useBreadcrumb";
 import { useModal } from "@amzn/innovation-sandbox-frontend/hooks/useModal";
+import { getLocalizedMoment } from "@amzn/innovation-sandbox-frontend/helpers/moment";
 import { useAppLayoutContext } from "@aws-northstar/ui/components/AppLayout";
 
-const DateRequestedCell = ({ lease }: { lease: Lease }) => (
-  <>{moment(lease.meta?.createdTime).fromNow()}</>
-);
+const DateRequestedCell = ({ lease }: { lease: Lease }) => {
+  const moment = getLocalizedMoment();
+  return <>{moment(lease.meta?.createdTime).fromNow()}</>;
+};
 
 const CommentsCell = ({ lease }: { lease: Lease }) => <>{lease.comments}</>;
 
@@ -142,10 +146,23 @@ export const ListApprovals = () => {
 
   // state
   const [selectedRequests, setSelectedRequests] = useState<Lease[]>([]);
+  const [filteringText, setFilteringText] = useState("");
 
   // api hooks
   const { data: requests, isFetching, refetch } = useGetPendingApprovals();
   const { mutateAsync: reviewLease } = useReviewLease();
+
+  // Filter requests based on search text
+  const filteredRequests = useMemo(() => {
+    if (!requests) return [];
+    if (!filteringText) return requests;
+    
+    return requests.filter(request =>
+      request.userEmail.toLowerCase().includes(filteringText.toLowerCase()) ||
+      request.originalLeaseTemplateName.toLowerCase().includes(filteringText.toLowerCase()) ||
+      (request.comments && request.comments.toLowerCase().includes(filteringText.toLowerCase()))
+    );
+  }, [requests, filteringText]);
 
   const init = async () => {
     setBreadcrumb([
@@ -195,32 +212,91 @@ export const ListApprovals = () => {
         stripedRows
         trackBy="leaseId"
         columnDefinitions={createColumnDefinitions(true, t)}
-        header={t("approvals")}
-        totalItemsCount={(requests || []).length}
-        items={requests || []}
+        items={filteredRequests || []}
         selectedItems={selectedRequests}
         onSelectionChange={handleSelectionChange}
+        selectionType="multi"
         loading={isFetching}
-        actions={
-          <SpaceBetween direction="horizontal" size="s">
-            <Button
-              iconName="refresh"
-              onClick={() => refetch()}
-              disabled={isFetching}
-            />
-            <ButtonDropdown
-              disabled={selectedRequests.length === 0}
-              items={[
-                { text: t("approveRequests"), id: "approve" },
-                { text: t("denyRequests"), id: "deny" },
-              ]}
-              onItemClick={({ detail }) => {
-                showReviewModal(detail.id === "approve" ? "approve" : "deny");
-              }}
-            >
-              {t("actionsButton")}
-            </ButtonDropdown>
-          </SpaceBetween>
+        loadingText={t("filters.loading")}
+        empty={t("table.noItemsToDisplay")}
+        filter={
+          <TextFilter
+            filteringPlaceholder={t("filteringPlaceholder")}
+            filteringText={filteringText}
+            onChange={({ detail }) => setFilteringText(detail.filteringText)}
+            filteringAriaLabel={t("filteringAriaLabel")}
+          />
+        }
+        header={
+          <Header
+            counter={`(${filteredRequests?.length || 0})`}
+            actions={
+              <SpaceBetween direction="horizontal" size="s">
+                <Button
+                  iconName="refresh"
+                  onClick={() => refetch()}
+                  disabled={isFetching}
+                />
+                <ButtonDropdown
+                  disabled={selectedRequests.length === 0}
+                  items={[
+                    { text: t("approveRequests"), id: "approve" },
+                    { text: t("denyRequests"), id: "deny" },
+                  ]}
+                  onItemClick={({ detail }) => {
+                    showReviewModal(detail.id === "approve" ? "approve" : "deny");
+                  }}
+                >
+                  {t("actionsButton")}
+                </ButtonDropdown>
+              </SpaceBetween>
+            }
+          >
+            {t("approvals")}
+          </Header>
+        }
+        preferences={
+          <CollectionPreferences
+            title={t("preferences")}
+            confirmLabel={t("confirm")}
+            cancelLabel={t("cancel")}
+            preferences={{
+              pageSize: 10,
+              wrapLines: false,
+              stripedRows: true,
+              visibleContent: ["requestor", "originalLeaseTemplateName", "dateRequested", "comments"]
+            }}
+            pageSizePreference={{
+              title: t("selectPageSize"),
+              options: [
+                { value: 10, label: "10" },
+                { value: 20, label: "20" },
+                { value: 50, label: "50" }
+              ]
+            }}
+            wrapLinesPreference={{
+              label: t("wrapLines"),
+              description: t("wrapLinesDescription")
+            }}
+            stripedRowsPreference={{
+              label: t("stripedRows"),
+              description: t("stripedRowsDescription")
+            }}
+            visibleContentPreference={{
+              title: t("selectVisibleColumns"),
+              options: [
+                { 
+                  label: t("mainProperties"),
+                  options: [
+                    { id: "requestor", label: t("table.headers.requestedBy") },
+                    { id: "originalLeaseTemplateName", label: t("table.headers.leaseTemplate") },
+                    { id: "dateRequested", label: t("table.headers.requested") },
+                    { id: "comments", label: t("table.headers.comments") }
+                  ]
+                }
+              ]
+            }}
+          />
         }
       />
     </ContentLayout>

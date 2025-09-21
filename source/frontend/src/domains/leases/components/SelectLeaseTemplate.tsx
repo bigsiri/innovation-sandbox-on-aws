@@ -16,6 +16,7 @@ import {
 } from "@cloudscape-design/components";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { LeaseTemplate } from "@amzn/innovation-sandbox-commons/data/lease-template/lease-template";
 import { ErrorPanel } from "@amzn/innovation-sandbox-frontend/components/ErrorPanel";
@@ -35,47 +36,51 @@ interface SelectLeaseTemplateProps {
 }
 
 const LEASE_TEMPLATES_PER_PAGE = 12;
-const LeaseTemplateCardContent = ({ option }: { option: LeaseTemplate }) => (
-  <SpaceBetween size="l">
-    <div>{option.description}</div>
-    <Container>
-      <SpaceBetween size="l">
-        <ColumnLayout columns={3} minColumnWidth={150} variant="text-grid">
-          <Box>
-            <FormField data-nowrap label="Max Budget:" />
-            {option.maxSpend ? (
-              formatCurrency(option.maxSpend)
-            ) : (
-              <StatusIndicator type="info">No max budget</StatusIndicator>
-            )}
-          </Box>
+const LeaseTemplateCardContent = ({ option }: { option: LeaseTemplate }) => {
+  const { t } = useTranslation('leases');
+  
+  return (
+    <SpaceBetween size="l">
+      <div>{option.description}</div>
+      <Container>
+        <SpaceBetween size="l">
+          <ColumnLayout columns={3} minColumnWidth={150} variant="text-grid">
+            <Box>
+              <FormField data-nowrap label={t('request.template.maxBudget')} />
+              {option.maxSpend ? (
+                formatCurrency(option.maxSpend)
+              ) : (
+                <StatusIndicator type="info">{t('request.template.noMaxBudget')}</StatusIndicator>
+              )}
+            </Box>
 
-          <Box>
-            <FormField data-nowrap label="Expires:" />
-            {option.leaseDurationInHours ? (
-              `after ${moment.duration(option.leaseDurationInHours, "hours").humanize()}`
-            ) : (
-              <StatusIndicator type="info">No expiry</StatusIndicator>
-            )}
-          </Box>
+            <Box>
+              <FormField data-nowrap label={t('request.template.expires')} />
+              {option.leaseDurationInHours ? (
+                t('request.template.afterDuration', { duration: moment.duration(option.leaseDurationInHours, "hours").humanize() })
+              ) : (
+                <StatusIndicator type="info">{t('request.template.noExpiry')}</StatusIndicator>
+              )}
+            </Box>
 
-          <Box>
-            <FormField data-nowrap label="Approval:" />
-            {option.requiresApproval ? (
-              <StatusIndicator type="warning">
-                <span data-wrap>Requires approval</span>
-              </StatusIndicator>
-            ) : (
-              <StatusIndicator type="success">
-                <span data-wrap>No approval required</span>
-              </StatusIndicator>
-            )}
-          </Box>
-        </ColumnLayout>
-      </SpaceBetween>
-    </Container>
-  </SpaceBetween>
-);
+            <Box>
+              <FormField data-nowrap label={t('request.template.approval')} />
+              {option.requiresApproval ? (
+                <StatusIndicator type="warning">
+                  <span data-wrap>{t('request.template.requiresApproval')}</span>
+                </StatusIndicator>
+              ) : (
+                <StatusIndicator type="success">
+                  <span data-wrap>{t('request.template.noApprovalRequired')}</span>
+                </StatusIndicator>
+              )}
+            </Box>
+          </ColumnLayout>
+        </SpaceBetween>
+      </Container>
+    </SpaceBetween>
+  );
+};
 
 export const SelectLeaseTemplate = ({
   input,
@@ -84,6 +89,7 @@ export const SelectLeaseTemplate = ({
   description,
   meta: { error },
 }: SelectLeaseTemplateProps) => {
+  const { t } = useTranslation('leases');
   const [selectedLeaseTemplates, setSelectedLeaseTemplates] = useState<
     LeaseTemplate[]
   >([]);
@@ -158,13 +164,13 @@ export const SelectLeaseTemplate = ({
   }, [searchTerm]);
 
   if (isLoading) {
-    return <Loader label="Loading lease templates..." />;
+    return <Loader label={t('request.template.loading')} />;
   }
 
   if (isError) {
     return (
       <ErrorPanel
-        description="Could not load lease templates at the moment."
+        description={t('request.template.loadError')}
         retry={refetch}
         error={fetchError as Error}
       />
@@ -173,8 +179,8 @@ export const SelectLeaseTemplate = ({
 
   if ((leaseTemplates || []).length === 0) {
     return (
-      <Alert type="error" header="No lease templates configured.">
-        Please contact your system administrator.
+      <Alert type="error" header={t('request.template.noTemplatesHeader')}>
+        {t('request.template.noTemplatesMessage')}
       </Alert>
     );
   }
@@ -187,10 +193,10 @@ export const SelectLeaseTemplate = ({
           <Box>
             <Input
               type="search"
-              placeholder="Search by template name"
+              placeholder={t('request.template.searchPlaceholder')}
               value={searchTerm}
               onChange={({ detail }) => setSearchTerm(detail.value)}
-              ariaLabel="Search lease templates"
+              ariaLabel={t('request.template.searchAriaLabel')}
             />
           </Box>
 
@@ -203,10 +209,10 @@ export const SelectLeaseTemplate = ({
                   setCurrentPageIndex(detail.currentPageIndex)
                 }
                 ariaLabels={{
-                  nextPageLabel: "Next page",
-                  previousPageLabel: "Previous page",
+                  nextPageLabel: t('request.template.nextPage'),
+                  previousPageLabel: t('request.template.previousPage'),
                   pageLabel: (pageNumber) =>
-                    `Page ${pageNumber} of ${totalPages}`,
+                    t('request.template.pageLabel', { pageNumber, totalPages }),
                 }}
               />
             </Box>
@@ -214,8 +220,8 @@ export const SelectLeaseTemplate = ({
         </ColumnLayout>
         <Box>
           {filteredLeaseTemplates.length === 0 && searchTerm.trim() !== "" ? (
-            <Alert type="info" header="No matching templates">
-              No lease templates match your search term. Try a different search.
+            <Alert type="info" header={t('request.template.noMatchingHeader')}>
+              {t('request.template.noMatchingMessage')}
             </Alert>
           ) : (
             <Cards

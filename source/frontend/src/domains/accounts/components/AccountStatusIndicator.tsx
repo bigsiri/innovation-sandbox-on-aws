@@ -6,6 +6,7 @@ import { getColor } from "@amzn/innovation-sandbox-frontend/components/AccountsS
 import { Box, Icon, Popover } from "@cloudscape-design/components";
 import { colorChartsStatusHigh } from "@cloudscape-design/design-tokens";
 import moment from "moment";
+import { useTranslation } from "react-i18next";
 
 interface AccountStatusIndicatorProps {
   status: SandboxAccountStatus;
@@ -16,25 +17,27 @@ export const AccountStatusIndicator = ({
   status,
   lastCleanupStartTime,
 }: AccountStatusIndicatorProps) => {
+  const { t } = useTranslation(['accounts']);
+  
   switch (status) {
     case "Available":
       return (
         <span style={{ color: getColor(status) }}>
-          <Icon name="status-positive" /> Available
+          <Icon name="status-positive" /> {t("status.available")}
         </span>
       );
 
     case "Active":
       return (
         <span style={{ color: getColor(status) }}>
-          <Icon name="status-in-progress" /> Active
+          <Icon name="status-in-progress" /> {t("status.active")}
         </span>
       );
 
     case "Frozen":
       return (
         <span style={{ color: getColor(status) }}>
-          <Icon name="status-stopped" /> Frozen
+          <Icon name="status-stopped" /> {t("status.frozen")}
         </span>
       );
 
@@ -42,8 +45,8 @@ export const AccountStatusIndicator = ({
       const hoursElapsed = moment().diff(moment(lastCleanupStartTime), "hours");
       const isStale = hoursElapsed >= 24;
       const message = isStale
-        ? "The cleanup process may be stuck, please retry."
-        : "This account is being cleaned up and will be ready to use soon.";
+        ? t("status.cleanupStuck")
+        : t("status.cleanupInProgress");
       const color = isStale ? colorChartsStatusHigh : getColor(status);
 
       return (
@@ -55,7 +58,7 @@ export const AccountStatusIndicator = ({
             <div style={{ color }}>
               {message}
               <Box color={"inherit"} fontWeight={"heavy"}>
-                Cleanup initiated:{` ${moment(lastCleanupStartTime)}`}
+                {t("status.cleanupInitiated")}{`: ${moment(lastCleanupStartTime)}`}
               </Box>
             </div>
           }
@@ -65,7 +68,7 @@ export const AccountStatusIndicator = ({
               color,
             }}
           >
-            <Icon name="remove" /> Clean Up
+            <Icon name="remove" /> {t("status.cleanup")}
           </span>
         </Popover>
       );
@@ -74,7 +77,7 @@ export const AccountStatusIndicator = ({
     case "Quarantine":
       return (
         <span style={{ color: getColor(status) }}>
-          <Icon name="status-negative" /> Quarantine
+          <Icon name="status-negative" /> {t("status.quarantine")}
         </span>
       );
 

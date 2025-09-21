@@ -1,7 +1,20 @@
 {
   "accounts": "Accounts",
-  "addAccounts": "Add Accounts",
   "pageDescription": "Manage registered AWS accounts in the account pool",
+  "searchPlaceholder": "Search accounts",
+  "filteringAriaLabel": "Filter accounts",
+  "loading": "Loading...",
+  "actions": "Actions",
+  "preferences": "Preferences",
+  "confirm": "Confirm",
+  "cancel": "Cancel",
+  "selectPageSize": "Select page size",
+  "selectVisibleColumns": "Select visible columns",
+  "wrapLines": "Wrap lines",
+  "wrapLinesDescription": "Check to see all the text and wrap the lines",
+  "stripedRows": "Striped rows",
+  "stripedRowsDescription": "Check to add alternating shaded rows",
+  "mainProperties": "Main properties",
   "ejectAccounts": "Eject Account(s)",
   "cleanupAccounts": "Clean Up Account(s)",
   "ejectAccount": "Eject account",
@@ -58,6 +71,17 @@
       "name": "Name",
       "email": "Email",
       "access": "Access"
-    }
+    },
+    "noItemsToDisplay": "No items to display."
+  },
+  "status": {
+    "available": "Available",
+    "active": "Active",
+    "frozen": "Frozen",
+    "cleanup": "Clean Up",
+    "quarantine": "Quarantine",
+    "cleanupInProgress": "This account is being cleaned up and will be ready to use soon.",
+    "cleanupStuck": "The cleanup process may be stuck, please retry.",
+    "cleanupInitiated": "Cleanup initiated"
   }
 }

@@ -48,7 +48,7 @@ export const LeaseSettings = () => {
               },
               {
                 label: t("lease.budget.requireMaxBudget"),
-                value: config.leases.requireMaxBudget ? t("common.yes") : t("common.no"),
+                value: config.leases.requireMaxBudget ? t("yes", { ns: "common" }) : t("no", { ns: "common" }),
               },
             ],
           },
@@ -62,7 +62,7 @@ export const LeaseSettings = () => {
               },
               {
                 label: t("lease.duration.requireMaxDuration"),
-                value: config.leases.requireMaxDuration ? t("common.yes") : t("common.no"),
+                value: config.leases.requireMaxDuration ? t("yes", { ns: "common" }) : t("no", { ns: "common" }),
               },
             ],
           },

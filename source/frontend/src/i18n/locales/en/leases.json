@@ -4,6 +4,70 @@
     "home": "Home",
     "description": "Manage sandbox account leases"
   },
+  "request": {
+    "title": "Request lease",
+    "description": "Request to lease an AWS sandbox account.",
+    "successMessage": "Your request for a new lease has been submitted.",
+    "stepNumber": "Step {{stepNumber}}",
+    "stepNumberText": "Step",
+    "steps": {
+      "selectTemplate": "Select lease template",
+      "termsOfService": "Terms of Service",
+      "reviewSubmit": "Review & Submit"
+    },
+    "templateQuestion": "What lease template would you like to use request a lease?",
+    "acceptTerms": "I accept the above terms of service.",
+    "comments": {
+      "label": "Comments",
+      "description": "Optional - add additional comments to support your request"
+    },
+    "validation": {
+      "selectTemplate": "Please select an option to continue",
+      "acceptTerms": "Please accept the terms of service to continue"
+    },
+    "buttons": {
+      "submit": "Submit",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "template": {
+      "loading": "Loading lease templates...",
+      "loadError": "Could not load lease templates at the moment.",
+      "noTemplatesHeader": "No lease templates configured.",
+      "noTemplatesMessage": "Please contact your system administrator.",
+      "searchPlaceholder": "Search by template name",
+      "searchAriaLabel": "Search lease templates",
+      "nextPage": "Next page",
+      "previousPage": "Previous page",
+      "pageLabel": "Page {{pageNumber}} of {{totalPages}}",
+      "noMatchingHeader": "No matching templates",
+      "noMatchingMessage": "No lease templates match your search term. Try a different search.",
+      "maxBudget": "Max Budget:",
+      "expires": "Expires:",
+      "approval": "Approval:",
+      "noMaxBudget": "No max budget",
+      "afterDuration": "after {{duration}}",
+      "noExpiry": "No expiry",
+      "requiresApproval": "Requires approval",
+      "noApprovalRequired": "No approval required"
+    },
+    "review": {
+      "errorLoading": "Error loading lease template:",
+      "unknownError": "Unknown error",
+      "templateSelected": "Lease Template Selected",
+      "expires": "Expires:",
+      "maxBudget": "Max budget:",
+      "requiresApproval": "Requires approval",
+      "noApprovalRequired": "No approval required"
+    },
+    "terms": {
+      "loading": "Loading terms of service...",
+      "loadError": "Could not retrieve terms of service.",
+      "reviewMessage": "Before continuing, please review the terms of service below.",
+      "notConfiguredHeader": "Terms of Service have not been configured yet.",
+      "notConfiguredMessage": "Please contact your administrator!"
+    }
+  },
   "table": {
     "headers": {
       "user": "User",
@@ -30,6 +94,18 @@
     "loading": "Loading...",
     "noLeasesFound": "No leases found"
   },
+  "searchPlaceholder": "Search leases",
+  "filteringAriaLabel": "Filter leases",
+  "preferences": "Preferences",
+  "confirm": "Confirm",
+  "cancel": "Cancel",
+  "selectPageSize": "Select page size",
+  "selectVisibleColumns": "Select visible columns",
+  "wrapLines": "Wrap lines",
+  "wrapLinesDescription": "Check to see all the text and wrap the lines",
+  "stripedRows": "Striped rows",
+  "stripedRowsDescription": "Check to add alternating shaded rows",
+  "mainProperties": "Main properties",
   "filterGroups": {
     "active": "Active",
     "pending": "Pending", 
@@ -123,6 +199,8 @@
     "durationThresholdsDescription": "Determine what happens as time passes."
   },
   "users": {
+    "users": "Users",
+    "actions": "Actions",
     "successfullyAdded": "Successfully added {{count}} user(s)",
     "mixedResults": "Added {{successCount}} user(s). {{failureCount}} failed.",
     "failedToAdd": "Failed to add {{count}} user(s)",

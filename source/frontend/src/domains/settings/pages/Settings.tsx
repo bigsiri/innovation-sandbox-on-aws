@@ -16,7 +16,7 @@ import { useAppLayoutContext } from "@aws-northstar/ui/components/AppLayout";
 export const Settings = () => {
   const setBreadcrumb = useBreadcrumb();
   const { setTools } = useAppLayoutContext();
-  const { t } = useTranslation(['settings']);
+  const { t } = useTranslation(['settings', 'common']);
 
   useInit(() => {
     setBreadcrumb([

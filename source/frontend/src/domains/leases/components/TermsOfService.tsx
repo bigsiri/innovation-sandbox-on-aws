@@ -7,12 +7,14 @@ import {
   Container,
   SpaceBetween,
 } from "@cloudscape-design/components";
+import { useTranslation } from "react-i18next";
 
 import { ErrorPanel } from "@amzn/innovation-sandbox-frontend/components/ErrorPanel";
 import { Loader } from "@amzn/innovation-sandbox-frontend/components/Loader";
 import { useGetConfigurations } from "@amzn/innovation-sandbox-frontend/domains/settings/hooks";
 
 export const TermsOfService = () => {
+  const { t } = useTranslation('leases');
   const {
     data: config,
     isLoading,
@@ -22,13 +24,13 @@ export const TermsOfService = () => {
   } = useGetConfigurations();
 
   if (isLoading) {
-    return <Loader label="Loading terms of service..." />;
+    return <Loader label={t('request.terms.loading')} />;
   }
 
   if (isError) {
     return (
       <ErrorPanel
-        description="Could not retrieve terms of service."
+        description={t('request.terms.loadError')}
         retry={refetch}
         error={error as Error}
       />
@@ -38,7 +40,7 @@ export const TermsOfService = () => {
   return (
     <SpaceBetween size="s">
       <Box variant="strong">
-        Before continuing, please review the terms of service below.
+        {t('request.terms.reviewMessage')}
       </Box>
       <Container>
         {config?.termsOfService ? (
@@ -46,9 +48,9 @@ export const TermsOfService = () => {
         ) : (
           <Alert
             type="warning"
-            header="Terms of Service have not been configured yet."
+            header={t('request.terms.notConfiguredHeader')}
           >
-            Please contact your administrator!
+            {t('request.terms.notConfiguredMessage')}
           </Alert>
         )}
       </Container>

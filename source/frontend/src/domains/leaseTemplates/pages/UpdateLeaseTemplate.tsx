@@ -133,9 +133,8 @@ export const UpdateLeaseTemplate = () => {
       }
     >
       <SpaceBetween size="m">
-        <Alert type="info" header="Please Note">
-          Making changes to this lease template will only affect new leases.
-          Existing leases using this lease template will not be affected.
+        <Alert type="info" header={t("updateWarning.header")}>
+          {t("updateWarning.message")}
         </Alert>
         <Tabs
           tabs={[

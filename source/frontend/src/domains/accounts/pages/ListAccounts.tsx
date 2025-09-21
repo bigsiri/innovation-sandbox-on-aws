@@ -1,19 +1,21 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-import { Table } from "@aws-northstar/ui";
 import {
   Button,
   ButtonDropdown,
+  CollectionPreferences,
   Container,
   ContentLayout,
   Header,
   Popover,
   SpaceBetween,
+  Table,
+  TextFilter,
 } from "@cloudscape-design/components";
 import moment from "moment";
 import "moment/locale/fr";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -45,7 +47,7 @@ const StatusCell = ({ account }: { account: SandboxAccount }) => (
   <AccountStatusIndicator
     status={account.status}
     lastCleanupStartTime={
-      account.cleanupExecutionContext?.stateMachineExecutionStartTime!
+      account.cleanupExecutionContext?.stateMachineExecutionStartTime || ""
     }
   />
 );
@@ -229,6 +231,19 @@ export const ListAccounts = () => {
   const [filteredAccounts, setFilteredAccounts] = useState<SandboxAccount[]>(
     [],
   );
+  const [filteringText, setFilteringText] = useState("");
+
+  // Filter accounts by search text
+  const searchFilteredAccounts = useMemo(() => {
+    if (!filteredAccounts) return [];
+    if (!filteringText) return filteredAccounts;
+    
+    return filteredAccounts.filter(account =>
+      account.awsAccountId.toLowerCase().includes(filteringText.toLowerCase()) ||
+      (account.name && account.name.toLowerCase().includes(filteringText.toLowerCase())) ||
+      (account.email && account.email.toLowerCase().includes(filteringText.toLowerCase()))
+    );
+  }, [filteredAccounts, filteringText]);
 
   useInit(async () => {
     setBreadcrumb([
@@ -245,9 +260,10 @@ export const ListAccounts = () => {
   useEffect(() => {
     if (!accounts) return;
 
-    filter
-      ? setFilteredAccounts(accounts.filter((x) => filter === x.status))
-      : setFilteredAccounts(accounts);
+    const filtered = filter
+      ? accounts.filter((x) => filter === x.status)
+      : accounts;
+    setFilteredAccounts(filtered);
   }, [accounts, filter]);
 
   const showEjectModal = () => {
@@ -294,7 +310,7 @@ export const ListAccounts = () => {
           variant="h1"
           actions={
             <Button onClick={onCreateClick} variant="primary">
-              {t("addAccounts")}
+              {t("addAccounts.breadcrumb")}
             </Button>
           }
           description={t("pageDescription")}
@@ -317,48 +333,111 @@ export const ListAccounts = () => {
             stripedRows
             trackBy="awsAccountId"
             columnDefinitions={createColumnDefinitions(true, t, i18n.language)}
-            header={t("accounts")}
-            items={filteredAccounts}
+            items={searchFilteredAccounts}
             selectedItems={selectedAccounts}
             onSelectionChange={handleSelectionChange}
+            selectionType="multi"
             loading={isFetching}
-            actions={
-              <SpaceBetween direction="horizontal" size="s">
-                <Button
-                  iconName="refresh"
-                  data-testid="refresh-button"
-                  onClick={() => refetch()}
-                  disabled={isFetching}
-                />
-                <ButtonDropdown
-                  disabled={selectedAccounts.length === 0}
-                  items={[
-                    { text: t("ejectAccount"), id: "eject" },
-                    {
-                      text: t("retryCleanup"),
-                      id: "retryCleanup",
-                      disabled:
-                        // disable cleanup option unless all selected accounts are in quarantine or cleanup
-                        !selectedAccounts.every(
-                          (x) =>
-                            x.status === "Quarantine" || x.status === "CleanUp",
-                        ),
-                    },
-                  ]}
-                  onItemClick={({ detail }) => {
-                    switch (detail.id) {
-                      case "eject":
-                        showEjectModal();
-                        break;
-                      case "retryCleanup":
-                        showCleanupModal();
-                        break;
+            loadingText={t("loading")}
+            empty={t("table.noItemsToDisplay")}
+            filter={
+              <TextFilter
+                filteringPlaceholder={t("searchPlaceholder")}
+                filteringText={filteringText}
+                onChange={({ detail }) => setFilteringText(detail.filteringText)}
+                filteringAriaLabel={t("filteringAriaLabel")}
+              />
+            }
+            preferences={
+              <CollectionPreferences
+                title={t("preferences")}
+                confirmLabel={t("confirm")}
+                cancelLabel={t("cancel")}
+                preferences={{
+                  pageSize: 10,
+                  wrapLines: false,
+                  stripedRows: true,
+                  visibleContent: ["awsAccountId", "status", "createdOn", "lastModifiedOn", "name", "email", "link"]
+                }}
+                pageSizePreference={{
+                  title: t("selectPageSize"),
+                  options: [
+                    { value: 10, label: "10" },
+                    { value: 20, label: "20" },
+                    { value: 50, label: "50" }
+                  ]
+                }}
+                wrapLinesPreference={{
+                  label: t("wrapLines"),
+                  description: t("wrapLinesDescription")
+                }}
+                stripedRowsPreference={{
+                  label: t("stripedRows"),
+                  description: t("stripedRowsDescription")
+                }}
+                visibleContentPreference={{
+                  title: t("selectVisibleColumns"),
+                  options: [
+                    { 
+                      label: t("mainProperties"),
+                      options: [
+                        { id: "awsAccountId", label: t("table.headers.accountId") },
+                        { id: "status", label: t("table.headers.status") },
+                        { id: "createdOn", label: t("table.headers.added") },
+                        { id: "lastModifiedOn", label: t("table.headers.lastModified") },
+                        { id: "name", label: t("table.headers.name") },
+                        { id: "email", label: t("table.headers.email") },
+                        { id: "link", label: t("table.headers.access") }
+                      ]
                     }
-                  }}
-                >
-                  Actions
-                </ButtonDropdown>
-              </SpaceBetween>
+                  ]
+                }}
+              />
+            }
+            header={
+              <Header
+                counter={`(${searchFilteredAccounts?.length || 0})`}
+                actions={
+                  <SpaceBetween direction="horizontal" size="s">
+                    <Button
+                      iconName="refresh"
+                      data-testid="refresh-button"
+                      onClick={() => refetch()}
+                      disabled={isFetching}
+                    />
+                    <ButtonDropdown
+                      disabled={selectedAccounts.length === 0}
+                      items={[
+                        { text: t("ejectAccount"), id: "eject" },
+                        {
+                          text: t("retryCleanup"),
+                          id: "retryCleanup",
+                          disabled:
+                            // disable cleanup option unless all selected accounts are in quarantine or cleanup
+                            !selectedAccounts.every(
+                              (x) =>
+                                x.status === "Quarantine" || x.status === "CleanUp",
+                            ),
+                        },
+                      ]}
+                      onItemClick={({ detail }) => {
+                        switch (detail.id) {
+                          case "eject":
+                            showEjectModal();
+                            break;
+                          case "retryCleanup":
+                            showCleanupModal();
+                            break;
+                        }
+                      }}
+                    >
+                      {t("actions")}
+                    </ButtonDropdown>
+                  </SpaceBetween>
+                }
+              >
+                {t("accounts")}
+              </Header>
             }
           />
         </Container>

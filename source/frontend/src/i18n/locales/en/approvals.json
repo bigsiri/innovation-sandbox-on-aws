@@ -4,13 +4,29 @@
   "approveRequests": "Approve request(s)",
   "denyRequests": "Deny request(s)",
   "actionsButton": "Actions",
+  "searchPlaceholder": "Search",
+  "clearFilter": "Clear filter",
+  "filteringAriaLabel": "Filter approvals",
+  "filteringPlaceholder": "Search approvals",
+  "filteringClearAriaLabel": "Clear search",
+  "preferences": "Preferences",
+  "confirm": "Confirm",
+  "cancel": "Cancel",
+  "selectPageSize": "Select page size",
+  "selectVisibleColumns": "Select visible columns",
+  "wrapLines": "Wrap lines",
+  "wrapLinesDescription": "Check to see all the text and wrap the lines",
+  "stripedRows": "Striped rows",
+  "stripedRowsDescription": "Check to add alternating shaded rows",
+  "mainProperties": "Main properties",
   "table": {
     "headers": {
       "requestedBy": "Requested by",
       "leaseTemplate": "Lease Template",
       "requested": "Requested",
       "comments": "Comments"
-    }
+    },
+    "noItemsToDisplay": "No items to display."
   },
   "common": {
     "home": "Home"

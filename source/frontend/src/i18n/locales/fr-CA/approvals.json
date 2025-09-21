@@ -4,13 +4,29 @@
   "approveRequests": "Approuver la(les) demande(s)",
   "denyRequests": "Refuser la(les) demande(s)",
   "actionsButton": "Actions",
+  "searchPlaceholder": "Rechercher",
+  "clearFilter": "Effacer le filtre",
+  "filteringAriaLabel": "Filtrer les approbations",
+  "filteringPlaceholder": "Rechercher des approbations",
+  "filteringClearAriaLabel": "Effacer la recherche",
+  "preferences": "Préférences",
+  "confirm": "Confirmer",
+  "cancel": "Annuler",
+  "selectPageSize": "Sélectionner la taille de page",
+  "selectVisibleColumns": "Sélectionner les colonnes visibles",
+  "wrapLines": "Retour à la ligne",
+  "wrapLinesDescription": "Cochez pour voir tout le texte et faire le retour à la ligne",
+  "stripedRows": "Lignes rayées",
+  "stripedRowsDescription": "Cochez pour ajouter des lignes ombrées alternées",
+  "mainProperties": "Propriétés principales",
   "table": {
     "headers": {
       "requestedBy": "Demandé par",
       "leaseTemplate": "Modèle de bail",
       "requested": "Demandé",
       "comments": "Commentaires"
-    }
+    },
+    "noItemsToDisplay": "Aucun élément à afficher."
   },
   "common": {
     "home": "Accueil"

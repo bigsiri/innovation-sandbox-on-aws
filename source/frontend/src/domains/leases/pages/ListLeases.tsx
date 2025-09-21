@@ -4,11 +4,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Table } from "@aws-northstar/ui";
 import {
   Box,
   Button,
   ButtonDropdown,
+  CollectionPreferences,
   ColumnLayout,
   Container,
   ContentLayout,
@@ -19,6 +19,8 @@ import {
   SelectProps,
   SpaceBetween,
   StatusIndicator,
+  Table,
+  TextFilter,
 } from "@cloudscape-design/components";
 import { InfoLink } from "@amzn/innovation-sandbox-frontend/components/InfoLink";
 import { Markdown } from "@amzn/innovation-sandbox-frontend/components/Markdown";
@@ -235,6 +237,7 @@ export const ListLeases = () => {
   const [filteredLeases, setFilteredLeases] = useState<Lease[]>([]);
   const [selectedLeases, setSelectedLeases] = useState<Lease[]>([]);
   const [leaseTemplates, setLeaseTemplates] = useState<SelectProps.Options>([]);
+  const [filteringText, setFilteringText] = useState("");
 
   // default status filter to active leases
   const [statusFilter, setStatusFilter] = useState<SelectProps.Options>(
@@ -276,7 +279,16 @@ export const ListLeases = () => {
           )
         : filteredByStatus;
 
-    return filterByLeaseTemplate;
+    // filter by search text
+    const filteredByText = filteringText
+      ? filterByLeaseTemplate.filter((lease) =>
+          lease.userEmail.toLowerCase().includes(filteringText.toLowerCase()) ||
+          lease.originalLeaseTemplateName.toLowerCase().includes(filteringText.toLowerCase()) ||
+          (isMonitoredLease(lease) && lease.awsAccountId && lease.awsAccountId.toLowerCase().includes(filteringText.toLowerCase()))
+        )
+      : filterByLeaseTemplate;
+
+    return filteredByText;
   };
 
   const handleSelectionChange = ({ detail }: any) => {
@@ -340,7 +352,7 @@ export const ListLeases = () => {
         })),
       );
     }
-  }, [leases, statusFilter, leaseTemplateFilter]);
+  }, [leases, statusFilter, leaseTemplateFilter, filteringText]);
 
   return (
     <ContentLayout
@@ -393,65 +405,126 @@ export const ListLeases = () => {
           stripedRows
           trackBy="leaseId"
           columnDefinitions={createColumnDefinitions(true, t)}
-          header={t("page.title", { ns: "leases" })}
-          totalItemsCount={(filteredLeases || []).length}
           items={filteredLeases || []}
           selectedItems={selectedLeases}
           onSelectionChange={handleSelectionChange}
+          selectionType="multi"
           loading={isFetching}
+          loadingText={t("filters.loading", { ns: "leases" })}
           empty={t("table.noItemsToDisplay", { ns: "leases" })}
-          actions={
-            <SpaceBetween direction="horizontal" size="xs">
-              <Button
-                iconName="refresh"
-                ariaLabel={t("actions.refresh", { ns: "leases" })}
-                onClick={() => refetch()}
-                disabled={isFetching}
-              />
-              <ButtonDropdown
-                disabled={selectedLeases.length === 0}
-                items={[
-                  {
-                    text: t("actions.terminate", { ns: "leases" }),
-                    id: "terminate",
-                    disabled: !selectedLeases.every(
-                      (lease) =>
-                        lease.status === "Active" || lease.status === "Frozen",
-                    ),
-                    disabledReason: t("actionReasons.onlyActiveOrFrozenCanTerminate", { ns: "leases" }),
-                  },
-                  {
-                    text: t("actions.freeze", { ns: "leases" }),
-                    id: "freeze",
-                    disabled: !selectedLeases.every(
-                      (lease) => lease.status === "Active",
-                    ),
-                    disabledReason: t("actionReasons.onlyActiveCanFreeze", { ns: "leases" }),
-                  },
-                  {
-                    text: t("actions.update", { ns: "leases" }),
-                    id: "update",
-                    disabled: selectedLeases.length > 1,
-                    disabledReason: t("actionReasons.onlySingleCanUpdate", { ns: "leases" }),
-                  },
-                ]}
-                onItemClick={({ detail }) => {
-                  switch (detail.id) {
-                    case "terminate":
-                      showTerminateModal();
-                      break;
-                    case "freeze":
-                      showFreezeModal();
-                      break;
-                    case "update":
-                      navigate(`/leases/edit/${selectedLeases[0].leaseId}`);
-                      break;
+          filter={
+            <TextFilter
+              filteringPlaceholder={t("searchPlaceholder", { ns: "leases" })}
+              filteringText={filteringText}
+              onChange={({ detail }) => setFilteringText(detail.filteringText)}
+              filteringAriaLabel={t("filteringAriaLabel", { ns: "leases" })}
+            />
+          }
+          preferences={
+            <CollectionPreferences
+              title={t("preferences", { ns: "leases" })}
+              confirmLabel={t("confirm", { ns: "leases" })}
+              cancelLabel={t("cancel", { ns: "leases" })}
+              preferences={{
+                pageSize: 10,
+                wrapLines: false,
+                stripedRows: true,
+                visibleContent: ["user", "originalLeaseTemplateName", "budget", "expirationDate", "status", "awsAccountId", "link"]
+              }}
+              pageSizePreference={{
+                title: t("selectPageSize", { ns: "leases" }),
+                options: [
+                  { value: 10, label: "10" },
+                  { value: 20, label: "20" },
+                  { value: 50, label: "50" }
+                ]
+              }}
+              wrapLinesPreference={{
+                label: t("wrapLines", { ns: "leases" }),
+                description: t("wrapLinesDescription", { ns: "leases" })
+              }}
+              stripedRowsPreference={{
+                label: t("stripedRows", { ns: "leases" }),
+                description: t("stripedRowsDescription", { ns: "leases" })
+              }}
+              visibleContentPreference={{
+                title: t("selectVisibleColumns", { ns: "leases" }),
+                options: [
+                  { 
+                    label: t("mainProperties", { ns: "leases" }),
+                    options: [
+                      { id: "user", label: t("table.headers.user", { ns: "leases" }) },
+                      { id: "originalLeaseTemplateName", label: t("table.headers.leaseTemplate", { ns: "leases" }) },
+                      { id: "budget", label: t("table.headers.budget", { ns: "leases" }) },
+                      { id: "expirationDate", label: t("table.headers.expiry", { ns: "leases" }) },
+                      { id: "status", label: t("table.headers.status", { ns: "leases" }) },
+                      { id: "awsAccountId", label: t("table.headers.awsAccount", { ns: "leases" }) },
+                      { id: "link", label: t("table.headers.access", { ns: "leases" }) }
+                    ]
                   }
-                }}
-              >
-                {t("actions.actions", { ns: "leases" })}
-              </ButtonDropdown>
-            </SpaceBetween>
+                ]
+              }}
+            />
+          }
+          header={
+            <Header
+              counter={`(${filteredLeases?.length || 0})`}
+              actions={
+                <SpaceBetween direction="horizontal" size="xs">
+                  <Button
+                    iconName="refresh"
+                    ariaLabel={t("actions.refresh", { ns: "leases" })}
+                    onClick={() => refetch()}
+                    disabled={isFetching}
+                  />
+                  <ButtonDropdown
+                    disabled={selectedLeases.length === 0}
+                    items={[
+                      {
+                        text: t("actions.terminate", { ns: "leases" }),
+                        id: "terminate",
+                        disabled: !selectedLeases.every(
+                          (lease) =>
+                            lease.status === "Active" || lease.status === "Frozen",
+                        ),
+                        disabledReason: t("actionReasons.onlyActiveOrFrozenCanTerminate", { ns: "leases" }),
+                      },
+                      {
+                        text: t("actions.freeze", { ns: "leases" }),
+                        id: "freeze",
+                        disabled: !selectedLeases.every(
+                          (lease) => lease.status === "Active",
+                        ),
+                        disabledReason: t("actionReasons.onlyActiveCanFreeze", { ns: "leases" }),
+                      },
+                      {
+                        text: t("actions.update", { ns: "leases" }),
+                        id: "update",
+                        disabled: selectedLeases.length > 1,
+                        disabledReason: t("actionReasons.onlySingleCanUpdate", { ns: "leases" }),
+                      },
+                    ]}
+                    onItemClick={({ detail }) => {
+                      switch (detail.id) {
+                        case "terminate":
+                          showTerminateModal();
+                          break;
+                        case "freeze":
+                          showFreezeModal();
+                          break;
+                        case "update":
+                          navigate(`/leases/edit/${selectedLeases[0].leaseId}`);
+                          break;
+                      }
+                    }}
+                  >
+                    {t("actions.actions", { ns: "leases" })}
+                  </ButtonDropdown>
+                </SpaceBetween>
+              }
+            >
+              {t("page.title", { ns: "leases" })}
+            </Header>
           }
         />
       </SpaceBetween>

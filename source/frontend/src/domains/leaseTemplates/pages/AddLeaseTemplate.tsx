@@ -3,6 +3,7 @@
 
 import { componentTypes } from "@aws-northstar/ui";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { ErrorPanel } from "@amzn/innovation-sandbox-frontend/components/ErrorPanel";
 import { Form } from "@amzn/innovation-sandbox-frontend/components/Form";
@@ -23,6 +24,7 @@ import { useInit } from "@amzn/innovation-sandbox-frontend/hooks/useInit";
 export const AddLeaseTemplate = () => {
   const navigate = useNavigate();
   const setBreadcrumb = useBreadcrumb();
+  const { t } = useTranslation(['leaseTemplates', 'common']);
 
   const { mutateAsync: addLeaseTemplate, isPending: isSaving } =
     useAddLeaseTemplate();
@@ -38,9 +40,9 @@ export const AddLeaseTemplate = () => {
 
   useInit(() => {
     setBreadcrumb([
-      { text: "Home", href: "/" },
-      { text: "Lease Templates", href: "/lease_templates" },
-      { text: "Add a New Lease Template", href: "/lease_templates/new" },
+      { text: t('common:home'), href: "/" },
+      { text: t('leaseTemplates'), href: "/lease_templates" },
+      { text: t('addNewLeaseTemplate'), href: "/lease_templates/new" },
     ]);
   });
 
@@ -62,7 +64,7 @@ export const AddLeaseTemplate = () => {
     };
 
     await addLeaseTemplate(leaseTemplate);
-    showSuccessToast("New lease template added successfully.");
+    showSuccessToast(t('addSuccessMessage'));
     navigate("/lease_templates");
   };
 
@@ -77,7 +79,7 @@ export const AddLeaseTemplate = () => {
   if (isConfigError) {
     return (
       <ErrorPanel
-        description="There was a problem loading global configuration settings."
+        description={t('configLoadError')}
         retry={refetchConfig}
         error={error as Error}
       />
@@ -95,14 +97,20 @@ export const AddLeaseTemplate = () => {
         maxDurationEnabled: true,
       }}
       schema={{
-        header: "Add a New Lease Template",
-        description:
-          "Give your users a new way to access a temporary AWS account.",
+        header: t('addNewLeaseTemplate'),
+        description: t('addDescription'),
         fields: [
           {
             component: componentTypes.WIZARD,
             name: "wizard",
             allowSkipTo: true,
+            i18nStrings: {
+              submitButtonText: t('common:submit'),
+              cancelButtonText: t('common:cancel'),
+              previousButtonText: t('previous'),
+              nextButtonText: t('next'),
+              stepNumberText: (stepNumber: number) => t('stepNumber', { stepNumber }),
+            },
             fields: [
               { ...basicFormFields() },
               {
