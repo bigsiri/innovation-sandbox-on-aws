@@ -217,7 +217,7 @@ export const ListApprovals = () => {
         onSelectionChange={handleSelectionChange}
         selectionType="multi"
         loading={isFetching}
-        loadingText={t("filters.loading")}
+        loadingText={t("loading")}
         empty={t("table.noItemsToDisplay")}
         filter={
           <TextFilter

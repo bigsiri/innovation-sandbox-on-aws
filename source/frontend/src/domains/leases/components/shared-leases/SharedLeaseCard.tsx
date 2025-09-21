@@ -8,7 +8,7 @@ import {
   Badge,
 } from "@cloudscape-design/components";
 import { useTranslation } from "react-i18next";
-import moment from "moment";
+import { getLocalizedMoment } from "@amzn/innovation-sandbox-frontend/helpers/moment";
 
 import { SharedLease } from "@amzn/innovation-sandbox-frontend/domains/leases/service";
 import { AccountLoginLink } from "@amzn/innovation-sandbox-frontend/components/AccountLoginLink";
@@ -20,6 +20,7 @@ interface SharedLeaseCardProps {
 
 export const SharedLeaseCard = ({ lease }: SharedLeaseCardProps) => {
   const { t } = useTranslation('home');
+  const moment = getLocalizedMoment();
   const getStatusDisplayName = useLeaseStatusDisplayName();
 
   const getStatusBadge = (status: string) => {

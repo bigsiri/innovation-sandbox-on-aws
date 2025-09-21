@@ -14,8 +14,7 @@ import {
   TextContent,
   TextFilter,
 } from "@cloudscape-design/components";
-import moment from "moment";
-import "moment/locale/fr";
+import { getLocalizedMoment } from "@amzn/innovation-sandbox-frontend/helpers/moment";
 import { useEffect, useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -55,6 +54,7 @@ const MaxSpendCell = ({ item }: { item: LeaseTemplate }) => {
 
 const ExpiryCell = ({ item }: { item: LeaseTemplate }) => {
   const { t } = useTranslation(['leaseTemplates']);
+  const moment = getLocalizedMoment();
   return (
     <>
       {item.leaseDurationInHours ? (
@@ -67,16 +67,8 @@ const ExpiryCell = ({ item }: { item: LeaseTemplate }) => {
 };
 
 export const LeaseTemplatesTable = () => {
-  const { t, i18n } = useTranslation(['leaseTemplates']);
-
-  // Ensure moment locale is set correctly
-  useEffect(() => {
-    if (i18n.language === 'fr-CA') {
-      moment.locale('fr');
-    } else {
-      moment.locale('en');
-    }
-  }, [i18n.language]);
+  const { t } = useTranslation(['leaseTemplates']);
+  const moment = getLocalizedMoment();
 
   // get lease templates using react query hook
   const {

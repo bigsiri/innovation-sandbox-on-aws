@@ -9,7 +9,7 @@ import {
   SpaceBetween,
   TimeInput,
 } from "@cloudscape-design/components";
-import moment from "moment";
+import { getLocalizedMoment } from "@amzn/innovation-sandbox-frontend/helpers/moment";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -32,6 +32,7 @@ export const DateTimeFormField = ({
   meta: { error, submitFailed },
 }: DateTimeFormFieldProps) => {
   const { t } = useTranslation();
+  const moment = getLocalizedMoment();
   const shouldShowError = showError || (error && submitFailed);
 
   // Track date and time separately

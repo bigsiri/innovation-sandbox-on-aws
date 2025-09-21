@@ -9,6 +9,7 @@
   "filteringAriaLabel": "Filtrer les approbations",
   "filteringPlaceholder": "Rechercher des approbations",
   "filteringClearAriaLabel": "Effacer la recherche",
+  "loading": "Chargement...",
   "preferences": "Préférences",
   "confirm": "Confirmer",
   "cancel": "Annuler",

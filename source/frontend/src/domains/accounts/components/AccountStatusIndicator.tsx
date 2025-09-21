@@ -5,7 +5,7 @@ import { SandboxAccountStatus } from "@amzn/innovation-sandbox-commons/data/sand
 import { getColor } from "@amzn/innovation-sandbox-frontend/components/AccountsSummary/helpers";
 import { Box, Icon, Popover } from "@cloudscape-design/components";
 import { colorChartsStatusHigh } from "@cloudscape-design/design-tokens";
-import moment from "moment";
+import { getLocalizedMoment } from "@amzn/innovation-sandbox-frontend/helpers/moment";
 import { useTranslation } from "react-i18next";
 
 interface AccountStatusIndicatorProps {
@@ -18,6 +18,7 @@ export const AccountStatusIndicator = ({
   lastCleanupStartTime,
 }: AccountStatusIndicatorProps) => {
   const { t } = useTranslation(['accounts']);
+  const moment = getLocalizedMoment();
   
   switch (status) {
     case "Available":

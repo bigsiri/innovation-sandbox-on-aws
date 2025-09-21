@@ -13,7 +13,6 @@ import {
   StatusIndicator,
 } from "@cloudscape-design/components";
 import { useTranslation } from "react-i18next";
-import { useEffect } from "react";
 
 import {
   isExpiredLease,
@@ -25,20 +24,11 @@ import { BudgetProgressBar } from "@amzn/innovation-sandbox-frontend/components/
 import { BudgetStatus } from "@amzn/innovation-sandbox-frontend/components/BudgetStatus";
 import { DurationStatus } from "@amzn/innovation-sandbox-frontend/components/DurationStatus";
 import { LeaseStatusBadge } from "@amzn/innovation-sandbox-frontend/domains/leases/components/LeaseStatusBadge";
-import moment from "moment";
-import "moment/locale/fr";
+import { getLocalizedMoment } from "@amzn/innovation-sandbox-frontend/helpers/moment";
 
 export const LeaseSummary = ({ lease }: { lease: Lease }) => {
-  const { t, i18n } = useTranslation();
-
-  // Ensure moment locale is set correctly
-  useEffect(() => {
-    if (i18n.language === 'fr-CA') {
-      moment.locale('fr');
-    } else {
-      moment.locale('en');
-    }
-  }, [i18n.language]);
+  const { t } = useTranslation();
+  const moment = getLocalizedMoment();
   const isPending = isPendingLease(lease);
   const isMonitored = isMonitoredLease(lease);
   const isExpired = isExpiredLease(lease);

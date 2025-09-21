@@ -3,7 +3,7 @@
 
 import { componentTypes, validatorTypes } from "@aws-northstar/ui";
 import { Alert, FormField } from "@cloudscape-design/components";
-import moment from "moment";
+import { getLocalizedMoment } from "@amzn/innovation-sandbox-frontend/helpers/moment";
 import { useTranslation } from "react-i18next";
 
 import { MonitoredLease } from "@amzn/innovation-sandbox-commons/data/lease/lease";
@@ -36,6 +36,7 @@ export const LeaseDurationForm = ({
   isUpdating,
 }: LeaseDurationFormProps) => {
   const { t } = useTranslation();
+  const moment = getLocalizedMoment();
   return (
     <Form
       insideTab

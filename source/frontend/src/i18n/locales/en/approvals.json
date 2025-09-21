@@ -9,6 +9,7 @@
   "filteringAriaLabel": "Filter approvals",
   "filteringPlaceholder": "Search approvals",
   "filteringClearAriaLabel": "Clear search",
+  "loading": "Loading...",
   "preferences": "Preferences",
   "confirm": "Confirm",
   "cancel": "Cancel",

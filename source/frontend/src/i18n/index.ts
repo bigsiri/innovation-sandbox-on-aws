@@ -4,8 +4,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import moment from 'moment';
-import 'moment/locale/fr';
 
 // Import translation files
 import enCommon from './locales/en/common.json';
@@ -61,31 +59,5 @@ i18n
       caches: ['localStorage'],
     },
   });
-
-// Set moment locale when language changes
-i18n.on('languageChanged', (lng) => {
-  if (lng === 'fr-CA') {
-    moment.locale('fr');
-  } else {
-    moment.locale('en');
-  }
-});
-
-// Set initial moment locale after i18n is initialized
-i18n.on('initialized', () => {
-  if (i18n.language === 'fr-CA') {
-    moment.locale('fr');
-  } else {
-    moment.locale('en');
-  }
-});
-
-// Set initial moment locale immediately
-const currentLang = i18n.language || localStorage.getItem('i18nextLng') || 'en';
-if (currentLang === 'fr-CA') {
-  moment.locale('fr');
-} else {
-  moment.locale('en');
-}
 
 export default i18n;

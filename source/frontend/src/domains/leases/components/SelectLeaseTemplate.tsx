@@ -14,7 +14,7 @@ import {
   SpaceBetween,
   StatusIndicator,
 } from "@cloudscape-design/components";
-import moment from "moment";
+import { getLocalizedMoment } from "@amzn/innovation-sandbox-frontend/helpers/moment";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -38,6 +38,7 @@ interface SelectLeaseTemplateProps {
 const LEASE_TEMPLATES_PER_PAGE = 12;
 const LeaseTemplateCardContent = ({ option }: { option: LeaseTemplate }) => {
   const { t } = useTranslation('leases');
+  const moment = getLocalizedMoment();
   
   return (
     <SpaceBetween size="l">

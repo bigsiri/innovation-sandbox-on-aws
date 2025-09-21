@@ -17,12 +17,13 @@ import { InfoPanel } from "@amzn/innovation-sandbox-frontend/components/InfoPane
 import { Loader } from "@amzn/innovation-sandbox-frontend/components/Loader";
 import { LeasePanel } from "@amzn/innovation-sandbox-frontend/domains/home/components/LeasePanel";
 import { useGetLeasesForCurrentUser } from "@amzn/innovation-sandbox-frontend/domains/leases/hooks";
-import moment from "moment";
+import { getLocalizedMoment } from "@amzn/innovation-sandbox-frontend/helpers/moment";
 import { useMemo } from "react";
 
 export const MyLeases = () => {
   const navigate = useNavigate();
   const { t } = useTranslation('home');
+  const moment = getLocalizedMoment();
   const {
     data: leases,
     isFetching,
