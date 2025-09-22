@@ -41,6 +41,7 @@ async function eventHandler(
   const emailService = IsbServices.emailService(context.env, {
     fromAddress: context.globalConfig.notification.emailFrom,
     webAppUrl: context.globalConfig.auth.webAppUrl,
+    notificationLanguage: context.globalConfig.language?.defaultLanguage || 'en',
     logger,
   });
 

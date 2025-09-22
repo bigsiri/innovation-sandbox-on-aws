@@ -77,9 +77,13 @@ getLanguageConfig().then((config) => {
     order: detectionOrder,
   };
   
-  // Set default language from AppConfig if no user preference exists
+  // Set default language from AppConfig, but preserve explicit user choices
   const currentLang = localStorage.getItem('i18nextLng');
-  if (!currentLang) {
+  
+  // Only apply AppConfig default if:
+  // 1. No language preference exists, OR
+  // 2. Current language was set by browser detection (not user choice)
+  if (!currentLang || (currentLang === 'en' && config.defaultLanguage !== 'en')) {
     i18n.changeLanguage(config.defaultLanguage);
   }
 }).catch((error) => {

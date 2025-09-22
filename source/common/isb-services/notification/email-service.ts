@@ -48,6 +48,7 @@ export interface EmailServiceProps {
   fromAddress: string;
   webAppUrl: string;
   logger: Logger;
+  notificationLanguage?: 'en' | 'fr-CA';
 }
 
 export class EmailService {
@@ -55,17 +56,23 @@ export class EmailService {
   private readonly fromAddress: string;
   private readonly webAppUrl: string;
   private readonly idcService: IdcService;
+  private readonly notificationLanguage: 'en' | 'fr-CA';
   private logger: Logger;
 
   constructor(env: ServiceEnv.emailService, props: EmailServiceProps) {
     this.sesClient = IsbClients.ses(env);
     this.fromAddress = props.fromAddress;
     this.webAppUrl = props.webAppUrl;
+    this.notificationLanguage = props.notificationLanguage || 'en';
     this.idcService = IsbServices.idcService(
       env,
       fromTemporaryIsbIdcCredentials(env),
     );
     this.logger = props.logger;
+  }
+
+  private getNotificationLanguage(): 'en' | 'fr-CA' {
+    return this.notificationLanguage;
   }
 
   async sendNotificationEmail(
@@ -78,6 +85,7 @@ export class EmailService {
         const leaseRequestedEvent = LeaseRequestedEvent.parse(isbAlert);
         const leaseRequestedContext = {
           webAppUrl: this.webAppUrl,
+          language: this.getNotificationLanguage(),
           destination: {
             bcc: await union(
               await allAdmins(this.idcService),
@@ -96,6 +104,7 @@ export class EmailService {
         const leaseApprovedEvent = LeaseApprovedEvent.parse(isbAlert);
         const leaseApprovedContext = {
           webAppUrl: this.webAppUrl,
+          language: this.getNotificationLanguage(),
           destination: {
             to: [leaseApprovedEvent.Detail.userEmail],
           },
@@ -111,6 +120,7 @@ export class EmailService {
         const leaseDeniedEvent = LeaseDeniedEvent.parse(isbAlert);
         const leaseDeniedContext = {
           webAppUrl: this.webAppUrl,
+          language: this.getNotificationLanguage(),
           destination: {
             to: [leaseDeniedEvent.Detail.userEmail],
           },
@@ -124,6 +134,7 @@ export class EmailService {
           LeaseBudgetThresholdBreachedAlert.parse(isbAlert);
         const leaseBudgetContext = {
           webAppUrl: this.webAppUrl,
+          language: this.getNotificationLanguage(),
           destination: {
             to: [leaseBudgetEvent.Detail.leaseId.userEmail],
           },
@@ -137,6 +148,7 @@ export class EmailService {
           LeaseDurationThresholdBreachedAlert.parse(isbAlert);
         const leaseDurationContext = {
           webAppUrl: this.webAppUrl,
+          language: this.getNotificationLanguage(),
           destination: {
             to: [leaseDurationEvent.Detail.leaseId.userEmail],
           },
@@ -152,6 +164,7 @@ export class EmailService {
         const cleanupFailureEvent = AccountCleanupFailureEvent.parse(isbAlert);
         const cleanupFailureContext = {
           webAppUrl: this.webAppUrl,
+          language: this.getNotificationLanguage(),
           destination: {
             bcc: await allAdmins(this.idcService),
           },
@@ -167,6 +180,7 @@ export class EmailService {
         const driftEvent = AccountDriftDetectedAlert.parse(isbAlert);
         const driftContext = {
           webAppUrl: this.webAppUrl,
+          language: this.getNotificationLanguage(),
           destination: {
             bcc: await allAdmins(this.idcService),
           },
@@ -196,12 +210,14 @@ export class EmailService {
     const eventType = parsedEvent.Detail.reason.type;
     const userEmailContext = {
       webAppUrl: this.webAppUrl,
+      language: this.getNotificationLanguage(),
       destination: {
         to: [parsedEvent.Detail.leaseId.userEmail],
       },
     };
     const adminManagerEmailContext = {
       webAppUrl: this.webAppUrl,
+      language: this.getNotificationLanguage(),
       destination: {
         bcc: await union(
           await allAdmins(this.idcService),
@@ -257,12 +273,14 @@ export class EmailService {
     const eventType = parsedEvent.Detail.reason.type;
     const userEmailContext = {
       webAppUrl: this.webAppUrl,
+      language: this.getNotificationLanguage(),
       destination: {
         to: [parsedEvent.Detail.leaseId.userEmail],
       },
     };
     const adminManagerEmailContext = {
       webAppUrl: this.webAppUrl,
+      language: this.getNotificationLanguage(),
       destination: {
         bcc: await union(
           await allAdmins(this.idcService),
@@ -426,7 +444,10 @@ export class EmailService {
   }
 
   private async sendUserAddedEmails(parsedEvent: UserAddedToLeaseEvent) {
-    const context = { webAppUrl: this.webAppUrl };
+    const context = { 
+      webAppUrl: this.webAppUrl,
+      language: this.getNotificationLanguage(),
+    };
 
     // Notify the added user
     await this.sendEmail(
@@ -461,7 +482,10 @@ export class EmailService {
   }
 
   private async sendUserRemovedEmails(parsedEvent: UserRemovedFromLeaseEvent) {
-    const context = { webAppUrl: this.webAppUrl };
+    const context = { 
+      webAppUrl: this.webAppUrl,
+      language: this.getNotificationLanguage(),
+    };
 
     // Notify the removed user
     await this.sendEmail(
