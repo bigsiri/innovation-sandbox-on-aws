@@ -3,6 +3,7 @@
 
 import { FormRenderer, FormRendererProps } from "@aws-northstar/ui";
 import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   FormContext,
@@ -19,6 +20,7 @@ export type FormProps = FormRendererProps & {
 };
 
 export const Form = ({ insideTab, ...props }: FormProps) => {
+  const { t } = useTranslation();
   const [formErrors, setFormErrors] = useState<FormErrors>();
   const [formValues, setFormValues] = useState<FormValues>(
     props.initialValues ?? {},
@@ -43,7 +45,7 @@ export const Form = ({ insideTab, ...props }: FormProps) => {
       }
     } catch (err: any) {
       const errorText = err.message ?? err.toString();
-      showErrorToast(errorText, "Whoops, something went wrong!");
+      showErrorToast(errorText, t("genericError", { ns: "common" }));
     }
   };
 

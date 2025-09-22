@@ -105,7 +105,7 @@ export const UpdateLease = () => {
   if (isError || !lease) {
     return (
       <ErrorPanel
-        description="There was a problem loading this lease."
+        description={t("errorLoadingLease", { ns: "leases" })}
         retry={refetch}
         error={error as Error}
       />
@@ -116,7 +116,7 @@ export const UpdateLease = () => {
   if (!hasAccess()) {
     return (
       <ErrorPanel
-        description="You don't have permission to access this lease."
+        description={t("noPermissionLease", { ns: "leases" })}
         error={new Error("Access denied")}
       />
     );
@@ -125,7 +125,7 @@ export const UpdateLease = () => {
   if (isConfigError) {
     return (
       <ErrorPanel
-        description="There was a problem loading global configuration settings."
+        description={t("errorLoadingConfig", { ns: "common" })}
         retry={refetchConfig}
         error={error as Error}
       />
@@ -146,7 +146,7 @@ export const UpdateLease = () => {
     };
 
     await updateLease(leasePatchRequest);
-    showSuccessToast("Lease updated successfully.");
+    showSuccessToast(t("leaseUpdatedSuccess", { ns: "leases" }));
   };
 
   // call api to update lease duration fields
@@ -163,7 +163,7 @@ export const UpdateLease = () => {
     };
 
     await updateLease(leasePatchRequest);
-    showSuccessToast("Lease updated successfully.");
+    showSuccessToast(t("leaseUpdatedSuccess", { ns: "leases" }));
   };
 
   const onCancel = () => {

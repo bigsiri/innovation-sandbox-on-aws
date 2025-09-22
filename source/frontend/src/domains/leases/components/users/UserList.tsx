@@ -114,12 +114,12 @@ export const UserList = ({
         columnDefinitions={columnDefinitions}
         items={users}
         loading={isLoading}
-        loadingText="Loading users..."
+        loadingText={t("users.loadingUsers", { ns: "leases" })}
         trackBy="userEmail"
         empty={
           <Box textAlign="center" color="inherit">
             <SpaceBetween size="m">
-              <b>No users</b>
+              <b>{t("users.noUsers", { ns: "leases" })}</b>
               <Box variant="p" color="inherit">
                 No additional users have been added to this lease.
               </Box>

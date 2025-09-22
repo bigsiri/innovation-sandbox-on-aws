@@ -8,6 +8,7 @@ import {
 import { useReviewLease } from "@amzn/innovation-sandbox-frontend/domains/leases/hooks";
 import { Box, Button } from "@cloudscape-design/components";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export const ReviewLeaseConfirmation = ({
   mode,
@@ -18,16 +19,17 @@ export const ReviewLeaseConfirmation = ({
   leaseId: string;
   onCancel: () => any;
 }) => {
+  const { t } = useTranslation();
   const { mutateAsync: reviewLease, isPending: reviewLeaseIsLoading } =
     useReviewLease();
   const navigate = useNavigate();
 
   return (
     <Box>
-      {`Are you sure you want to ${mode} the request?`}
+      {t("confirmReviewRequest", { ns: "approvals", mode: t(mode, { ns: "approvals" }) })}
       <Box textAlign="right" padding={{ top: "m" }}>
         <Button variant="link" onClick={onCancel}>
-          Cancel
+          {t("cancel", { ns: "common" })}
         </Button>
         <Button
           loading={reviewLeaseIsLoading}
@@ -42,9 +44,7 @@ export const ReviewLeaseConfirmation = ({
                   onCancel();
                   navigate("/approvals");
                   showSuccessToast(
-                    mode === "approve"
-                      ? "Request approved."
-                      : "Request denied.",
+                    t(mode === "approve" ? "requestApproved" : "requestDenied", { ns: "approvals" })
                   );
                 },
                 onError: (error: any) => {

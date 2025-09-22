@@ -2,6 +2,11 @@
   "breadcrumbs": {
     "home": "Home",
     "loading": "Loading...",
+    "errorLoadingConfig": "There was a problem loading global configuration settings.",
+    "genericError": "Whoops, something went wrong!",
+    "noMaxBudget": "No max budget",
+    "success": "Success",
+    "error": "Error",
     "error": "Error"
   },
   "language": "Language",

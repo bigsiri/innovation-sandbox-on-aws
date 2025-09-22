@@ -22,6 +22,8 @@
   "actions": "Actions",
   "removeLeaseTemplates": "Remove lease templates",
   "confirmDelete": "Are you sure you want to remove these lease template(s)?",
+  "errorLoadingTemplates": "Could not load lease templates. Please try again.",
+  "errorLoadingTemplate": "There was a problem loading this lease template.",
   "deleteSuccess": "Lease template(s) deleted.",
   "deleteError": "An error occurred. Please try again.",
   "preferences": "Preferences",

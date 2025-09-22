@@ -107,7 +107,7 @@ export const UpdateLeaseTemplate = () => {
   if (isError || !leaseTemplate) {
     return (
       <ErrorPanel
-        description="There was a problem loading this lease template."
+        description={t("errorLoadingTemplate", { ns: "leaseTemplates" })}
         retry={refetch}
         error={error as Error}
       />
@@ -117,7 +117,7 @@ export const UpdateLeaseTemplate = () => {
   if (isConfigError) {
     return (
       <ErrorPanel
-        description="There was a problem loading global configuration settings."
+        description={t("errorLoadingConfig", { ns: "common" })}
         retry={refetchConfig}
         error={error as Error}
       />

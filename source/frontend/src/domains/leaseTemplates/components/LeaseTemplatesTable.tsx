@@ -130,7 +130,7 @@ export const LeaseTemplatesTable = () => {
     return (
       <ErrorPanel
         retry={refetch}
-        description="Could not load lease templates. Please try again."
+        description={t("errorLoadingTemplates")}
         error={getError as Error}
       />
     );

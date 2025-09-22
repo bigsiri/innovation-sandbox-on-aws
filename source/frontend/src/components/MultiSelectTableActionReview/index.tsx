@@ -13,6 +13,7 @@ import {
 import { useModal } from "@amzn/innovation-sandbox-frontend/hooks/useModal";
 import { Table } from "@aws-northstar/ui";
 import { ReactNode, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 type RequestStatus = {
   status?: "loading" | "success" | "error";
@@ -39,11 +40,13 @@ const StatusCell = <T extends Record<string, any>>({
 }: {
   item: ItemWithRequest<T>;
 }) => {
+  const { t } = useTranslation();
+  
   switch (item.request?.status) {
     case "loading":
-      return <StatusIndicator type="loading">Loading</StatusIndicator>;
+      return <StatusIndicator type="loading">{t("loading", { ns: "common" })}</StatusIndicator>;
     case "success":
-      return <StatusIndicator type="success">Success</StatusIndicator>;
+      return <StatusIndicator type="success">{t("success", { ns: "common" })}</StatusIndicator>;
     case "error":
       return (
         <StatusIndicator type="error">

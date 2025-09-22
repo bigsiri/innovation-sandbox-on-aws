@@ -2,6 +2,11 @@
   "breadcrumbs": {
     "home": "Accueil",
     "loading": "Chargement...",
+    "errorLoadingConfig": "Il y a eu un problème lors du chargement des paramètres de configuration globaux.",
+    "genericError": "Oups, quelque chose s'est mal passé !",
+    "noMaxBudget": "Aucun budget maximum",
+    "success": "Succès",
+    "error": "Erreur",
     "error": "Erreur"
   },
   "language": "Langue",

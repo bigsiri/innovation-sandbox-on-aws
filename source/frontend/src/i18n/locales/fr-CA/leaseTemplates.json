@@ -22,6 +22,8 @@
   "actions": "Actions",
   "removeLeaseTemplates": "Supprimer les modèles de bail",
   "confirmDelete": "Êtes-vous sûr de vouloir supprimer ces modèles de bail ?",
+  "errorLoadingTemplates": "Impossible de charger les modèles de bail. Veuillez réessayer.",
+  "errorLoadingTemplate": "Il y a eu un problème lors du chargement de ce modèle de bail.",
   "deleteSuccess": "Modèle(s) de bail supprimé(s).",
   "deleteError": "Une erreur s'est produite. Veuillez réessayer.",
   "preferences": "Préférences",

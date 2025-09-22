@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { StatusIndicator } from "@cloudscape-design/components";
+import { useTranslation } from "react-i18next";
 
 import { formatCurrency } from "@amzn/innovation-sandbox-frontend/helpers/util";
 
@@ -10,12 +11,14 @@ interface BudgetStatusProps {
 }
 
 export const BudgetStatus = ({ maxSpend }: BudgetStatusProps) => {
+  const { t } = useTranslation();
+  
   return (
     <>
       {maxSpend ? (
         formatCurrency(maxSpend)
       ) : (
-        <StatusIndicator type="info">No max budget</StatusIndicator>
+        <StatusIndicator type="info">{t("noMaxBudget", { ns: "common" })}</StatusIndicator>
       )}
     </>
   );
