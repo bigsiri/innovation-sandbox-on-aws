@@ -73,24 +73,25 @@ export const getLeaseStatusDisplayName = (status: LeaseStatus): string => {
 export const generateBreadcrumb = (
   query: UseQueryResult<Lease | undefined, unknown>,
   isApprovalPage?: boolean,
+  t?: (key: string, options?: any) => string,
 ) => {
   const { data: lease, isLoading, isError } = query;
 
-  const breadcrumbItems = [{ text: "Home", href: "/" }];
+  const breadcrumbItems = [{ text: t?.('breadcrumbs.home', { ns: 'common' }) || "Home", href: "/" }];
 
   if (isApprovalPage) {
-    breadcrumbItems.push({ text: "Approvals", href: "/approvals" });
+    breadcrumbItems.push({ text: t?.('approvals', { ns: 'common' }) || "Approvals", href: "/approvals" });
   } else {
-    breadcrumbItems.push({ text: "Leases", href: "/leases" });
+    breadcrumbItems.push({ text: t?.('leases', { ns: 'common' }) || "Leases", href: "/leases" });
   }
 
   if (isLoading) {
-    breadcrumbItems.push({ text: "Loading...", href: "#" });
+    breadcrumbItems.push({ text: t?.('breadcrumbs.loading', { ns: 'common' }) || "Loading...", href: "#" });
     return breadcrumbItems;
   }
 
   if (isError || !lease) {
-    breadcrumbItems.push({ text: "Error", href: "#" });
+    breadcrumbItems.push({ text: t?.('breadcrumbs.error', { ns: 'common' }) || "Error", href: "#" });
     return breadcrumbItems;
   }
 

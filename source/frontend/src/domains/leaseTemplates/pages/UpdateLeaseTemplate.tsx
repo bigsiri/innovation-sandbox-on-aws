@@ -96,9 +96,9 @@ export const UpdateLeaseTemplate = () => {
   };
 
   useEffect(() => {
-    const breadcrumb = generateBreadcrumb(query);
+    const breadcrumb = generateBreadcrumb(query, t);
     setBreadcrumb(breadcrumb);
-  }, [query.isLoading]);
+  }, [query.isLoading, t]);
 
   if (isLoading || isLoadingConfig) {
     return <Loader />;

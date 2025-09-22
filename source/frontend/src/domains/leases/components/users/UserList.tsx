@@ -159,7 +159,9 @@ export const UserList = ({
       >
         <SpaceBetween size="m">
           <Box variant="span">
-            {t("users.confirmRemoveUser", { ns: "leases", email: selectedUser?.userEmail })}
+            {t("users.confirmRemoveUserPrefix", { ns: "leases" })}{" "}
+            <strong>{selectedUser?.userEmail}</strong>{" "}
+            {t("users.confirmRemoveUserSuffix", { ns: "leases" })}
           </Box>
           <Box variant="span" color="text-body-secondary">
             {t("users.removeUserWarning", { ns: "leases" })}

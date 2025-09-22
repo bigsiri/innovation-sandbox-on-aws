@@ -94,9 +94,9 @@ export const UpdateLease = () => {
 
   // update breadcrumb with lease details
   useEffect(() => {
-    const breadcrumb = generateBreadcrumb(query);
+    const breadcrumb = generateBreadcrumb(query, false, t);
     setBreadcrumb(breadcrumb);
-  }, [query.isLoading]);
+  }, [query.isLoading, t]);
 
   if (isLoading || isLoadingConfig || isLoadingTemplate || !user) {
     return <Loader />;

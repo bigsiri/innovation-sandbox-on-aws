@@ -55,16 +55,16 @@ export namespace EmailTemplates {
     `
       },
       'fr-CA': {
-        subject: "[Action requise] Bac à sable d'innovation : Nouvelle demande d'approbation de bail",
+        subject: "[Action requise] Innovation Sandbox : Nouvelle demande d'approbation de bail",
         htmlBody: `
     <h1>Demande d'approbation ou de refus de bail de ${event.Detail.userEmail}</h1>
     <p>Un nouveau bail a été demandé par l'utilisateur ${event.Detail.userEmail}.
-    Veuillez vous connecter à l'application web Bac à sable d'innovation ${context.webAppUrl} pour approuver ou refuser la demande de bail.</p>
+    Veuillez vous connecter à l'application web Innovation Sandbox ${context.webAppUrl} pour approuver ou refuser la demande de bail.</p>
     `,
         textBody: `
       Demande d'approbation ou de refus de bail de ${event.Detail.userEmail}
       Un nouveau bail a été demandé par l'utilisateur ${event.Detail.userEmail}.
-      Veuillez vous connecter à l'application web Bac à sable d'innovation sur AWS ${context.webAppUrl} pour approuver ou refuser la demande de bail.
+      Veuillez vous connecter à l'application web Innovation Sandbox sur AWS ${context.webAppUrl} pour approuver ou refuser la demande de bail.
     `
       }
     };
@@ -96,16 +96,16 @@ export namespace EmailTemplates {
     `
       },
       'fr-CA': {
-        subject: "[Informatif] Bac à sable d'innovation : Demande de bail approuvée",
+        subject: "[Informatif] Innovation Sandbox : Demande de bail approuvée",
         htmlBody: `
-      <h1>Bienvenue dans le Bac à sable d'innovation sur AWS (ISB) ${event.Detail.userEmail}!</h1>
+      <h1>Bienvenue dans le Innovation Sandbox sur AWS (ISB) ${event.Detail.userEmail}!</h1>
       <p>Votre demande de bail ${event.Detail.leaseId} a été ${event.Detail.approvedBy === "AUTO_APPROVED" ? "approuvée automatiquement" : "approuvée par " + event.Detail.approvedBy}.
-      Veuillez vous connecter à l'application web Bac à sable d'innovation ${context.webAppUrl} pour accéder à votre compte bac à sable.</p>
+      Veuillez vous connecter à l'application web Innovation Sandbox ${context.webAppUrl} pour accéder à votre compte bac à sable.</p>
     `,
         textBody: `
-      Bienvenue dans le Bac à sable d'innovation sur AWS ${event.Detail.userEmail}!
+      Bienvenue dans le Innovation Sandbox sur AWS ${event.Detail.userEmail}!
       Votre demande de bail ${event.Detail.leaseId} a été ${event.Detail.approvedBy === "AUTO_APPROVED" ? "approuvée automatiquement" : "approuvée par " + event.Detail.approvedBy}.
-      Veuillez vous connecter à l'application web Bac à sable d'innovation ${context.webAppUrl} pour accéder à votre compte bac à sable.
+      Veuillez vous connecter à l'application web Innovation Sandbox ${context.webAppUrl} pour accéder à votre compte bac à sable.
     `
       }
     };
@@ -114,7 +114,6 @@ export namespace EmailTemplates {
       to: context.destination.to!,
       ...templates[language],
     };
-  }
   }
 
   export function LeaseDenied(
@@ -136,14 +135,14 @@ export namespace EmailTemplates {
     `
       },
       'fr-CA': {
-        subject: "[Informatif] Bac à sable d'innovation : Demande de bail refusée",
+        subject: "[Informatif] Innovation Sandbox : Demande de bail refusée",
         htmlBody: `
       <p>Votre demande de bail ${event.Detail.leaseId} a été refusée par ${event.Detail.deniedBy}.
-      Veuillez contacter votre administrateur / gestionnaire du Bac à sable d'innovation pour plus de détails. Merci!</p>
+      Veuillez contacter votre administrateur / gestionnaire du Innovation Sandbox pour plus de détails. Merci!</p>
     `,
         textBody: `
        Votre demande de bail ${event.Detail.leaseId} a été refusée par ${event.Detail.deniedBy}.
-       Veuillez contacter votre administrateur / gestionnaire du Bac à sable d'innovation pour plus de détails. Merci!
+       Veuillez contacter votre administrateur / gestionnaire du Innovation Sandbox pour plus de détails. Merci!
     `
       }
     };
@@ -177,7 +176,7 @@ export namespace EmailTemplates {
     `
       },
       'fr-CA': {
-        subject: "[Action peut être nécessaire] Bac à sable d'innovation : Alerte de seuil budgétaire",
+        subject: "[Action peut être nécessaire] Innovation Sandbox : Alerte de seuil budgétaire",
         htmlBody: `
       <p>Le coût d'utilisation de votre compte ${event.Detail.accountId} sous le bail ${event.Detail.leaseId.uuid} a atteint le seuil budgétaire de
       ${event.Detail.budgetThresholdTriggered} USD contre le budget assigné de ${event.Detail.budget} USD. Veuillez réviser les ressources AWS
@@ -220,7 +219,7 @@ export namespace EmailTemplates {
     `
       },
       'fr-CA': {
-        subject: "[Informatif] Bac à sable d'innovation : Alerte de seuil de bail",
+        subject: "[Informatif] Innovation Sandbox : Alerte de seuil de bail",
         htmlBody: `
       <p>Votre bail ${event.Detail.leaseId.uuid} pour le compte ${event.Detail.accountId} a atteint le seuil de durée de bail
       de ${event.Detail.leaseDurationInHours - event.Detail.triggeredDurationThreshold} heure(s) contre la durée de bail assignée de ${event.Detail.leaseDurationInHours} heure(s).
@@ -261,16 +260,16 @@ export namespace EmailTemplates {
     `
       },
       'fr-CA': {
-        subject: "[Action requise] Bac à sable d'innovation : Échec du nettoyage de compte",
+        subject: "[Action requise] Innovation Sandbox : Échec du nettoyage de compte",
         htmlBody: `
       <p>Le processus de nettoyage des ressources pour le compte ${event.Detail.accountId} a échoué car certaines ressources n'ont pas pu être
       supprimées automatiquement. Veuillez réviser le compte pour nettoyer manuellement les ressources restantes et
-      utiliser l'application web Bac à sable d'innovation pour relancer l'action de nettoyage.</p>
+      utiliser l'application web Innovation Sandbox pour relancer l'action de nettoyage.</p>
     `,
         textBody: `
       Le processus de nettoyage des ressources pour le compte ${event.Detail.accountId} a échoué car certaines ressources n'ont pas pu être
       supprimées automatiquement. Veuillez réviser le compte pour nettoyer manuellement les ressources restantes et
-      utiliser l'application web Bac à sable d'innovation pour relancer l'action de nettoyage.
+      utiliser l'application web Innovation Sandbox pour relancer l'action de nettoyage.
     `
       }
     };
@@ -308,7 +307,7 @@ export namespace EmailTemplates {
       `
       },
       'fr-CA': {
-        subject: "[Action requise] Bac à sable d'innovation : Dérive de compte",
+        subject: "[Action requise] Innovation Sandbox : Dérive de compte",
         htmlBody: event.Detail.expectedOu
           ? `<p>Le compte ${event.Detail.accountId} était attendu dans l'OU ${event.Detail.expectedOu}, mais il a été trouvé dans ${event.Detail.actualOu}.
        Le compte a été déplacé vers l'OU de quarantaine par le système.</p>
@@ -355,15 +354,15 @@ export namespace EmailTemplates {
       `
         },
         'fr-CA': {
-          subject: "[Informatif] Bac à sable d'innovation : Action de nettoyage de compte basée sur le budget autorisé",
+          subject: "[Informatif] Innovation Sandbox : Action de nettoyage de compte basée sur le budget autorisé",
           htmlBody: `
       <p>Le processus de nettoyage des ressources a été initié pour le bail ${event.Detail.leaseId.uuid} sur le compte ${event.Detail.accountId}
       car le coût d'utilisation a atteint ou dépassé le budget assigné de ${event.Detail.reason.budget} USD. Vous ne pourrez plus
-      accéder à votre compte. Veuillez contacter votre administrateur / gestionnaire du Bac à sable d'innovation pour assistance.</p>`,
+      accéder à votre compte. Veuillez contacter votre administrateur / gestionnaire du Innovation Sandbox pour assistance.</p>`,
           textBody: `
         Le processus de nettoyage des ressources a été initié pour le bail ${event.Detail.leaseId.uuid} sur le compte ${event.Detail.accountId} car
         le coût d'utilisation a atteint ou dépassé le budget assigné de ${event.Detail.reason.budget} USD. Vous ne pourrez plus
-        accéder à votre compte. Veuillez contacter votre administrateur / gestionnaire du Bac à sable d'innovation pour assistance.
+        accéder à votre compte. Veuillez contacter votre administrateur / gestionnaire du Innovation Sandbox pour assistance.
       `
         }
       };
@@ -397,7 +396,7 @@ export namespace EmailTemplates {
       `
         },
         'fr-CA': {
-          subject: "[Informatif] Bac à sable d'innovation : Action de nettoyage de compte basée sur le budget autorisé",
+          subject: "[Informatif] Innovation Sandbox : Action de nettoyage de compte basée sur le budget autorisé",
           htmlBody: `
         <p>Le processus de nettoyage des ressources a été initié pour le compte ${event.Detail.accountId} sous le bail ${event.Detail.leaseId.uuid}
         car le coût d'utilisation a atteint ou dépassé le budget assigné de ${event.Detail.reason.budget} USD. Après un nettoyage réussi,
@@ -440,16 +439,16 @@ export namespace EmailTemplates {
         `
         },
         'fr-CA': {
-          subject: "[Informatif] Bac à sable d'innovation : Action de nettoyage de compte basée sur la durée du bail",
+          subject: "[Informatif] Innovation Sandbox : Action de nettoyage de compte basée sur la durée du bail",
           htmlBody: `
           <p>Le processus de nettoyage des ressources a été initié pour le compte ${event.Detail.accountId} sous le bail ${event.Detail.leaseId.uuid}
           car le bail a atteint la durée maximale de ${event.Detail.reason.leaseDurationInHours} heure(s). Vous ne pourrez plus
-          accéder à votre compte. Veuillez contacter votre administrateur / gestionnaire du Bac à sable d'innovation pour assistance.</p>
+          accéder à votre compte. Veuillez contacter votre administrateur / gestionnaire du Innovation Sandbox pour assistance.</p>
         `,
           textBody: `
         Le processus de nettoyage des ressources a été initié pour le bail du compte ${event.Detail.accountId} sous le bail ${event.Detail.leaseId.uuid}
         car le bail a atteint la durée maximale de ${event.Detail.reason.leaseDurationInHours} heure(s). Vous ne pourrez plus
-        accéder à votre compte. Veuillez contacter votre administrateur / gestionnaire du Bac à sable d'innovation pour assistance.
+        accéder à votre compte. Veuillez contacter votre administrateur / gestionnaire du Innovation Sandbox pour assistance.
         `
         }
       };
@@ -487,22 +486,44 @@ export namespace EmailTemplates {
       event: LeaseTerminatedEvent<"ManuallyTerminated">,
       context: EmailTemplatesContext,
     ): SynthesizedEmail {
-      return {
-        to: context.destination.to!,
-        subject:
-          "[Informational] Innovation Sandbox: Manual Account Clean-up Action",
-        htmlBody: `
+      const language = context.language || 'en';
+      
+      const templates = {
+        en: {
+          subject: "[Informational] Innovation Sandbox: Manual Account Clean-up Action",
+          htmlBody: `
         <p>
         Your lease for account account id: ${event.Detail.accountId} under lease id: ${event.Detail.leaseId.uuid}
          has been manually terminated by an administrator. You will no longer be able to access this account.
          Please contact your administrator / manager with any questions.
         </p>
     `,
-        textBody: `
+          textBody: `
         Your lease for account account id: ${event.Detail.accountId} under lease id: ${event.Detail.leaseId.uuid}
          has been manually terminated by an administrator. You will no longer be able to access this account.
          Please contact your administrator / manager with any questions.
+    `
+        },
+        'fr-CA': {
+          subject: "[Informatif] Innovation Sandbox : Action manuelle de nettoyage de compte",
+          htmlBody: `
+        <p>
+        Votre bail pour le compte ${event.Detail.accountId} sous le bail ${event.Detail.leaseId.uuid}
+         a été terminé manuellement par un administrateur. Vous ne pourrez plus accéder à ce compte.
+         Veuillez contacter votre administrateur / gestionnaire pour toute question.
+        </p>
     `,
+          textBody: `
+        Votre bail pour le compte ${event.Detail.accountId} sous le bail ${event.Detail.leaseId.uuid}
+         a été terminé manuellement par un administrateur. Vous ne pourrez plus accéder à ce compte.
+         Veuillez contacter votre administrateur / gestionnaire pour toute question.
+    `
+        }
+      };
+
+      return {
+        to: context.destination.to!,
+        ...templates[language],
       };
     }
 
@@ -510,20 +531,40 @@ export namespace EmailTemplates {
       event: LeaseTerminatedEvent<"AccountQuarantined">,
       context: EmailTemplatesContext,
     ): SynthesizedEmail {
-      return {
-        to: context.destination.to!,
-        subject:
-          "[Informational] Innovation Sandbox: Account Quarantined Action",
-        htmlBody: `
+      const language = context.language || 'en';
+      
+      const templates = {
+        en: {
+          subject: "[Informational] Innovation Sandbox: Account Quarantined Action",
+          htmlBody: `
       <p> The account id: ${event.Detail.accountId} under lease id: ${event.Detail.leaseId.uuid} is quarantined
       by an Innovation Sandbox administrator / manger. You will no longer be able to access your account. Please contact your Innovation Sandbox
       administrator / manager for assistance. </p>
     `,
-        textBody: `
+          textBody: `
       The account id: ${event.Detail.accountId} under lease id: ${event.Detail.leaseId.uuid} is quarantined
       by an Innovation Sandbox administrator / manger. You will no longer be able to access your account. Please contact your Innovation Sandbox
       administrator / manager for assistance.
+    `
+        },
+        'fr-CA': {
+          subject: "[Informatif] Innovation Sandbox : Action de quarantaine de compte",
+          htmlBody: `
+      <p>Le compte ${event.Detail.accountId} sous le bail ${event.Detail.leaseId.uuid} est mis en quarantaine
+      par un administrateur / gestionnaire du Innovation Sandbox. Vous ne pourrez plus accéder à votre compte. Veuillez contacter votre
+      administrateur / gestionnaire du Innovation Sandbox pour assistance.</p>
     `,
+          textBody: `
+      Le compte ${event.Detail.accountId} sous le bail ${event.Detail.leaseId.uuid} est mis en quarantaine
+      par un administrateur / gestionnaire du Innovation Sandbox. Vous ne pourrez plus accéder à votre compte. Veuillez contacter votre
+      administrateur / gestionnaire du Innovation Sandbox pour assistance.
+    `
+        }
+      };
+
+      return {
+        to: context.destination.to!,
+        ...templates[language],
       };
     }
 
@@ -531,19 +572,40 @@ export namespace EmailTemplates {
       event: LeaseTerminatedEvent<"Ejected">,
       context: EmailTemplatesContext,
     ): SynthesizedEmail {
-      return {
-        to: context.destination.to!,
-        subject: "[Informational] Innovation Sandbox: Account Ejected Action",
-        htmlBody: `
+      const language = context.language || 'en';
+      
+      const templates = {
+        en: {
+          subject: "[Informational] Innovation Sandbox: Account Ejected Action",
+          htmlBody: `
       <p> The account id: ${event.Detail.accountId} under lease id: ${event.Detail.leaseId.uuid} is ejected
       by an Innovation Sandbox administrator / manger. You will no longer be able to access your account. Please contact your Innovation Sandbox
       administrator / manager for assistance. </p>
     `,
-        textBody: `
+          textBody: `
       The account id: ${event.Detail.accountId} under lease id: ${event.Detail.leaseId.uuid} is ejected
       by an Innovation Sandbox administrator / manger. You will no longer be able to access your account. Please contact your Innovation Sandbox
       administrator / manager for assistance.
+    `
+        },
+        'fr-CA': {
+          subject: "[Informatif] Innovation Sandbox : Action d'éjection de compte",
+          htmlBody: `
+      <p>Le compte ${event.Detail.accountId} sous le bail ${event.Detail.leaseId.uuid} est éjecté
+      par un administrateur / gestionnaire du Innovation Sandbox. Vous ne pourrez plus accéder à votre compte. Veuillez contacter votre
+      administrateur / gestionnaire du Innovation Sandbox pour assistance.</p>
     `,
+          textBody: `
+      Le compte ${event.Detail.accountId} sous le bail ${event.Detail.leaseId.uuid} est éjecté
+      par un administrateur / gestionnaire du Innovation Sandbox. Vous ne pourrez plus accéder à votre compte. Veuillez contacter votre
+      administrateur / gestionnaire du Innovation Sandbox pour assistance.
+    `
+        }
+      };
+
+      return {
+        to: context.destination.to!,
+        ...templates[language],
       };
     }
   }
@@ -570,16 +632,16 @@ export namespace EmailTemplates {
     `
         },
         'fr-CA': {
-          subject: "[Informatif] Bac à sable d'innovation : Action de gel de compte basée sur le budget autorisé",
+          subject: "[Informatif] Innovation Sandbox : Action de gel de compte basée sur le budget autorisé",
           htmlBody: `
       <p>Le compte ${event.Detail.accountId} sous votre bail ${event.Detail.leaseId.uuid} a été gelé car le coût d'utilisation a atteint
       le seuil de gel de ${event.Detail.reason.triggeredBudgetThreshold} USD contre le budget assigné de ${event.Detail.reason.budget} USD.
-      Vous ne pourrez plus accéder à votre compte. Veuillez contacter votre administrateur / gestionnaire du Bac à sable d'innovation pour assistance.</p>
+      Vous ne pourrez plus accéder à votre compte. Veuillez contacter votre administrateur / gestionnaire du Innovation Sandbox pour assistance.</p>
     `,
           textBody: `
       Le compte ${event.Detail.accountId} sous votre bail ${event.Detail.leaseId.uuid} a été gelé car le coût d'utilisation a atteint
       le seuil de gel de ${event.Detail.reason.triggeredBudgetThreshold} USD contre le budget assigné de ${event.Detail.reason.budget} USD.
-      Vous ne pourrez plus accéder à votre compte. Veuillez contacter votre administrateur / gestionnaire du Bac à sable d'innovation pour assistance.
+      Vous ne pourrez plus accéder à votre compte. Veuillez contacter votre administrateur / gestionnaire du Innovation Sandbox pour assistance.
     `
         }
       };
@@ -662,18 +724,18 @@ export namespace EmailTemplates {
     `
         },
         'fr-CA': {
-          subject: "[Informatif] Bac à sable d'innovation : Action de gel de compte basée sur la durée du bail",
+          subject: "[Informatif] Innovation Sandbox : Action de gel de compte basée sur la durée du bail",
           htmlBody: `
       <p>Le compte ${event.Detail.accountId} pour votre bail ${event.Detail.leaseId.uuid} a été gelé car la durée du bail
       a atteint le seuil de gel de ${event.Detail.reason.leaseDurationInHours - event.Detail.reason.triggeredDurationThreshold} heure(s) contre la durée totale du bail
       de ${event.Detail.reason.leaseDurationInHours} heure(s). Vous ne pourrez plus accéder à votre compte.
-      Veuillez contacter votre administrateur / gestionnaire du Bac à sable d'innovation pour assistance.</p>
+      Veuillez contacter votre administrateur / gestionnaire du Innovation Sandbox pour assistance.</p>
     `,
           textBody: `
       Le compte ${event.Detail.accountId} pour votre bail ${event.Detail.leaseId} a été gelé car la durée du bail
        a atteint le seuil de gel de ${event.Detail.reason.leaseDurationInHours - event.Detail.reason.triggeredDurationThreshold} heure(s) contre la durée totale du bail
        de ${event.Detail.reason.leaseDurationInHours} heure(s). Vous ne pourrez plus accéder à votre compte.
-       Veuillez contacter votre administrateur / gestionnaire du Bac à sable d'innovation pour assistance.
+       Veuillez contacter votre administrateur / gestionnaire du Innovation Sandbox pour assistance.
     `
         }
       };
@@ -688,11 +750,12 @@ export namespace EmailTemplates {
       event: LeaseFrozenEvent<"Expired">,
       context: EmailTemplatesContext,
     ): SynthesizedEmail {
-      return {
-        bcc: context.destination.bcc!,
-        subject:
-          "[Action Needed] Innovation Sandbox: Account Freeze Action based on Lease Duration",
-        htmlBody: `
+      const language = context.language || 'en';
+      
+      const templates = {
+        en: {
+          subject: "[Action Needed] Innovation Sandbox: Account Freeze Action based on Lease Duration",
+          htmlBody: `
       <p> The account id: ${event.Detail.accountId} for lease id: ${event.Detail.leaseId.uuid} has been frozen since the lease duration has
       reached the freeze threshold of ${event.Detail.reason.leaseDurationInHours - event.Detail.reason.triggeredDurationThreshold} hour(s) against the total lease duration of
       ${event.Detail.reason.leaseDurationInHours} hour(s). Sandbox users will no longer be able to access this account.
@@ -711,7 +774,7 @@ export namespace EmailTemplates {
       </p>
      . </p>
      `,
-        textBody: `
+          textBody: `
        The account id: ${event.Detail.accountId} for lease id: ${event.Detail.leaseId.uuid} has been frozen since the lease duration has
       reached the freeze threshold of ${event.Detail.reason.leaseDurationInHours - event.Detail.reason.triggeredDurationThreshold} hour(s) against the total lease duration of
       ${event.Detail.reason.leaseDurationInHours} hour(s). Sandbox users will no longer be able to access this account.
@@ -722,7 +785,47 @@ export namespace EmailTemplates {
         OR
         b) You can initiate the clean-up action to wipe the resources in this account through the Innovation
         Sandbox web application.
+     `
+        },
+        'fr-CA': {
+          subject: "[Action nécessaire] Innovation Sandbox : Action de gel de compte basée sur la durée du bail",
+          htmlBody: `
+      <p>Le compte ${event.Detail.accountId} pour le bail ${event.Detail.leaseId.uuid} a été gelé car la durée du bail a
+      atteint le seuil de gel de ${event.Detail.reason.leaseDurationInHours - event.Detail.reason.triggeredDurationThreshold} heure(s) contre la durée totale du bail de
+      ${event.Detail.reason.leaseDurationInHours} heure(s). Les utilisateurs du bac à sable ne pourront plus accéder à ce compte.
+      Les ressources utilisées dans le compte continueront d'être facturées. Veuillez effectuer l'une des actions suivantes en temps opportun
+      après avoir révisé votre compte :
+      <p>
+        a) Si vous souhaitez continuer à utiliser le compte au-delà de sa durée de bail, vous pouvez utiliser l'application web
+        Innovation Sandbox pour éjecter le compte vers l'OU 'Sortie' et le déplacer ailleurs à partir de là.
+      </p>
+      <p>
+        OU
+      </p>
+      <p>
+        b) Vous pouvez initier l'action de nettoyage pour supprimer les ressources de ce compte via l'application web
+        Innovation Sandbox.
+      </p>
+     .</p>
      `,
+          textBody: `
+       Le compte ${event.Detail.accountId} pour le bail ${event.Detail.leaseId.uuid} a été gelé car la durée du bail a
+      atteint le seuil de gel de ${event.Detail.reason.leaseDurationInHours - event.Detail.reason.triggeredDurationThreshold} heure(s) contre la durée totale du bail de
+      ${event.Detail.reason.leaseDurationInHours} heure(s). Les utilisateurs du bac à sable ne pourront plus accéder à ce compte.
+      Les ressources utilisées dans le compte continueront d'être facturées. Veuillez effectuer l'une des actions suivantes en temps opportun
+      après avoir révisé votre compte :
+        a) Si vous souhaitez continuer à utiliser le compte au-delà de sa durée de bail, vous pouvez utiliser l'application web
+        Innovation Sandbox pour éjecter le compte vers l'OU 'Sortie' et le déplacer ailleurs à partir de là.
+        OU
+        b) Vous pouvez initier l'action de nettoyage pour effacer les ressources de ce compte via l'application web
+        Innovation Sandbox.
+     `
+        }
+      };
+
+      return {
+        bcc: context.destination.bcc!,
+        ...templates[language],
       };
     }
 
@@ -747,16 +850,16 @@ export namespace EmailTemplates {
     `
         },
         'fr-CA': {
-          subject: "[Informatif] Bac à sable d'innovation : Action de gel de compte",
+          subject: "[Informatif] Innovation Sandbox : Action de gel de compte",
           htmlBody: `
       <p>Le compte ${event.Detail.accountId} sous le bail ${event.Detail.leaseId.uuid} est gelé
-      par un administrateur / gestionnaire du Bac à sable d'innovation. Vous ne pourrez plus accéder à votre compte. Veuillez contacter votre
-      administrateur / gestionnaire du Bac à sable d'innovation pour assistance.</p>
+      par un administrateur / gestionnaire du Innovation Sandbox. Vous ne pourrez plus accéder à votre compte. Veuillez contacter votre
+      administrateur / gestionnaire du Innovation Sandbox pour assistance.</p>
     `,
           textBody: `
       Le compte ${event.Detail.accountId} sous le bail ${event.Detail.leaseId.uuid} est gelé
-      par un administrateur / gestionnaire du Bac à sable d'innovation. Vous ne pourrez plus accéder à votre compte. Veuillez contacter votre
-      administrateur / gestionnaire du Bac à sable d'innovation pour assistance.
+      par un administrateur / gestionnaire du Innovation Sandbox. Vous ne pourrez plus accéder à votre compte. Veuillez contacter votre
+      administrateur / gestionnaire du Innovation Sandbox pour assistance.
     `
         }
       };
@@ -790,7 +893,7 @@ You can now access this lease at: ${context.webAppUrl}/leases/${event.Detail.lea
       `
       },
       'fr-CA': {
-        subject: "Bac à sable d'innovation : Vous avez été ajouté à un bail",
+        subject: "Innovation Sandbox : Vous avez été ajouté à un bail",
         htmlBody: `
         <h1>Vous avez été ajouté à un bail</h1>
         <p>Vous avez été ajouté au bail <strong>${event.Detail.leaseId}</strong> par ${event.Detail.addedBy}.</p>
@@ -833,7 +936,7 @@ You no longer have access to this lease.
       `
       },
       'fr-CA': {
-        subject: "Bac à sable d'innovation : Vous avez été retiré d'un bail",
+        subject: "Innovation Sandbox : Vous avez été retiré d'un bail",
         htmlBody: `
         <h1>Vous avez été retiré d'un bail</h1>
         <p>Vous avez été retiré du bail <strong>${event.Detail.leaseId}</strong> par ${event.Detail.removedBy}.</p>
@@ -876,7 +979,7 @@ View your lease at: ${context.webAppUrl}/leases/${event.Detail.leaseOwner}/${eve
       `
       },
       'fr-CA': {
-        subject: "Bac à sable d'innovation : Utilisateur ajouté à votre bail",
+        subject: "Innovation Sandbox : Utilisateur ajouté à votre bail",
         htmlBody: `
         <h1>Utilisateur ajouté à votre bail</h1>
         <p><strong>${event.Detail.addedUserEmail}</strong> a été ajouté à votre bail <strong>${event.Detail.leaseId}</strong> par ${event.Detail.addedBy}.</p>
@@ -919,7 +1022,7 @@ View your lease at: ${context.webAppUrl}/leases/${event.Detail.leaseOwner}/${eve
       `
       },
       'fr-CA': {
-        subject: "Bac à sable d'innovation : Utilisateur retiré de votre bail",
+        subject: "Innovation Sandbox : Utilisateur retiré de votre bail",
         htmlBody: `
         <h1>Utilisateur retiré de votre bail</h1>
         <p><strong>${event.Detail.removedUserEmail}</strong> a été retiré de votre bail <strong>${event.Detail.leaseId}</strong> par ${event.Detail.removedBy}.</p>
@@ -983,7 +1086,7 @@ This is a lease you previously approved. View the lease at: ${context.webAppUrl}
       `
       },
       'fr-CA': {
-        subject: "Bac à sable d'innovation : Utilisateur retiré du bail que vous avez approuvé",
+        subject: "Innovation Sandbox : Utilisateur retiré du bail que vous avez approuvé",
         htmlBody: `
         <h1>Utilisateur retiré du bail que vous avez approuvé</h1>
         <p><strong>${event.Detail.removedUserEmail}</strong> a été retiré du bail <strong>${event.Detail.leaseId}</strong> (appartenant à ${event.Detail.leaseOwner}) par ${event.Detail.removedBy}.</p>
@@ -1003,3 +1106,4 @@ Il s'agit d'un bail que vous avez précédemment approuvé. Voir le bail à : ${
       ...templates[language],
     };
   }
+}

@@ -13,18 +13,19 @@ export const generateAccountBreadcrumb = ({
   isLoading,
   isError,
   account,
-}: GenerateAccountBreadcrumbArgs) => {
+  t,
+}: GenerateAccountBreadcrumbArgs & { t?: (key: string, options?: any) => string }) => {
   const breadcrumbItems = [
-    { text: "Home", href: "/" },
-    { text: "Accounts", href: "/accounts" },
+    { text: t?.('breadcrumbs.home', { ns: 'common' }) || "Home", href: "/" },
+    { text: t?.('accounts', { ns: 'common' }) || "Accounts", href: "/accounts" },
   ];
 
   if (isLoading) {
-    breadcrumbItems.push({ text: "Loading...", href: "#" });
+    breadcrumbItems.push({ text: t?.('breadcrumbs.loading', { ns: 'common' }) || "Loading...", href: "#" });
   }
 
   if (isError) {
-    breadcrumbItems.push({ text: "Error", href: "#" });
+    breadcrumbItems.push({ text: t?.('breadcrumbs.error', { ns: 'common' }) || "Error", href: "#" });
   }
 
   if (account) {
@@ -32,7 +33,7 @@ export const generateAccountBreadcrumb = ({
       text: account.awsAccountId,
       href: `/accounts/${account?.awsAccountId}`,
     });
-    breadcrumbItems.push({ text: "Add Account", href: "#" });
+    breadcrumbItems.push({ text: t?.('addAccounts.breadcrumb', { ns: 'accounts' }) || "Add Account", href: "#" });
   }
 
   return breadcrumbItems;

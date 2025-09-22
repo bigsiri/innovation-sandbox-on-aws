@@ -247,8 +247,8 @@ export const ListAccounts = () => {
 
   useInit(async () => {
     setBreadcrumb([
-      { text: t("common.home"), href: "/" },
-      { text: t("accounts"), href: "/accounts" },
+      { text: t("breadcrumbs.home", { ns: "common" }), href: "/" },
+      { text: t("breadcrumbs.accounts"), href: "/accounts" },
     ]);
     setTools(<Markdown file="accounts" />);
   });
