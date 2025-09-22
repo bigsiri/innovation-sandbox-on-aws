@@ -2,6 +2,19 @@
   "settings": "Settings",
   "pageDescription": "Manage global settings here.",
   "loadingError": "There was a problem loading settings.",
+  "language": {
+    "title": "Language Settings",
+    "defaultLanguage": {
+      "label": "Default Language",
+      "description": "The default language for new users and system defaults",
+      "placeholder": "Select default language"
+    },
+    "browserDetection": {
+      "label": "Browser Detection",
+      "description": "Automatically detect language from browser settings for new users",
+      "toggle": "Enable browser language detection"
+    }
+  },
   "appConfigMessage": "To change these settings, please go to",
   "common": {
     "home": "Home"
@@ -9,7 +22,8 @@
   "tabs": {
     "general": "General Settings",
     "lease": "Lease Settings",
-    "cleanup": "Clean Up Settings"
+    "cleanup": "Clean Up Settings",
+    "language": "Language Settings"
   },
   "general": {
     "maintenanceMode": "Maintenance Mode",

@@ -8,6 +8,7 @@ import { InfoLink } from "@amzn/innovation-sandbox-frontend/components/InfoLink"
 import { Markdown } from "@amzn/innovation-sandbox-frontend/components/Markdown";
 import { CleanupSettings } from "@amzn/innovation-sandbox-frontend/domains/settings/components/CleanupSettings";
 import { GeneralSettings } from "@amzn/innovation-sandbox-frontend/domains/settings/components/GeneralSettings";
+import { LanguageSettings } from "@amzn/innovation-sandbox-frontend/domains/settings/components/LanguageSettings";
 import { LeaseSettings } from "@amzn/innovation-sandbox-frontend/domains/settings/components/LeaseSettings";
 import { useBreadcrumb } from "@amzn/innovation-sandbox-frontend/hooks/useBreadcrumb";
 import { useInit } from "@amzn/innovation-sandbox-frontend/hooks/useInit";
@@ -54,6 +55,11 @@ export const Settings = () => {
             label: t("tabs.cleanup"),
             id: "clean",
             content: <CleanupSettings />,
+          },
+          {
+            label: t("tabs.language"),
+            id: "language",
+            content: <LanguageSettings />,
           },
         ]}
       />

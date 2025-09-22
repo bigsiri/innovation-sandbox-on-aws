@@ -2,6 +2,19 @@
   "settings": "Paramètres",
   "pageDescription": "Gérer les paramètres globaux ici.",
   "loadingError": "Il y a eu un problème lors du chargement des paramètres.",
+  "language": {
+    "title": "Paramètres de langue",
+    "defaultLanguage": {
+      "label": "Langue par défaut",
+      "description": "La langue par défaut pour les nouveaux utilisateurs et les paramètres système",
+      "placeholder": "Sélectionner la langue par défaut"
+    },
+    "browserDetection": {
+      "label": "Détection du navigateur",
+      "description": "Détecter automatiquement la langue à partir des paramètres du navigateur pour les nouveaux utilisateurs",
+      "toggle": "Activer la détection de la langue du navigateur"
+    }
+  },
   "appConfigMessage": "Pour modifier ces paramètres, veuillez aller à",
   "common": {
     "home": "Accueil"
@@ -9,7 +22,8 @@
   "tabs": {
     "general": "Paramètres généraux",
     "lease": "Paramètres de bail",
-    "cleanup": "Paramètres de nettoyage"
+    "cleanup": "Paramètres de nettoyage",
+    "language": "Paramètres de langue"
   },
   "general": {
     "maintenanceMode": "Mode maintenance",

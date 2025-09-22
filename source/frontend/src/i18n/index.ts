@@ -5,6 +5,8 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
+import { getLanguageConfig, getSupportedLanguages } from '@amzn/innovation-sandbox-frontend/helpers/languageConfig';
+
 // Import translation files
 import enCommon from './locales/en/common.json';
 import enHome from './locales/en/home.json';
@@ -47,7 +49,9 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
+    lng: 'en', // Default fallback
     fallbackLng: 'en',
+    supportedLngs: getSupportedLanguages(),
     debug: false,
     
     interpolation: {
@@ -59,5 +63,27 @@ i18n
       caches: ['localStorage'],
     },
   });
+
+// Load AppConfig language settings and update i18n
+getLanguageConfig().then((config) => {
+  // Update detection order based on AppConfig settings
+  const detectionOrder = config.enableBrowserDetection 
+    ? ['localStorage', 'navigator', 'htmlTag'] 
+    : ['localStorage'];
+  
+  // Update i18n options
+  i18n.options.detection = {
+    ...i18n.options.detection,
+    order: detectionOrder,
+  };
+  
+  // Set default language from AppConfig if no user preference exists
+  const currentLang = localStorage.getItem('i18nextLng');
+  if (!currentLang) {
+    i18n.changeLanguage(config.defaultLanguage);
+  }
+}).catch((error) => {
+  console.warn('Failed to apply AppConfig language settings:', error);
+});
 
 export default i18n;

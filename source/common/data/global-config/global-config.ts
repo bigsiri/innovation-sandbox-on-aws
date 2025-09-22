@@ -127,6 +127,15 @@ export const GlobalConfigSchema = z.object({
       .email()
       .describe("The email address to send notifications from"),
   }),
+  language: z.object({
+    defaultLanguage: z.enum(['en', 'fr-CA']).default('en')
+      .describe("Default language for new users and system defaults"),
+    enableBrowserDetection: z.boolean().default(true)
+      .describe("Whether to detect language from browser settings for new users")
+  }).default({
+    defaultLanguage: 'en',
+    enableBrowserDetection: true
+  }).describe("Language configuration settings"),
 });
 
 export type GlobalConfig = z.infer<typeof GlobalConfigSchema>;
