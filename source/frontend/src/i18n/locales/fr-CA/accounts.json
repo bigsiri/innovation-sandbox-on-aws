@@ -4,6 +4,7 @@
   "searchPlaceholder": "Rechercher des comptes",
   "filteringAriaLabel": "Filtrer les comptes",
   "loading": "Chargement...",
+  "loadingAccountInfo": "Chargement des informations de compte...",
   "actions": "Actions",
   "preferences": "Préférences",
   "confirm": "Confirmer",

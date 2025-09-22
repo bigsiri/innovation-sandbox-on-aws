@@ -4,6 +4,7 @@
   "searchPlaceholder": "Search accounts",
   "filteringAriaLabel": "Filter accounts",
   "loading": "Loading...",
+  "loadingAccountInfo": "Loading account info...",
   "actions": "Actions",
   "preferences": "Preferences",
   "confirm": "Confirm",
