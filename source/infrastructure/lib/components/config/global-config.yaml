@@ -63,5 +63,5 @@ notification:
 #   defaultLanguage         - The default language for the application ("en" or "fr-CA")
 #   enableBrowserDetection  - Enable automatic browser language detection (true or false)
 language:
-  defaultLanguage: "en"
+  defaultLanguage: "fr-CA"
   enableBrowserDetection: true
