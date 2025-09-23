@@ -58,3 +58,10 @@ auth:
 #   emailFrom - The email address to use in the "from" field of all email notifications
 notification:
   emailFrom: ""
+
+# Language Configuration
+#   defaultLanguage         - The default language for the application ("en" or "fr-CA")
+#   enableBrowserDetection  - Enable automatic browser language detection (true or false)
+language:
+  defaultLanguage: "en"
+  enableBrowserDetection: true
