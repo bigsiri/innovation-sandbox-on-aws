@@ -257,6 +257,7 @@ function determineLeaseEvents(props: {
         budgetThresholdTriggered: largestBreachedBudgetThreshold.dollarsSpent,
         totalSpend: totalCostSpent,
         actionRequested: largestBreachedBudgetThreshold.action,
+        users: lease.users,
       }),
     );
   }
@@ -289,6 +290,7 @@ function determineLeaseEvents(props: {
           ).hours,
         ),
         actionRequested: latestBreachedDurationTheshold.action,
+        users: lease.users,
       }),
     );
   }

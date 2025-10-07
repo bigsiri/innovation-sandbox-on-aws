@@ -146,6 +146,7 @@ describe("InnovationSandbox.terminateLease()", () => {
         },
         accountId: lease.awsAccountId,
         reason: getLeaseTerminatedReason("ManuallyTerminated", lease),
+        users: lease.users,
       }),
     );
   });
@@ -197,6 +198,7 @@ describe("InnovationSandbox.terminateLease()", () => {
         },
         accountId: lease.awsAccountId,
         reason: getLeaseTerminatedReason("Expired", lease),
+        users: lease.users,
       }),
     );
   });

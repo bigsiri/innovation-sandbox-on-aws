@@ -75,6 +75,11 @@ export class EmailService {
     return this.notificationLanguage;
   }
 
+  private getAllLeaseUsers(leaseId: { userEmail: string }, users?: Array<{ userEmail: string }>): string[] {
+    const sharedUsers = users?.map(user => user.userEmail) || [];
+    return [leaseId.userEmail, ...sharedUsers];
+  }
+
   async sendNotificationEmail(
     emailEventName: EmailEventName,
     isbAlert: unknown,
@@ -136,7 +141,7 @@ export class EmailService {
           webAppUrl: this.webAppUrl,
           language: this.getNotificationLanguage(),
           destination: {
-            to: [leaseBudgetEvent.Detail.leaseId.userEmail],
+            to: this.getAllLeaseUsers(leaseBudgetEvent.Detail.leaseId, leaseBudgetEvent.Detail.users),
           },
         };
         await this.sendEmail(
@@ -150,7 +155,7 @@ export class EmailService {
           webAppUrl: this.webAppUrl,
           language: this.getNotificationLanguage(),
           destination: {
-            to: [leaseDurationEvent.Detail.leaseId.userEmail],
+            to: this.getAllLeaseUsers(leaseDurationEvent.Detail.leaseId, leaseDurationEvent.Detail.users),
           },
         };
         await this.sendEmail(
@@ -212,7 +217,7 @@ export class EmailService {
       webAppUrl: this.webAppUrl,
       language: this.getNotificationLanguage(),
       destination: {
-        to: [parsedEvent.Detail.leaseId.userEmail],
+        to: this.getAllLeaseUsers(parsedEvent.Detail.leaseId, parsedEvent.Detail.users),
       },
     };
     const adminManagerEmailContext = {
@@ -275,7 +280,7 @@ export class EmailService {
       webAppUrl: this.webAppUrl,
       language: this.getNotificationLanguage(),
       destination: {
-        to: [parsedEvent.Detail.leaseId.userEmail],
+        to: this.getAllLeaseUsers(parsedEvent.Detail.leaseId, parsedEvent.Detail.users),
       },
     };
     const adminManagerEmailContext = {

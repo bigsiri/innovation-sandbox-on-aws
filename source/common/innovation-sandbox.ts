@@ -316,6 +316,7 @@ export class InnovationSandbox {
         },
         accountId: account.awsAccountId,
         reason: reason,
+        users: lease.users,
       }),
     );
   }
@@ -404,6 +405,7 @@ export class InnovationSandbox {
         },
         accountId: account.awsAccountId,
         reason: getLeaseTerminatedReason(expiredStatus, lease),
+        users: lease.users,
       }),
     );
 

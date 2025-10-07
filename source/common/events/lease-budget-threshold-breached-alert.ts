@@ -5,6 +5,7 @@ import z from "zod";
 import { AwsAccountIdSchema } from "@amzn/innovation-sandbox-commons/data/common-schemas.js";
 import { ThresholdActionSchema } from "@amzn/innovation-sandbox-commons/data/lease-template/lease-template.js";
 import { LeaseKeySchema } from "@amzn/innovation-sandbox-commons/data/lease/lease.js";
+import { LeaseUserSchema } from "@amzn/innovation-sandbox-commons/data/lease/lease-user.js";
 import { EventDetailTypes } from "@amzn/innovation-sandbox-commons/events/index.js";
 import { IsbEvent } from "@amzn/innovation-sandbox-commons/sdk-clients/event-bridge-client.js";
 
@@ -15,6 +16,7 @@ export const LeaseBudgetThresholdTriggeredEventSchema = z.object({
   totalSpend: z.number(),
   budgetThresholdTriggered: z.number(),
   actionRequested: ThresholdActionSchema,
+  users: z.array(LeaseUserSchema).optional(),
 });
 
 export class LeaseBudgetThresholdBreachedAlert implements IsbEvent {

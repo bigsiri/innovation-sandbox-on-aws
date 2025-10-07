@@ -11,6 +11,7 @@ import {
   LeaseKeySchema,
   MonitoredLease,
 } from "@amzn/innovation-sandbox-commons/data/lease/lease.js";
+import { LeaseUserSchema } from "@amzn/innovation-sandbox-commons/data/lease/lease-user.js";
 import { EventDetailTypes } from "@amzn/innovation-sandbox-commons/events/index.js";
 import { IsbEvent } from "@amzn/innovation-sandbox-commons/sdk-clients/event-bridge-client.js";
 
@@ -62,6 +63,7 @@ export const LeaseTerminatedEventSchema = z.object({
   leaseId: LeaseKeySchema,
   accountId: AwsAccountIdSchema,
   reason: LeaseTerminatedReasonSchema,
+  users: z.array(LeaseUserSchema).optional(),
 });
 
 export type LeaseTerminatedEventType<

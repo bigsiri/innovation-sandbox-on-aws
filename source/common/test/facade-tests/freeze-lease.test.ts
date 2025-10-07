@@ -136,6 +136,7 @@ describe("InnovationSandbox.freezeLease()", async () => {
           type: "ManuallyFrozen",
           comment: "test suite freeze action",
         },
+        users: mockLease.users,
       }),
     );
   });

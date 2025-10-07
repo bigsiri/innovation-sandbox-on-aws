@@ -7,6 +7,7 @@ import {
   FreeTextSchema,
 } from "@amzn/innovation-sandbox-commons/data/common-schemas.js";
 import { LeaseKeySchema } from "@amzn/innovation-sandbox-commons/data/lease/lease.js";
+import { LeaseUserSchema } from "@amzn/innovation-sandbox-commons/data/lease/lease-user.js";
 import { EventDetailTypes } from "@amzn/innovation-sandbox-commons/events/index.js";
 import { IsbEvent } from "@amzn/innovation-sandbox-commons/sdk-clients/event-bridge-client.js";
 
@@ -46,6 +47,7 @@ export const LeaseFrozenEventSchema = z.object({
   leaseId: LeaseKeySchema,
   accountId: AwsAccountIdSchema,
   reason: LeaseFrozenReasonSchema,
+  users: z.array(LeaseUserSchema).optional(),
 });
 
 export class LeaseFrozenEvent<
