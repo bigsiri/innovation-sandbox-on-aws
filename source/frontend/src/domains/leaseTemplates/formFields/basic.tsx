@@ -3,11 +3,8 @@
 
 import { componentTypes, validatorTypes } from "@aws-northstar/ui";
 import { Alert, Box } from "@cloudscape-design/components";
-import { useTranslation } from "react-i18next";
 
-export const basicFormFields = () => {
-  const { t } = useTranslation(['leaseTemplates']);
-  
+export const basicFormFields = (t: any) => {
   return {
     name: "basic",
     title: t("basicDetails"),

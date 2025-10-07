@@ -38,7 +38,7 @@ describe("ListLeaseTemplates", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByRole("heading", { name: "Lease Templates" }),
+        screen.getByRole("heading", { name: "Lease Templates", level: 1 }),
       ).toBeInTheDocument();
       expect(
         screen.getByText(
@@ -46,7 +46,7 @@ describe("ListLeaseTemplates", () => {
         ),
       ).toBeInTheDocument();
       expect(
-        screen.getByRole("button", { name: "Add new lease template" }),
+        screen.getByRole("button", { name: "Add a New Lease Template" }),
       ).toBeInTheDocument();
     });
 
@@ -60,7 +60,7 @@ describe("ListLeaseTemplates", () => {
     const user = userEvent.setup();
 
     const addButton = screen.getByRole("button", {
-      name: "Add new lease template",
+      name: "Add a New Lease Template",
     });
     await user.click(addButton);
 

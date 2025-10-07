@@ -68,6 +68,7 @@ export const BudgetForm = ({
             ...budgetFields({
               alwaysShowValidationErrors: true,
               globalMaxBudget,
+              t,
             }),
           },
         ],

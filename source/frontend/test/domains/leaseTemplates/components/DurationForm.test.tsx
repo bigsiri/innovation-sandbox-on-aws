@@ -169,7 +169,7 @@ describe("DurationForm", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText("Please enter a valid number."),
+        screen.getByText("validation.invalidNumber"),
       ).toBeInTheDocument();
     });
   });

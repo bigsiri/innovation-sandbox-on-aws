@@ -68,6 +68,7 @@ export const DurationForm = ({
             ...durationFields({
               alwaysShowValidationErrors: true,
               globalMaxDuration,
+              t,
             }),
           },
         ],

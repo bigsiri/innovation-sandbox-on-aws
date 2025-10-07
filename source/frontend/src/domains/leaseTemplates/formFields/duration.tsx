@@ -3,7 +3,6 @@
 
 import { componentTypes, validatorTypes } from "@aws-northstar/ui";
 import { FormField } from "@cloudscape-design/components";
-import { useTranslation } from "react-i18next";
 
 import { Divider } from "@amzn/innovation-sandbox-frontend/components/Divider";
 import { NumberFormField } from "@amzn/innovation-sandbox-frontend/components/NumberFormField";
@@ -14,10 +13,11 @@ import { validateNumber } from "@amzn/innovation-sandbox-frontend/helpers/valida
 interface DurationFieldsProps {
   alwaysShowValidationErrors?: boolean;
   globalMaxDuration?: number;
+  t: any;
 }
 
 export const durationFields = (props?: DurationFieldsProps) => {
-  const { t } = useTranslation(['leaseTemplates']);
+  const { t } = props || {};
   
   return {
     name: "duration",

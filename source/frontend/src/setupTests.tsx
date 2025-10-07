@@ -7,8 +7,40 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { cleanup, render } from "@testing-library/react";
 import React, { ReactNode } from "react";
 import { afterAll, afterEach, beforeAll, vi } from "vitest";
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
 
 import { server } from "@amzn/innovation-sandbox-frontend/mocks/server";
+
+// Import translation files for tests
+import enCommon from "./i18n/locales/en/common.json";
+import enSettings from "./i18n/locales/en/settings.json";
+import enLeases from "./i18n/locales/en/leases.json";
+import enApprovals from "./i18n/locales/en/approvals.json";
+import enLeaseTemplates from "./i18n/locales/en/leaseTemplates.json";
+import enAccounts from "./i18n/locales/en/accounts.json";
+import enHome from "./i18n/locales/en/home.json";
+
+// Initialize i18n for tests
+i18n.use(initReactI18next).init({
+  lng: "en",
+  fallbackLng: "en",
+  debug: false,
+  interpolation: {
+    escapeValue: false,
+  },
+  resources: {
+    en: {
+      common: enCommon,
+      settings: enSettings,
+      leases: enLeases,
+      approvals: enApprovals,
+      leaseTemplates: enLeaseTemplates,
+      accounts: enAccounts,
+      home: enHome,
+    },
+  },
+});
 
 // Create a single QueryClient instance
 const queryClient = new QueryClient({

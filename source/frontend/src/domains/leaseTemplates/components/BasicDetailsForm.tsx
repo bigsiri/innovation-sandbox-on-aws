@@ -46,7 +46,7 @@ export const BasicDetailsForm = ({ leaseTemplate }: BasicDetailsFormProps) => {
         fields: [
           {
             component: componentTypes.SUB_FORM,
-            ...basicFormFields(),
+            ...basicFormFields(t),
           },
         ],
       }}

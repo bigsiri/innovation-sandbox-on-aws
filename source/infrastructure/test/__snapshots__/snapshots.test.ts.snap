@@ -10463,6 +10463,8 @@ phases:
             "AccountDriftDetected",
             "LeaseBudgetThresholdAlert",
             "LeaseDurationThresholdAlert",
+            "UserAddedToLease",
+            "UserRemovedFromLease",
           ],
         },
         "State": "ENABLED",
@@ -11284,6 +11286,12 @@ phases:
                     },
                     {
                       "Fn::GetAtt": [
+                        "UsersLambdaFunctionFunctionRoleF7A70972",
+                        "Arn",
+                      ],
+                    },
+                    {
+                      "Fn::GetAtt": [
                         "AnonymizedMetricsReportingFunctionFunctionRole3FADEEB2",
                         "Arn",
                       ],
@@ -11969,7 +11977,7 @@ phases:
       "Type": "AWS::IAM::Role",
       "UpdateReplacePolicy": "Retain",
     },
-    "IsbRestApiDeployment120FC0531029e7851b48398ae81d2e8ee6a537de": {
+    "IsbRestApiDeployment120FC053b5970b8e1e533068098bc7567693bbd0": {
       "DependsOn": [
         "IsbRestApiaccountsawsAccountIdejectPOST8D3E80E9",
         "IsbRestApiaccountsawsAccountIdeject6D451D8A",
@@ -11999,9 +12007,15 @@ phases:
         "IsbRestApileasesleaseIdreview53E1F41F",
         "IsbRestApileasesleaseIdterminatePOSTD029AED7",
         "IsbRestApileasesleaseIdterminate0B5F429B",
+        "IsbRestApileasesleaseIdusersDELETEB0C7E6A9",
+        "IsbRestApileasesleaseIdusersGETB494CDFA",
+        "IsbRestApileasesleaseIdusersPOSTD61946C7",
+        "IsbRestApileasesleaseIdusersEFC3EA0A",
         "IsbRestApileasesGET2040EBB6",
         "IsbRestApileasesPOST0BA078F5",
         "IsbRestApileases603F143D",
+        "IsbRestApileasessharedGETAE06B035",
+        "IsbRestApileasesshared697D97C0",
         "IsbRestApileaseTemplatesleaseTemplateNameDELETEC19BA76D",
         "IsbRestApileaseTemplatesleaseTemplateNameGETABE25277",
         "IsbRestApileaseTemplatesleaseTemplateNamePUTA18EDFBF",
@@ -12009,6 +12023,9 @@ phases:
         "IsbRestApileaseTemplatesGETD139D035",
         "IsbRestApileaseTemplatesPOST61718B66",
         "IsbRestApileaseTemplates87AB84C6",
+        "IsbRestApiusers9AED0A58",
+        "IsbRestApiuserssearchGETFA891FC8",
+        "IsbRestApiuserssearchAC464116",
       ],
       "Properties": {
         "Description": "Innovation Sandbox on AWS Rest API",
@@ -12040,7 +12057,7 @@ phases:
           "Format": "$context.identity.sourceIp $context.identity.caller $context.identity.user [$context.requestTime] "$context.httpMethod $context.resourcePath $context.protocol" $context.status $context.responseLength $context.requestId",
         },
         "DeploymentId": {
-          "Ref": "IsbRestApiDeployment120FC0531029e7851b48398ae81d2e8ee6a537de",
+          "Ref": "IsbRestApiDeployment120FC053b5970b8e1e533068098bc7567693bbd0",
         },
         "MethodSettings": [
           {
@@ -15304,6 +15321,662 @@ phases:
       },
       "Type": "AWS::ApiGateway::Method",
     },
+    "IsbRestApileasesleaseIdusersDELETEApiPermissionIsbComputeStackIsbRestApiAC643E2ADELETEleasesleaseIdusers27DA5C16": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "LeasesLambdaFunction6133D88B",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "IsbRestApi377E2CC6",
+              },
+              "/",
+              {
+                "Ref": "IsbRestApiDeploymentStageprod7DDD9304",
+              },
+              "/DELETE/leases/*/users",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "IsbRestApileasesleaseIdusersDELETEApiPermissionTestIsbComputeStackIsbRestApiAC643E2ADELETEleasesleaseIdusersF2D259B9": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "LeasesLambdaFunction6133D88B",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "IsbRestApi377E2CC6",
+              },
+              "/test-invoke-stage/DELETE/leases/*/users",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "IsbRestApileasesleaseIdusersDELETEB0C7E6A9": {
+      "Properties": {
+        "AuthorizationType": "CUSTOM",
+        "AuthorizerId": {
+          "Ref": "AuthorizerBD825682",
+        },
+        "HttpMethod": "DELETE",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "LeasesLambdaFunction6133D88B",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": {
+          "Ref": "IsbRestApileasesleaseIdusersEFC3EA0A",
+        },
+        "RestApiId": {
+          "Ref": "IsbRestApi377E2CC6",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "IsbRestApileasesleaseIdusersEFC3EA0A": {
+      "Properties": {
+        "ParentId": {
+          "Ref": "IsbRestApileasesleaseId9851F99B",
+        },
+        "PathPart": "users",
+        "RestApiId": {
+          "Ref": "IsbRestApi377E2CC6",
+        },
+      },
+      "Type": "AWS::ApiGateway::Resource",
+    },
+    "IsbRestApileasesleaseIdusersGETApiPermissionIsbComputeStackIsbRestApiAC643E2AGETleasesleaseIdusersA585575A": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "LeasesLambdaFunction6133D88B",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "IsbRestApi377E2CC6",
+              },
+              "/",
+              {
+                "Ref": "IsbRestApiDeploymentStageprod7DDD9304",
+              },
+              "/GET/leases/*/users",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "IsbRestApileasesleaseIdusersGETApiPermissionTestIsbComputeStackIsbRestApiAC643E2AGETleasesleaseIdusersE918EAA3": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "LeasesLambdaFunction6133D88B",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "IsbRestApi377E2CC6",
+              },
+              "/test-invoke-stage/GET/leases/*/users",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "IsbRestApileasesleaseIdusersGETB494CDFA": {
+      "Properties": {
+        "AuthorizationType": "CUSTOM",
+        "AuthorizerId": {
+          "Ref": "AuthorizerBD825682",
+        },
+        "HttpMethod": "GET",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "LeasesLambdaFunction6133D88B",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": {
+          "Ref": "IsbRestApileasesleaseIdusersEFC3EA0A",
+        },
+        "RestApiId": {
+          "Ref": "IsbRestApi377E2CC6",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "IsbRestApileasesleaseIdusersPOSTApiPermissionIsbComputeStackIsbRestApiAC643E2APOSTleasesleaseIdusersCB800DD1": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "LeasesLambdaFunction6133D88B",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "IsbRestApi377E2CC6",
+              },
+              "/",
+              {
+                "Ref": "IsbRestApiDeploymentStageprod7DDD9304",
+              },
+              "/POST/leases/*/users",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "IsbRestApileasesleaseIdusersPOSTApiPermissionTestIsbComputeStackIsbRestApiAC643E2APOSTleasesleaseIdusersA384CF90": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "LeasesLambdaFunction6133D88B",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "IsbRestApi377E2CC6",
+              },
+              "/test-invoke-stage/POST/leases/*/users",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "IsbRestApileasesleaseIdusersPOSTD61946C7": {
+      "Properties": {
+        "AuthorizationType": "CUSTOM",
+        "AuthorizerId": {
+          "Ref": "AuthorizerBD825682",
+        },
+        "HttpMethod": "POST",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "LeasesLambdaFunction6133D88B",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": {
+          "Ref": "IsbRestApileasesleaseIdusersEFC3EA0A",
+        },
+        "RestApiId": {
+          "Ref": "IsbRestApi377E2CC6",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "IsbRestApileasesshared697D97C0": {
+      "Properties": {
+        "ParentId": {
+          "Ref": "IsbRestApileases603F143D",
+        },
+        "PathPart": "shared",
+        "RestApiId": {
+          "Ref": "IsbRestApi377E2CC6",
+        },
+      },
+      "Type": "AWS::ApiGateway::Resource",
+    },
+    "IsbRestApileasessharedGETAE06B035": {
+      "Properties": {
+        "AuthorizationType": "CUSTOM",
+        "AuthorizerId": {
+          "Ref": "AuthorizerBD825682",
+        },
+        "HttpMethod": "GET",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "LeasesLambdaFunction6133D88B",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": {
+          "Ref": "IsbRestApileasesshared697D97C0",
+        },
+        "RestApiId": {
+          "Ref": "IsbRestApi377E2CC6",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "IsbRestApileasessharedGETApiPermissionIsbComputeStackIsbRestApiAC643E2AGETleasessharedDB7B57EB": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "LeasesLambdaFunction6133D88B",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "IsbRestApi377E2CC6",
+              },
+              "/",
+              {
+                "Ref": "IsbRestApiDeploymentStageprod7DDD9304",
+              },
+              "/GET/leases/shared",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "IsbRestApileasessharedGETApiPermissionTestIsbComputeStackIsbRestApiAC643E2AGETleasessharedB3AA24BE": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "LeasesLambdaFunction6133D88B",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "IsbRestApi377E2CC6",
+              },
+              "/test-invoke-stage/GET/leases/shared",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "IsbRestApiusers9AED0A58": {
+      "Properties": {
+        "ParentId": {
+          "Fn::GetAtt": [
+            "IsbRestApi377E2CC6",
+            "RootResourceId",
+          ],
+        },
+        "PathPart": "users",
+        "RestApiId": {
+          "Ref": "IsbRestApi377E2CC6",
+        },
+      },
+      "Type": "AWS::ApiGateway::Resource",
+    },
+    "IsbRestApiuserssearchAC464116": {
+      "Properties": {
+        "ParentId": {
+          "Ref": "IsbRestApiusers9AED0A58",
+        },
+        "PathPart": "search",
+        "RestApiId": {
+          "Ref": "IsbRestApi377E2CC6",
+        },
+      },
+      "Type": "AWS::ApiGateway::Resource",
+    },
+    "IsbRestApiuserssearchGETApiPermissionIsbComputeStackIsbRestApiAC643E2AGETuserssearchE2FB88BA": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "UsersLambdaFunction3496359A",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "IsbRestApi377E2CC6",
+              },
+              "/",
+              {
+                "Ref": "IsbRestApiDeploymentStageprod7DDD9304",
+              },
+              "/GET/users/search",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "IsbRestApiuserssearchGETApiPermissionTestIsbComputeStackIsbRestApiAC643E2AGETuserssearch3039BB89": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "UsersLambdaFunction3496359A",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "IsbRestApi377E2CC6",
+              },
+              "/test-invoke-stage/GET/users/search",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "IsbRestApiuserssearchGETFA891FC8": {
+      "Properties": {
+        "AuthorizationType": "CUSTOM",
+        "AuthorizerId": {
+          "Ref": "AuthorizerBD825682",
+        },
+        "HttpMethod": "GET",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "UsersLambdaFunction3496359A",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": {
+          "Ref": "IsbRestApiuserssearchAC464116",
+        },
+        "RestApiId": {
+          "Ref": "IsbRestApi377E2CC6",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
     "IsbSpokeConfigJsonParamResolverISBLambdaLayerIsbComputeStackCommonLayerVersion27C21445": {
       "Properties": {
         "CompatibleArchitectures": [
@@ -17013,6 +17686,8 @@ phases:
                 "leaseTemplateTable",
               ],
             },
+            "MAX_BULK_USER_ASSIGNMENT": "20",
+            "MAX_USERS_PER_LEASE": "20",
             "NODE_OPTIONS": "--enable-source-maps",
             "ORG_MGT_ROLE_ARN": {
               "Fn::Join": [
@@ -19402,6 +20077,369 @@ fields @timestamp, @message
       },
       "Type": "AWS::IAM::Policy",
     },
+    "UsersLambdaFunction3496359A": {
+      "DependsOn": [
+        "UsersLambdaFunctionFunctionRoleDefaultPolicy2196B904",
+        "UsersLambdaFunctionFunctionRoleF7A70972",
+      ],
+      "Metadata": {
+        "guard": {
+          "SuppressedRules": [
+            "LAMBDA_INSIDE_VPC",
+            "LAMBDA_CONCURRENCY_CHECK",
+          ],
+        },
+      },
+      "Properties": {
+        "Architectures": [
+          "arm64",
+        ],
+        "Code": "Omitted to remove snapshot dependency on hash",
+        "Description": "Lambda used as API GW method integration for users resources",
+        "Environment": {
+          "Variables": {
+            "APP_CONFIG_APPLICATION_ID": {
+              "Fn::GetAtt": [
+                "IsbSpokeConfigJsonParamResolverParseJsonConfigurationIsbCustomResource57F98B57",
+                "configApplicationId",
+              ],
+            },
+            "APP_CONFIG_ENVIRONMENT_ID": {
+              "Fn::GetAtt": [
+                "IsbSpokeConfigJsonParamResolverParseJsonConfigurationIsbCustomResource57F98B57",
+                "configEnvironmentId",
+              ],
+            },
+            "APP_CONFIG_PROFILE_ID": {
+              "Fn::GetAtt": [
+                "IsbSpokeConfigJsonParamResolverParseJsonConfigurationIsbCustomResource57F98B57",
+                "globalConfigConfigurationProfileId",
+              ],
+            },
+            "AWS_APPCONFIG_EXTENSION_HTTP_PORT": "2772",
+            "AWS_APPCONFIG_EXTENSION_POLL_INTERVAL_SECONDS": "10m",
+            "AWS_APPCONFIG_EXTENSION_PREFETCH_LIST": {
+              "Fn::Join": [
+                "",
+                [
+                  "/applications/",
+                  {
+                    "Fn::GetAtt": [
+                      "IsbSpokeConfigJsonParamResolverParseJsonConfigurationIsbCustomResource57F98B57",
+                      "configApplicationId",
+                    ],
+                  },
+                  "/environments/",
+                  {
+                    "Fn::GetAtt": [
+                      "IsbSpokeConfigJsonParamResolverParseJsonConfigurationIsbCustomResource57F98B57",
+                      "configEnvironmentId",
+                    ],
+                  },
+                  "/configurations/",
+                  {
+                    "Fn::GetAtt": [
+                      "IsbSpokeConfigJsonParamResolverParseJsonConfigurationIsbCustomResource57F98B57",
+                      "globalConfigConfigurationProfileId",
+                    ],
+                  },
+                ],
+              ],
+            },
+            "AWS_XRAY_CONTEXT_MISSING": "IGNORE_ERROR",
+            "IDC_ACCOUNT_ID": {
+              "Ref": "IdcAccountId",
+            },
+            "IDC_ROLE_ARN": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition",
+                  },
+                  ":iam::",
+                  {
+                    "Ref": "IdcAccountId",
+                  },
+                  ":role/InnovationSandbox-",
+                  {
+                    "Ref": "Namespace",
+                  },
+                  "-IdcRole",
+                ],
+              ],
+            },
+            "INTERMEDIATE_ROLE_ARN": {
+              "Fn::GetAtt": [
+                "IntermediateRole6D2F2036",
+                "Arn",
+              ],
+            },
+            "ISB_NAMESPACE": {
+              "Ref": "Namespace",
+            },
+            "NODE_OPTIONS": "--enable-source-maps",
+            "POWERTOOLS_LOG_LEVEL": {
+              "Fn::FindInMap": [
+                "Mapping",
+                "context",
+                "logLevel",
+                {
+                  "DefaultValue": "",
+                },
+              ],
+            },
+            "POWERTOOLS_SERVICE_NAME": "innovation-sandbox",
+            "USER_AGENT_EXTRA": "AwsSolution/SO0284/v1.0.4",
+          },
+        },
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              "ISB-UsersLambdaFunction-",
+              {
+                "Ref": "Namespace",
+              },
+            ],
+          ],
+        },
+        "Handler": "index.handler",
+        "Layers": [
+          {
+            "Ref": "IsbSpokeConfigJsonParamResolverISBLambdaLayerIsbComputeStackDependenciesLayerVersion5B4AA878",
+          },
+          {
+            "Ref": "IsbSpokeConfigJsonParamResolverISBLambdaLayerIsbComputeStackCommonLayerVersion27C21445",
+          },
+          {
+            "Fn::FindInMap": [
+              "AppConfigExtensionArnMap",
+              {
+                "Ref": "AWS::Region",
+              },
+              "arn",
+            ],
+          },
+        ],
+        "LoggingConfig": {
+          "LogFormat": "JSON",
+          "LogGroup": {
+            "Ref": "ISBLogGroupE607F9A7",
+          },
+          "SystemLogLevel": "INFO",
+        },
+        "MemorySize": 1024,
+        "Role": {
+          "Fn::GetAtt": [
+            "UsersLambdaFunctionFunctionRoleF7A70972",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs22.x",
+        "Tags": [
+          {
+            "Key": "aws-solutions:isb-id",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "Namespace",
+                  },
+                  "_isb",
+                ],
+              ],
+            },
+          },
+        ],
+        "Timeout": 60,
+        "TracingConfig": {
+          "Mode": "Active",
+        },
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "UsersLambdaFunctionFunctionRoleDefaultPolicy2196B904": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "ISBLogGroupE607F9A7",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": [
+                "appconfig:StartConfigurationSession",
+                "appconfig:GetLatestConfiguration",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":appconfig:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":application/",
+                    {
+                      "Fn::GetAtt": [
+                        "IsbSpokeConfigJsonParamResolverParseJsonConfigurationIsbCustomResource57F98B57",
+                        "configApplicationId",
+                      ],
+                    },
+                    "/environment/",
+                    {
+                      "Fn::GetAtt": [
+                        "IsbSpokeConfigJsonParamResolverParseJsonConfigurationIsbCustomResource57F98B57",
+                        "configEnvironmentId",
+                      ],
+                    },
+                    "/configuration/",
+                    {
+                      "Fn::GetAtt": [
+                        "IsbSpokeConfigJsonParamResolverParseJsonConfigurationIsbCustomResource57F98B57",
+                        "globalConfigConfigurationProfileId",
+                      ],
+                    },
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "IntermediateRole6D2F2036",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":iam::",
+                    {
+                      "Ref": "IdcAccountId",
+                    },
+                    ":role/InnovationSandbox-",
+                    {
+                      "Ref": "Namespace",
+                    },
+                    "-IdcRole",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "ssm:GetParameter",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ssm:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/InnovationSandbox_",
+                    {
+                      "Ref": "Namespace",
+                    },
+                    "_Idc_Configuration",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "UsersLambdaFunctionFunctionRoleDefaultPolicy2196B904",
+        "Roles": [
+          {
+            "Ref": "UsersLambdaFunctionFunctionRoleF7A70972",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "UsersLambdaFunctionFunctionRoleF7A70972": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "aws-solutions:isb-id",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "Namespace",
+                  },
+                  "_isb",
+                ],
+              ],
+            },
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
   },
   "Rules": {
     "CheckBootstrapVersion": {
@@ -19768,6 +20806,13 @@ auth:
 #   emailFrom - The email address to use in the "from" field of all email notifications
 notification:
   emailFrom: ""
+
+# Language Configuration
+#   defaultLanguage         - The default language for the application ("en" or "fr-CA")
+#   enableBrowserDetection  - Enable automatic browser language detection (true or false)
+language:
+  defaultLanguage: "fr-CA"
+  enableBrowserDetection: true
 ",
         "ContentType": "application/x-yaml",
         "Description": {

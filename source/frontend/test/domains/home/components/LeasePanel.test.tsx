@@ -132,7 +132,7 @@ describe("LeasePanel", () => {
     });
     renderComponent(leaseWithoutExpiry);
 
-    expect(screen.getByText(/a day/)).toBeInTheDocument();
+    expect(screen.getByText(/1 day/)).toBeInTheDocument();
     expect(screen.getByText("after approval")).toBeInTheDocument();
   });
 

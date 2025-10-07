@@ -25,6 +25,7 @@ vi.mock("react-router-dom", async () => {
 
 vi.mock("@amzn/innovation-sandbox-frontend/components/Toast", () => ({
   showErrorToast: vi.fn(),
+  showSuccessToast: vi.fn(),
 }));
 
 describe("NewLeaseTemplate", () => {
@@ -34,6 +35,21 @@ describe("NewLeaseTemplate", () => {
         <AddLeaseTemplate />
       </Router>,
     );
+
+  // Mock configuration API
+  server.use(
+    http.get(`${config.apiUrl}/configurations`, () => {
+      return HttpResponse.json({
+        maxLeaseDurationInHours: 168,
+        maxLeaseSpend: 1000,
+        leaseSpendThresholds: [50, 75, 90],
+        leaseDurationThresholds: [24, 72, 120],
+      });
+    }),
+    http.post(`${config.apiUrl}/lease_templates`, () => {
+      return HttpResponse.json({ id: "test-template-id" });
+    }),
+  );
 
   const fillFormAndNavigate = async (
     user: ReturnType<typeof userEvent.setup>,
@@ -75,9 +91,11 @@ describe("NewLeaseTemplate", () => {
       ).toBeInTheDocument();
     });
 
-    expect(screen.getByLabelText("Name")).toBeInTheDocument();
-    expect(screen.getByLabelText("Description")).toBeInTheDocument();
-    expect(screen.getByLabelText("Approval required")).toBeChecked();
+    await waitFor(() => {
+      expect(screen.getByLabelText("Name")).toBeInTheDocument();
+      expect(screen.getByLabelText("Description")).toBeInTheDocument();
+      expect(screen.getByLabelText("Approval required")).toBeChecked();
+    });
   });
 
   test("navigates back to lease templates page on cancel", async () => {
@@ -137,7 +155,7 @@ describe("NewLeaseTemplate", () => {
     await waitFor(() => {
       expect(showErrorToast).toHaveBeenCalledWith(
         "HTTP error 500",
-        "Whoops, something went wrong!",
+        "genericError",
       );
     });
   });

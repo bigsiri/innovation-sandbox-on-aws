@@ -153,7 +153,7 @@ describe("BasicDetailsForm", () => {
     await waitFor(() => {
       expect(showErrorToast).toHaveBeenCalledWith(
         "HTTP error 500",
-        "Whoops, something went wrong!",
+        "genericError",
       );
     });
   });

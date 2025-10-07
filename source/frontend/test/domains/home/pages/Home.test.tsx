@@ -123,11 +123,11 @@ describe("Home", () => {
     renderComponent();
 
     await waitFor(() => {
-      expect(screen.getByLabelText("Refresh")).toBeInTheDocument();
+      expect(screen.getAllByLabelText("Refresh").length).toBeGreaterThan(0);
     });
 
-    const refreshButton = screen.getByLabelText("Refresh");
-    await user.click(refreshButton);
+    const refreshButtons = screen.getAllByLabelText("Refresh");
+    await user.click(refreshButtons[0]);
 
     await waitFor(() => {
       expect(

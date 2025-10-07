@@ -39,7 +39,7 @@ describe("LeaseSettings", () => {
       expect(requireMaxBudgetLabel).toBeInTheDocument();
       expect(
         within(requireMaxBudgetLabel.closest("div")!).getByText(
-          mockConfiguration.leases.requireMaxBudget.toString(),
+          mockConfiguration.leases.requireMaxBudget ? "Yes" : "No",
         ),
       ).toBeInTheDocument();
 
@@ -58,7 +58,7 @@ describe("LeaseSettings", () => {
       expect(requireMaxDurationLabel).toBeInTheDocument();
       expect(
         within(requireMaxDurationLabel.closest("div")!).getByText(
-          mockConfiguration.leases.requireMaxDuration.toString(),
+          mockConfiguration.leases.requireMaxDuration ? "Yes" : "No",
         ),
       ).toBeInTheDocument();
 

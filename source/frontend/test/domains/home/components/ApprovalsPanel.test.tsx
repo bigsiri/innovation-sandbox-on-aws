@@ -94,7 +94,7 @@ describe("ApprovalsPanel", () => {
       expect(
         screen.getByText((content) => content.includes("pending approvals")),
       ).toBeInTheDocument();
-      expect(screen.getByText("View approvals")).toBeInTheDocument();
+      expect(screen.getByText("View all approvals")).toBeInTheDocument();
     });
   });
 
@@ -106,10 +106,10 @@ describe("ApprovalsPanel", () => {
     renderComponent();
 
     await waitFor(() => {
-      expect(screen.getByText("View approvals")).toBeInTheDocument();
+      expect(screen.getByText("View all approvals")).toBeInTheDocument();
     });
 
-    const viewApprovalsButton = screen.getByText("View approvals");
+    const viewApprovalsButton = screen.getByText("View all approvals");
     await userEvent.click(viewApprovalsButton);
 
     expect(mockNavigate).toHaveBeenCalledWith("/approvals");

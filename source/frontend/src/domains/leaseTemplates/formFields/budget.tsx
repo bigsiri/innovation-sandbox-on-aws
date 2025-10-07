@@ -1,6 +1,5 @@
 import { componentTypes, validatorTypes } from "@aws-northstar/ui";
 import { Alert, Box, FormField } from "@cloudscape-design/components";
-import { useTranslation } from "react-i18next";
 
 import { Divider } from "@amzn/innovation-sandbox-frontend/components/Divider";
 import { NumberFormField } from "@amzn/innovation-sandbox-frontend/components/NumberFormField";
@@ -11,10 +10,11 @@ import { validateNumber } from "@amzn/innovation-sandbox-frontend/helpers/valida
 interface BudgetFieldsProps {
   alwaysShowValidationErrors?: boolean;
   globalMaxBudget?: number;
+  t: any;
 }
 
 export const budgetFields = (props?: BudgetFieldsProps) => {
-  const { t } = useTranslation(['leaseTemplates']);
+  const { t } = props || {};
   
   return {
     name: "budget",

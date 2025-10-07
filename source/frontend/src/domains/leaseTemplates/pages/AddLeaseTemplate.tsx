@@ -112,13 +112,14 @@ export const AddLeaseTemplate = () => {
               stepNumberText: (stepNumber: number) => t('stepNumber', { stepNumber }),
             },
             fields: [
-              { ...basicFormFields() },
+              { ...basicFormFields(t) },
               {
-                ...budgetFields({ globalMaxBudget: config?.leases.maxBudget }),
+                ...budgetFields({ globalMaxBudget: config?.leases.maxBudget, t }),
               },
               {
                 ...durationFields({
                   globalMaxDuration: config?.leases.maxDurationHours,
+                  t,
                 }),
               },
             ],
