@@ -79,6 +79,15 @@ export const useUpdateLease = () => {
   });
 };
 
+export const useReassignLeaseOwner = () => {
+  // Don't invalidate queries for owner reassignment to avoid refetch issues
+  return useMutation({
+    mutationFn: async (request: LeasePatchRequest) =>
+      await new LeaseService().updateLease(request),
+    // No onSuccess query invalidation
+  });
+};
+
 export const useReviewLease = () => {
   const client = useQueryClient();
   return useMutation({

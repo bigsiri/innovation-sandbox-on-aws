@@ -21,6 +21,7 @@ import { generateBreadcrumb } from "@amzn/innovation-sandbox-frontend/domains/le
 import {
   useGetLeaseById,
   useUpdateLease,
+  useReassignLeaseOwner,
 } from "@amzn/innovation-sandbox-frontend/domains/leases/hooks";
 import { LeasePatchRequest } from "@amzn/innovation-sandbox-frontend/domains/leases/types";
 import {
@@ -34,7 +35,7 @@ import { useBreadcrumb } from "@amzn/innovation-sandbox-frontend/hooks/useBreadc
 import { useInit } from "@amzn/innovation-sandbox-frontend/hooks/useInit";
 
 export const UpdateLease = () => {
-  const { t, ready } = useTranslation();
+  const { t } = useTranslation();
   const { leaseId } = useParams();
   const navigate = useNavigate();
   const setBreadcrumb = useBreadcrumb();
@@ -44,7 +45,7 @@ export const UpdateLease = () => {
 
   // get leaseTemplate hook
   const query = useGetLeaseById(leaseId!);
-  const { data: lease, isLoading, isError, refetch } = query;
+  const { data: lease, isLoading, isError, refetch, error: queryError } = query;
 
   // get lease template
   const { data: leaseTemplate, isLoading: isLoadingTemplate } = useGetLeaseTemplateById(
@@ -53,6 +54,7 @@ export const UpdateLease = () => {
 
   // update leaseTemplate hook
   const { mutateAsync: updateLease, isPending: isUpdating } = useUpdateLease();
+  const { mutateAsync: reassignOwner, isPending: isReassigning } = useReassignLeaseOwner();
 
   // get global settings
   const {
@@ -60,7 +62,7 @@ export const UpdateLease = () => {
     isLoading: isLoadingConfig,
     isError: isConfigError,
     refetch: refetchConfig,
-    error,
+    error: configError,
   } = useGetConfigurations();
 
   // Get current user
@@ -98,8 +100,15 @@ export const UpdateLease = () => {
     setBreadcrumb(breadcrumb);
   }, [query.isLoading, t]);
 
-  if (isLoading || isLoadingConfig || isLoadingTemplate || !user) {
-    return <Loader />;
+  if (isLoading || isLoadingConfig || isLoadingTemplate || !user || isReassigning) {
+    const loadingLabel = isReassigning ? t('breadcrumbs.loading', { ns: 'common', defaultValue: 'Loading...' }) : undefined;
+    console.log('🔄 Loading state:', { 
+      isReassigning, 
+      loadingLabel, 
+      hasLabel: !!loadingLabel,
+      translationResult: t('breadcrumbs.loading', { ns: 'common' })
+    });
+    return <Loader label={loadingLabel} />;
   }
 
   if (isError || !lease) {
@@ -107,7 +116,7 @@ export const UpdateLease = () => {
       <ErrorPanel
         description={t("errorLoadingLease", { ns: "leases" })}
         retry={refetch}
-        error={error as Error}
+        error={queryError || new Error("Unknown error")}
       />
     );
   }
@@ -127,7 +136,7 @@ export const UpdateLease = () => {
       <ErrorPanel
         description={t("errorLoadingConfig", { ns: "common" })}
         retry={refetchConfig}
-        error={error as Error}
+        error={configError || new Error("Unknown config error")}
       />
     );
   }
@@ -177,28 +186,29 @@ export const UpdateLease = () => {
       userEmail: newOwnerEmail,
     };
 
-    await updateLease(leasePatchRequest);
-    
-    // Debug and show toast with fallback
-    const translatedMessage = t("leaseUpdatedSuccess", { ns: "leases" });
-    console.log("Translation result:", translatedMessage);
-    console.log("Ready state:", ready);
-    
-    // Use hardcoded message if translation fails
-    const message = translatedMessage === "leaseUpdatedSuccess" 
-      ? "Bail mis à jour avec succès." 
-      : translatedMessage;
-    
-    showSuccessToast(message);
-    
-    // Create new composite key with updated userEmail
-    const newCompositeKey = btoa(JSON.stringify({
-      userEmail: newOwnerEmail,
-      uuid: lease.uuid
-    }));
-    
-    // Navigate to the new URL with updated composite key
-    navigate(`/leases/edit/${newCompositeKey}`);
+    try {
+      // Make the API call first
+      await reassignOwner(leasePatchRequest);
+      
+      // Create new composite key with updated userEmail AFTER API success
+      const newCompositeKey = btoa(JSON.stringify({
+        userEmail: newOwnerEmail,
+        uuid: lease.uuid
+      }));
+      
+      // Navigate after API call succeeds
+      navigate(`/leases/edit/${newCompositeKey}`, { replace: true });
+      
+      // Show success toast
+      const translatedMessage = t("leaseUpdatedSuccess", { ns: "leases" });
+      const message = translatedMessage === "leaseUpdatedSuccess" 
+        ? "Bail mis à jour avec succès." 
+        : translatedMessage;
+      
+      showSuccessToast(message);
+    } catch (error) {
+      throw error;
+    }
   };
 
   // Check if user can manage users

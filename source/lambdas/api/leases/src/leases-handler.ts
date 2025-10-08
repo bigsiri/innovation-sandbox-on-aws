@@ -544,6 +544,50 @@ async function patchLeaseByIdHandler(
     
     // If userEmail is being changed, use transaction for atomic update
     if (leaseUpdates.userEmail && leaseUpdates.userEmail !== existingLease.userEmail) {
+      const idcService = IsbServices.idcService(
+        context.env,
+        fromTemporaryIsbIdcCredentials(context.env),
+      );
+      
+      // Remove AWS account access from previous owner
+      const revocationResults = await idcService.removeUserFromAccount(
+        existingLease.awsAccountId,
+        [existingLease.userEmail],
+      );
+      
+      const revocationResult = revocationResults[0];
+      if (!revocationResult?.success) {
+        logger.warn(
+          `Failed to revoke AWS account access from previous owner: ${revocationResult?.message || 'Unknown error'}`,
+          {
+            previousOwner: existingLease.userEmail,
+            newOwner: leaseUpdates.userEmail,
+            awsAccountId: existingLease.awsAccountId,
+          }
+        );
+        // Continue with reassignment even if revocation fails
+      }
+      
+      // Grant AWS account access to the new owner
+      const assignmentResults = await idcService.assignUserToAccount(
+        existingLease.awsAccountId,
+        [leaseUpdates.userEmail],
+      );
+      
+      const assignmentResult = assignmentResults[0];
+      if (!assignmentResult?.success) {
+        throw createHttpJSendError({
+          statusCode: 400,
+          data: {
+            errors: [
+              {
+                message: `Failed to grant AWS account access to new owner: ${assignmentResult?.message || 'Unknown error'}`,
+              },
+            ],
+          },
+        });
+      }
+      
       // Use transaction to atomically delete old and create new
       await leaseStore.delete(leaseCompositeKey);
       putResult = await leaseStore.create(updatedLease);
