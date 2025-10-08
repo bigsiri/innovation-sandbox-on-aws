@@ -17,6 +17,7 @@ import {
 import { z } from "zod";
 
 import { base64EncodeCompositeKey } from "@amzn/innovation-sandbox-commons/data/encoding.js";
+import { IsbServices } from "@amzn/innovation-sandbox-commons/isb-services/index.js";
 import {
   GlobalConfig,
   GlobalConfigSchema,
@@ -1618,6 +1619,20 @@ describe("Leases Handler", async () => {
         .spyOn(DynamoLeaseStore.prototype, "create")
         .mockReturnValue(Promise.resolve(updatedLease));
 
+      // Mock idcService for permission management
+      const mockIdcService = {
+        removeUserFromAccount: vi.fn().mockResolvedValue([
+          { userEmail: oldLease.userEmail, success: true, message: "Access revoked" }
+        ]),
+        assignUserToAccount: vi.fn().mockResolvedValue([
+          { userEmail: updatedLease.userEmail, success: true, message: "Access granted" }
+        ])
+      };
+      
+      const spyIdcService = vi
+        .spyOn(IsbServices, "idcService")
+        .mockReturnValue(mockIdcService as any);
+
       // Use admin context
       expect(await handler(event, mockAuthorizedContext(testEnv))).toEqual({
         statusCode: 200,
@@ -1627,6 +1642,14 @@ describe("Leases Handler", async () => {
         headers: responseHeaders,
       });
       expect(spyGet).toHaveBeenCalledOnce();
+      expect(mockIdcService.removeUserFromAccount).toHaveBeenCalledWith(
+        oldLease.awsAccountId,
+        [oldLease.userEmail]
+      );
+      expect(mockIdcService.assignUserToAccount).toHaveBeenCalledWith(
+        oldLease.awsAccountId,
+        [updatedLease.userEmail]
+      );
       expect(spyDelete).toHaveBeenCalledOnce();
       expect(spyCreate).toHaveBeenCalledOnce();
     });
