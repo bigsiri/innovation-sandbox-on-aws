@@ -10465,6 +10465,7 @@ phases:
             "LeaseDurationThresholdAlert",
             "UserAddedToLease",
             "UserRemovedFromLease",
+            "LeaseOwnerReassigned",
           ],
         },
         "State": "ENABLED",

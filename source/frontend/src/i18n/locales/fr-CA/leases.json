@@ -141,7 +141,9 @@
   "messages": {
     "leasesTerminatedSuccessfully": "Le(s) bail(x) ont été terminé(s) avec succès.",
     "leasesFrozenSuccessfully": "Le(s) bail(x) ont été gelé(s) avec succès.",
-    "actionFailed": "L'action a échoué. Veuillez réessayer."
+    "actionFailed": "L'action a échoué. Veuillez réessayer.",
+    "leaseOwnerReassigned": "La propriété de votre bail a été transférée",
+    "leaseOwnerReassignedBody": "La propriété du bail {{leaseName}} vous a été transférée vers {{newOwnerEmail}} par {{reassignedBy}}."
   },
   "summary": {
     "title": "Résumé du bail",

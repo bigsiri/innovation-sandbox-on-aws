@@ -39,6 +39,7 @@ import {
   MaxNumberOfLeasesExceededError,
   NoAccountsAvailableError,
 } from "@amzn/innovation-sandbox-commons/innovation-sandbox.js";
+import { LeaseOwnerReassignedEvent } from "@amzn/innovation-sandbox-commons/events/lease-owner-reassigned-event.js";
 import { IsbServices } from "@amzn/innovation-sandbox-commons/isb-services/index.js";
 import {
   LeaseLambdaEnvironment,
@@ -600,6 +601,31 @@ async function patchLeaseByIdHandler(
       `Updated Lease ${existingLease.uuid}`,
       summarizeUpdate(putResult),
     );
+
+    // Send notification for owner reassignment
+    if (leaseUpdates.userEmail && leaseUpdates.userEmail !== existingLease.userEmail) {
+      const isbEventBridgeClient = IsbServices.isbEventBridge(context.env);
+      
+      await logger.info(
+        `Lease owner reassigned from ${existingLease.userEmail} to ${leaseUpdates.userEmail} by ${context.user.email}`,
+        {
+          leaseId: existingLease.uuid,
+          previousOwnerEmail: existingLease.userEmail,
+          newOwnerEmail: leaseUpdates.userEmail,
+          reassignedBy: context.user.email,
+        }
+      );
+
+      await isbEventBridgeClient.sendIsbEvent(
+        tracer,
+        new LeaseOwnerReassignedEvent({
+          leaseId: existingLease.uuid,
+          previousOwner: existingLease.userEmail,
+          newOwner: leaseUpdates.userEmail,
+          reassignedBy: context.user.email,
+        }),
+      );
+    }
 
     return {
       statusCode: 200,

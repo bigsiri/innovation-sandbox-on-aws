@@ -8,6 +8,7 @@ import { LeaseBudgetThresholdBreachedAlert } from "@amzn/innovation-sandbox-comm
 import { LeaseDeniedEvent } from "@amzn/innovation-sandbox-commons/events/lease-denied-event.js";
 import { LeaseDurationThresholdBreachedAlert } from "@amzn/innovation-sandbox-commons/events/lease-duration-threshold-breached-alert.js";
 import { LeaseFrozenEvent } from "@amzn/innovation-sandbox-commons/events/lease-frozen-event.js";
+import { LeaseOwnerReassignedEvent } from "@amzn/innovation-sandbox-commons/events/lease-owner-reassigned-event.js";
 import { LeaseRequestedEvent } from "@amzn/innovation-sandbox-commons/events/lease-requested-event.js";
 import { LeaseTerminatedEvent } from "@amzn/innovation-sandbox-commons/events/lease-terminated-event.js";
 import { UserAddedToLeaseEvent } from "@amzn/innovation-sandbox-commons/events/user-added-to-lease-event.js";
@@ -205,6 +206,9 @@ export class EmailService {
         break;
       case "UserRemovedFromLease":
         await this.sendUserRemovedEmails(UserRemovedFromLeaseEvent.parse(isbAlert));
+        break;
+      case "LeaseOwnerReassigned":
+        await this.sendLeaseOwnerReassignedEmails(LeaseOwnerReassignedEvent.parse(isbAlert));
         break;
       default:
         assertNever(emailEventName);
@@ -522,5 +526,28 @@ export class EmailService {
         }),
       );
     }
+  }
+
+  private async sendLeaseOwnerReassignedEmails(parsedEvent: LeaseOwnerReassignedEvent) {
+    const context = { 
+      webAppUrl: this.webAppUrl,
+      language: this.getNotificationLanguage(),
+    };
+
+    // Notify the previous owner
+    await this.sendEmail(
+      EmailTemplates.LeaseOwnerReassigned(parsedEvent, {
+        ...context,
+        destination: { to: [parsedEvent.Detail.previousOwner] },
+      }),
+    );
+
+    // Notify the new owner
+    await this.sendEmail(
+      EmailTemplates.LeaseOwnerReassignedNewOwner(parsedEvent, {
+        ...context,
+        destination: { to: [parsedEvent.Detail.newOwner] },
+      }),
+    );
   }
 }

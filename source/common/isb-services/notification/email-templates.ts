@@ -8,6 +8,7 @@ import { LeaseBudgetThresholdBreachedAlert } from "@amzn/innovation-sandbox-comm
 import { LeaseDeniedEvent } from "@amzn/innovation-sandbox-commons/events/lease-denied-event.js";
 import { LeaseDurationThresholdBreachedAlert } from "@amzn/innovation-sandbox-commons/events/lease-duration-threshold-breached-alert.js";
 import { LeaseFrozenEvent } from "@amzn/innovation-sandbox-commons/events/lease-frozen-event.js";
+import { LeaseOwnerReassignedEvent } from "@amzn/innovation-sandbox-commons/events/lease-owner-reassigned-event.js";
 import { LeaseRequestedEvent } from "@amzn/innovation-sandbox-commons/events/lease-requested-event.js";
 import { LeaseTerminatedEvent } from "@amzn/innovation-sandbox-commons/events/lease-terminated-event.js";
 import { UserAddedToLeaseEvent } from "@amzn/innovation-sandbox-commons/events/user-added-to-lease-event.js";
@@ -1188,6 +1189,92 @@ Utilisateur retiré du bail que vous avez approuvé
 
 ${event.Detail.removedUserEmail} a été retiré du bail ${event.Detail.leaseId} (appartenant à ${event.Detail.leaseOwner}) par ${event.Detail.removedBy}.
 Il s'agit d'un bail que vous avez précédemment approuvé. Voir le bail à : ${context.webAppUrl}/leases/${event.Detail.leaseOwner}/${event.Detail.leaseId}
+      `
+      }
+    };
+
+    return {
+      to: context.destination.to!,
+      ...templates[language],
+    };
+  }
+
+  export function LeaseOwnerReassigned(
+    event: LeaseOwnerReassignedEvent,
+    context: EmailTemplatesContext,
+  ): SynthesizedEmail {
+    const language = context.language || 'en';
+    
+    const templates = {
+      en: {
+        subject: "Innovation Sandbox: Your lease ownership has been transferred",
+        htmlBody: `
+        <h1>Your lease ownership has been transferred</h1>
+        <p>The ownership of lease <strong>${event.Detail.leaseId}</strong> has been transferred from you to <strong>${event.Detail.newOwner}</strong> by ${event.Detail.reassignedBy}.</p>
+        <p>You no longer have access to this AWS account. If you have any questions, please contact your administrator.</p>
+      `,
+        textBody: `
+Your lease ownership has been transferred
+
+The ownership of lease ${event.Detail.leaseId} has been transferred from you to ${event.Detail.newOwner} by ${event.Detail.reassignedBy}.
+You no longer have access to this AWS account. If you have any questions, please contact your administrator.
+      `
+      },
+      'fr-CA': {
+        subject: "Innovation Sandbox : La propriété de votre bail a été transférée",
+        htmlBody: `
+        <h1>La propriété de votre bail a été transférée</h1>
+        <p>La propriété du bail <strong>${event.Detail.leaseId}</strong> vous a été transférée vers <strong>${event.Detail.newOwner}</strong> par ${event.Detail.reassignedBy}.</p>
+        <p>Vous n'avez plus accès à ce compte AWS. Si vous avez des questions, veuillez contacter votre administrateur.</p>
+      `,
+        textBody: `
+La propriété de votre bail a été transférée
+
+La propriété du bail ${event.Detail.leaseId} vous a été transférée vers ${event.Detail.newOwner} par ${event.Detail.reassignedBy}.
+Vous n'avez plus accès à ce compte AWS. Si vous avez des questions, veuillez contacter votre administrateur.
+      `
+      }
+    };
+
+    return {
+      to: context.destination.to!,
+      ...templates[language],
+    };
+  }
+
+  export function LeaseOwnerReassignedNewOwner(
+    event: LeaseOwnerReassignedEvent,
+    context: EmailTemplatesContext,
+  ): SynthesizedEmail {
+    const language = context.language || 'en';
+    
+    const templates = {
+      en: {
+        subject: "Innovation Sandbox: You are now the owner of a lease",
+        htmlBody: `
+        <h1>You are now the owner of a lease</h1>
+        <p>The ownership of lease <strong>${event.Detail.leaseId}</strong> has been transferred to you from <strong>${event.Detail.previousOwner}</strong> by ${event.Detail.reassignedBy}.</p>
+        <p>You now have full access to this AWS account and can manage its users and settings. View the lease at: <a href="${context.webAppUrl}/leases/${event.Detail.newOwner}/${event.Detail.leaseId}">${context.webAppUrl}/leases</a></p>
+      `,
+        textBody: `
+You are now the owner of a lease
+
+The ownership of lease ${event.Detail.leaseId} has been transferred to you from ${event.Detail.previousOwner} by ${event.Detail.reassignedBy}.
+You now have full access to this AWS account and can manage its users and settings. View the lease at: ${context.webAppUrl}/leases/${event.Detail.newOwner}/${event.Detail.leaseId}
+      `
+      },
+      'fr-CA': {
+        subject: "Innovation Sandbox : Vous êtes maintenant propriétaire d'un bail",
+        htmlBody: `
+        <h1>Vous êtes maintenant propriétaire d'un bail</h1>
+        <p>La propriété du bail <strong>${event.Detail.leaseId}</strong> vous a été transférée de <strong>${event.Detail.previousOwner}</strong> par ${event.Detail.reassignedBy}.</p>
+        <p>Vous avez maintenant un accès complet à ce compte AWS et pouvez gérer ses utilisateurs et paramètres. Voir le bail à : <a href="${context.webAppUrl}/leases/${event.Detail.newOwner}/${event.Detail.leaseId}">${context.webAppUrl}/leases</a></p>
+      `,
+        textBody: `
+Vous êtes maintenant propriétaire d'un bail
+
+La propriété du bail ${event.Detail.leaseId} vous a été transférée de ${event.Detail.previousOwner} par ${event.Detail.reassignedBy}.
+Vous avez maintenant un accès complet à ce compte AWS et pouvez gérer ses utilisateurs et paramètres. Voir le bail à : ${context.webAppUrl}/leases/${event.Detail.newOwner}/${event.Detail.leaseId}
       `
       }
     };

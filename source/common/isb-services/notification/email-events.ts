@@ -15,6 +15,7 @@ export const SubscribedEmailEvents = [
   EventDetailTypes.LeaseDurationThresholdBreachedAlert,
   EventDetailTypes.UserAddedToLease,
   EventDetailTypes.UserRemovedFromLease,
+  EventDetailTypes.LeaseOwnerReassigned,
 ];
 
 export type EmailEventName = (typeof SubscribedEmailEvents)[number];

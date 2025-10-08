@@ -141,7 +141,9 @@
   "messages": {
     "leasesTerminatedSuccessfully": "Lease(s) were terminated successfully.",
     "leasesFrozenSuccessfully": "Lease(s) were frozen successfully.",
-    "actionFailed": "Action failed. Please try again."
+    "actionFailed": "Action failed. Please try again.",
+    "leaseOwnerReassigned": "Your lease ownership has been transferred",
+    "leaseOwnerReassignedBody": "The ownership of lease {{leaseName}} has been transferred from you to {{newOwnerEmail}} by {{reassignedBy}}."
   },
   "summary": {
     "title": "Lease Summary",
