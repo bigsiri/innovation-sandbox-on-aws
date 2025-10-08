@@ -1,4 +1,5 @@
 {
+  "leaseRequestsToReview": "{{count}} demande(s) de bail à réviser",
   "page": {
     "title": "Baux",
     "home": "Accueil",
@@ -116,7 +117,8 @@
     "actions": "Actions",
     "terminate": "Terminer",
     "freeze": "Geler",
-    "update": "Mettre à jour"
+    "update": "Mettre à jour",
+    "reassignOwner": "Changer de propriétaire"
   },
   "actionReasons": {
     "onlyActiveOrFrozenCanTerminate": "Seuls les baux actifs ou gelés peuvent être terminés.",
@@ -127,7 +129,14 @@
     "terminateTitle": "Terminer les baux",
     "freezeTitle": "Geler les baux",
     "terminateDescription": "bail(x) à terminer",
-    "freezeDescription": "bail(x) à geler"
+    "freezeDescription": "bail(x) à geler",
+    "reassignOwner": {
+      "title": "Changer de propriétaire du bail",
+      "currentOwner": "Propriétaire actuel :",
+      "newOwner": "Nouveau propriétaire",
+      "searchPlaceholder": "Rechercher un nouveau propriétaire...",
+      "selected": "Sélectionné :"
+    }
   },
   "messages": {
     "leasesTerminatedSuccessfully": "Le(s) bail(x) ont été terminé(s) avec succès.",

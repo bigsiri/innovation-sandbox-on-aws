@@ -40,13 +40,13 @@ const StatusCell = <T extends Record<string, any>>({
 }: {
   item: ItemWithRequest<T>;
 }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['common']);
   
   switch (item.request?.status) {
     case "loading":
-      return <StatusIndicator type="loading">{t("loading", { ns: "common" })}</StatusIndicator>;
+      return <StatusIndicator type="loading">{t("loading")}</StatusIndicator>;
     case "success":
-      return <StatusIndicator type="success">{t("success", { ns: "common" })}</StatusIndicator>;
+      return <StatusIndicator type="success">{t("success")}</StatusIndicator>;
     case "error":
       return (
         <StatusIndicator type="error">
@@ -55,7 +55,7 @@ const StatusCell = <T extends Record<string, any>>({
             dismissButton={false}
             position="top"
           >
-            Failed
+            {t("failed")}
           </Popover>
         </StatusIndicator>
       );
@@ -75,10 +75,11 @@ export const BatchActionReview = <T extends Record<string, any>>({
   onError,
 }: BatchActionReviewProps<T>) => {
   const { hideModal } = useModal();
+  const { t } = useTranslation(['common']);
   const [requests, setRequests] = useState<Record<string, RequestStatus>>({});
   const [submissionIsLoading, setSubmissionIsLoading] =
     useState<boolean>(false);
-  const [submitButtonText, setSubmitButtonText] = useState<string>("Submit");
+  const [submitButtonText, setSubmitButtonText] = useState<string>(t("submit"));
 
   const itemsWithRequests = items.map(
     (item): ItemWithRequest<T> => ({
@@ -125,7 +126,7 @@ export const BatchActionReview = <T extends Record<string, any>>({
       onSuccess();
     } catch (error) {
       setSubmissionIsLoading(false);
-      setSubmitButtonText("Retry");
+      setSubmitButtonText(t("retry"));
       onError(error);
     }
   };
@@ -151,7 +152,7 @@ export const BatchActionReview = <T extends Record<string, any>>({
           columnDefinitions={[
             ...columnDefinitions,
             {
-              header: "Status",
+              header: t("status"),
               id: "Status",
               minWidth: 120,
               cell: (item: ItemWithRequest<T>) => <StatusCell item={item} />, // NOSONAR typescript:S6478 - the way the table component works requires defining component during render
@@ -161,7 +162,7 @@ export const BatchActionReview = <T extends Record<string, any>>({
         {footer && <Box>{footer}</Box>}
         <Box float="right">
           <Button variant="link" onClick={hideModal}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button
             variant="primary"

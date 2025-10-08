@@ -1,4 +1,5 @@
 {
+  "leaseRequestsToReview": "{{count}} lease request(s) to review",
   "page": {
     "title": "Leases",
     "home": "Home",
@@ -116,7 +117,8 @@
     "actions": "Actions",
     "terminate": "Terminate",
     "freeze": "Freeze",
-    "update": "Update"
+    "update": "Update",
+    "reassignOwner": "Reassign Owner"
   },
   "actionReasons": {
     "onlyActiveOrFrozenCanTerminate": "Only active or frozen leases can be terminated.",
@@ -127,7 +129,14 @@
     "terminateTitle": "Terminate Leases",
     "freezeTitle": "Freeze Leases", 
     "terminateDescription": "lease(s) to terminate",
-    "freezeDescription": "lease(s) to freeze"
+    "freezeDescription": "lease(s) to freeze",
+    "reassignOwner": {
+      "title": "Reassign Lease Owner",
+      "currentOwner": "Current Owner:",
+      "newOwner": "New Owner",
+      "searchPlaceholder": "Search for new owner...",
+      "selected": "Selected:"
+    }
   },
   "messages": {
     "leasesTerminatedSuccessfully": "Lease(s) were terminated successfully.",

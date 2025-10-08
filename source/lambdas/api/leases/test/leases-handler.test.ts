@@ -1148,7 +1148,6 @@ describe("Leases Handler", async () => {
     it("should return 400 when the body contains fields that cannot be patched", async () => {
       const requestJsonBody = {
         expirationDate: new Date().toISOString(),
-        userEmail: "new.user@example.com", // cannot update this field
         leaseTerms: {
           budgetThresholds: [
             {
@@ -1177,7 +1176,7 @@ describe("Leases Handler", async () => {
         statusCode: 400,
         body: createFailureResponseBody({
           field: "input",
-          message: "Unrecognized key(s) in object: 'userEmail', 'leaseTerms'",
+          message: "Unrecognized key(s) in object: 'leaseTerms'",
         }),
         headers: responseHeaders,
       });
@@ -1486,6 +1485,150 @@ describe("Leases Handler", async () => {
       expect(spyPut).toHaveBeenCalledWith({
         ...updatedLease,
       });
+    });
+
+    it("should return 403 when non-admin user tries to reassign lease owner", async () => {
+      const leaseCompositeKey = {
+        userEmail: isbAuthorizedUserUserRoleOnly.user.email, // Make sure the lease belongs to the user
+        uuid: "12345678-1234-1234-1234-123456789012",
+      };
+      const leaseId = base64EncodeCompositeKey(leaseCompositeKey);
+      const oldLease = {
+        ...leaseCompositeKey,
+        status: "Active" as const,
+        originalLeaseTemplateUuid: "template-uuid",
+        originalLeaseTemplateName: "Test Template",
+        leaseDurationInHours: 24,
+        maxSpend: 10, // Within global limit
+        budgetThresholds: [],
+        durationThresholds: [],
+        awsAccountId: "123456789012",
+        approvedBy: "AUTO_APPROVED" as const,
+        startDate: new Date().toISOString(),
+        lastCheckedDate: new Date().toISOString(),
+        totalCostAccrued: 0,
+        meta: {
+          createdTime: new Date().toISOString(),
+          lastEditTime: new Date().toISOString(),
+          schemaVersion: 1,
+        },
+      };
+
+      const requestJsonBody = {
+        userEmail: "new.owner@example.com",
+      };
+
+      const event = createAPIGatewayProxyEvent({
+        httpMethod: "PATCH",
+        path: `/leases/${leaseId}`,
+        body: JSON.stringify(requestJsonBody),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${isbAuthorizedUserUserRoleOnly.token}`,
+        },
+      });
+
+      const spyGet = vi
+        .spyOn(DynamoLeaseStore.prototype, "get")
+        .mockReturnValue(
+          Promise.resolve({
+            result: oldLease,
+          }),
+        );
+
+      expect(await handler(event, mockAuthorizedContext(testEnv))).toEqual({
+        statusCode: 403,
+        body: createFailureResponseBody({
+          message: "Only administrators can reassign lease ownership.",
+        }),
+        headers: responseHeaders,
+      });
+      expect(spyGet).toHaveBeenCalledOnce();
+    });
+
+    it("should return 200 when admin reassigns lease owner", async () => {
+      const leaseCompositeKey = {
+        userEmail: "original.owner@example.com",
+        uuid: "12345678-1234-1234-1234-123456789012",
+      };
+      const leaseId = base64EncodeCompositeKey(leaseCompositeKey);
+      const oldLease = {
+        ...leaseCompositeKey,
+        status: "Active" as const,
+        originalLeaseTemplateUuid: "template-uuid",
+        originalLeaseTemplateName: "Test Template",
+        leaseDurationInHours: 24,
+        maxSpend: 10, // Within global limit
+        budgetThresholds: [],
+        durationThresholds: [],
+        awsAccountId: "123456789012",
+        approvedBy: "AUTO_APPROVED" as const,
+        startDate: new Date().toISOString(),
+        lastCheckedDate: new Date().toISOString(),
+        totalCostAccrued: 0,
+        meta: {
+          createdTime: new Date().toISOString(),
+          lastEditTime: new Date().toISOString(),
+          schemaVersion: 1,
+        },
+      };
+
+      const requestJsonBody = {
+        userEmail: "new.owner@example.com",
+      };
+
+      const updatedLease = {
+        ...oldLease,
+        userEmail: "new.owner@example.com",
+      };
+
+      const event = createAPIGatewayProxyEvent({
+        httpMethod: "PATCH",
+        path: `/leases/${leaseId}`,
+        body: JSON.stringify(requestJsonBody),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${isbAuthorizedUser.token}`,
+        },
+      });
+
+      const spyGet = vi
+        .spyOn(DynamoLeaseStore.prototype, "get")
+        .mockReturnValue(
+          Promise.resolve({
+            result: oldLease,
+          }),
+        );
+
+      const spyPut = vi
+        .spyOn(DynamoLeaseStore.prototype, "update")
+        .mockReturnValue(
+          Promise.resolve({
+            newItem: updatedLease,
+            oldItem: oldLease,
+          }),
+        );
+
+      // Mock delete and create for composite key changes
+      const spyDelete = vi
+        .spyOn(DynamoLeaseStore.prototype, "delete")
+        .mockReturnValue(Promise.resolve());
+      
+      const spyCreate = vi
+        .spyOn(DynamoLeaseStore.prototype, "create")
+        .mockReturnValue(Promise.resolve(updatedLease));
+
+      // Use admin context
+      expect(await handler(event, mockAuthorizedContext(testEnv))).toEqual({
+        statusCode: 200,
+        body: JSON.stringify({
+          status: "success",
+        }),
+        headers: responseHeaders,
+      });
+      expect(spyGet).toHaveBeenCalledOnce();
+      expect(spyDelete).toHaveBeenCalledOnce();
+      expect(spyCreate).toHaveBeenCalledOnce();
     });
   });
 

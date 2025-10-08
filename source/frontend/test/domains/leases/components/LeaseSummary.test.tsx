@@ -39,7 +39,7 @@ describe("LeaseSummary", () => {
     expect(
       screen.getByText(activeLease.originalLeaseTemplateName),
     ).toBeInTheDocument();
-    expect(screen.getByText(activeLease.userEmail)).toBeInTheDocument();
+    expect(screen.getAllByText(activeLease.userEmail)).toHaveLength(2); // Appears in main view and modal
     expect(screen.getByText("approver@example.com")).toBeInTheDocument();
     expect(screen.getByText("Active")).toBeInTheDocument();
   });
@@ -95,7 +95,7 @@ describe("LeaseSummary", () => {
     expect(
       screen.getByText(pendingLease.originalLeaseTemplateName),
     ).toBeInTheDocument();
-    expect(screen.getByText(pendingLease.userEmail)).toBeInTheDocument();
+    expect(screen.getAllByText(pendingLease.userEmail)).toHaveLength(2); // Appears in main view and modal
     expect(screen.getByText("Pending Approval")).toBeInTheDocument();
     expect(screen.getByText("Please approve this lease")).toBeInTheDocument();
   });

@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-import { screen, waitFor, within } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
 import { beforeEach, describe, expect, test, vi } from "vitest";
@@ -95,16 +95,11 @@ describe("ApprovalDetails", () => {
     const approveButton = screen.getByRole("button", { name: "Approve" });
     await userEvent.click(approveButton);
 
-    const modal = screen.getByRole("dialog");
     await waitFor(() => {
-      expect(modal).toBeInTheDocument();
+      expect(
+        screen.getByText("Are you sure you want to approve the request?"),
+      ).toBeInTheDocument();
     });
-
-    const modalContent = within(modal);
-
-    expect(
-      modalContent.getByText("Are you sure you want to approve the request?"),
-    ).toBeInTheDocument();
   });
 
   test("handles Deny action correctly", async () => {
@@ -117,16 +112,11 @@ describe("ApprovalDetails", () => {
     const denyButton = screen.getByRole("button", { name: "Deny" });
     await userEvent.click(denyButton);
 
-    const modal = screen.getByRole("dialog");
     await waitFor(() => {
-      expect(modal).toBeInTheDocument();
+      expect(
+        screen.getByText("Are you sure you want to deny the request?"),
+      ).toBeInTheDocument();
     });
-
-    const modalContent = within(modal);
-
-    expect(
-      modalContent.getByText("Are you sure you want to deny the request?"),
-    ).toBeInTheDocument();
   });
 
   test("handles error when fetching lease details", async () => {

@@ -463,22 +463,44 @@ export namespace EmailTemplates {
       event: LeaseTerminatedEvent<"Expired">,
       context: EmailTemplatesContext,
     ): SynthesizedEmail {
-      return {
-        bcc: context.destination.bcc!,
-        subject:
-          "[Informational] Innovation Sandbox: Account Clean-up Action based on Lease Duration",
-        htmlBody: `
+      const language = context.language || 'en';
+      
+      const templates = {
+        en: {
+          subject: "[Informational] Innovation Sandbox: Account Clean-up Action based on Lease Duration",
+          htmlBody: `
       <p> The resource clean-up process has been initiated for account id: ${event.Detail.accountId} under lease id: ${event.Detail.leaseId.uuid}
       since it has reached the maximum lease duration ${event.Detail.reason.leaseDurationInHours} hour(s). Upon successful clean-up,
-      the account will be moved to ‘Available' OU. You will be notified if any manual intervention is required
+      the account will be moved to 'Available' OU. You will be notified if any manual intervention is required
       to complete the resource clean-up process. </p>
     `,
-        textBody: `
+          textBody: `
     The resource clean-up process has been initiated for account id: ${event.Detail.accountId} under lease id: ${event.Detail.leaseId.uuid}
     since it has reached the maximum lease duration ${event.Detail.reason.leaseDurationInHours} hour(s). Upon successful clean-up,
-    the account will be moved to ‘Available' OU. You will be notified if any manual intervention is required
+    the account will be moved to 'Available' OU. You will be notified if any manual intervention is required
     to complete the resource clean-up process.
+    `
+        },
+        'fr-CA': {
+          subject: "[Informatif] Innovation Sandbox : Action de nettoyage de compte basée sur la durée du bail",
+          htmlBody: `
+      <p>Le processus de nettoyage des ressources a été initié pour le compte ${event.Detail.accountId} sous le bail ${event.Detail.leaseId.uuid}
+      car il a atteint la durée maximale du bail de ${event.Detail.reason.leaseDurationInHours} heure(s). Après un nettoyage réussi,
+      le compte sera déplacé vers l'OU 'Disponible'. Vous serez notifié si une intervention manuelle est requise
+      pour compléter le processus de nettoyage des ressources.</p>
     `,
+          textBody: `
+    Le processus de nettoyage des ressources a été initié pour le compte ${event.Detail.accountId} sous le bail ${event.Detail.leaseId.uuid}
+    car il a atteint la durée maximale du bail de ${event.Detail.reason.leaseDurationInHours} heure(s). Après un nettoyage réussi,
+    le compte sera déplacé vers l'OU 'Disponible'. Vous serez notifié si une intervention manuelle est requise
+    pour compléter le processus de nettoyage des ressources.
+    `
+        }
+      };
+
+      return {
+        bcc: context.destination.bcc!,
+        ...templates[language],
       };
     }
 
@@ -656,11 +678,12 @@ export namespace EmailTemplates {
       event: LeaseFrozenEvent<"BudgetExceeded">,
       context: EmailTemplatesContext,
     ): SynthesizedEmail {
-      return {
-        bcc: context.destination.bcc!,
-        subject:
-          "[Action Needed] Innovation Sandbox: Account Freeze Action based on Allowed Budget",
-        htmlBody: `
+      const language = context.language || 'en';
+      
+      const templates = {
+        en: {
+          subject: "[Action Needed] Innovation Sandbox: Account Freeze Action based on Allowed Budget",
+          htmlBody: `
       <p> The account id: ${event.Detail.accountId} under lease id: ${event.Detail.leaseId.uuid} has been frozen since usage cost has reached the
       freeze threshold of USD ${event.Detail.reason.triggeredBudgetThreshold} against the assigned budget of USD ${event.Detail.reason.budget}.
       Sandbox users will no longer be able to access this account. The resources being used in the account will
@@ -685,7 +708,7 @@ export namespace EmailTemplates {
         </p>
       </p>
     `,
-        textBody: `
+          textBody: `
       The account id: ${event.Detail.accountId} under lease id: ${event.Detail.leaseId.uuid} has been frozen since usage cost has reached the
       freeze threshold of USD ${event.Detail.reason.triggeredBudgetThreshold} against the assigned budget of USD ${event.Detail.reason.budget}.
       Sandbox users will no longer be able to access this account. The resources being used in the account will
@@ -697,7 +720,54 @@ export namespace EmailTemplates {
         b) Review the account and initiate clean-up action through the Innovation Sandbox web application.
         c) If you wish to continue using the account beyond its budget limit, you can using the Innovation Sandbox
         web application to eject the account to the 'Exit' OU and then move it else where from there.
-   `,
+   `
+        },
+        'fr-CA': {
+          subject: "[Action nécessaire] Innovation Sandbox : Action de gel de compte basée sur le budget autorisé",
+          htmlBody: `
+      <p>Le compte ${event.Detail.accountId} sous le bail ${event.Detail.leaseId.uuid} a été gelé car le coût d'utilisation a atteint le
+      seuil de gel de ${event.Detail.reason.triggeredBudgetThreshold} USD contre le budget assigné de ${event.Detail.reason.budget} USD.
+      Les utilisateurs du bac à sable ne pourront plus accéder à ce compte. Les ressources utilisées dans le compte continueront
+      d'être facturées. Veuillez effectuer l'une des actions suivantes en temps opportun :
+        <p>
+        a) Révisez le compte avec le(s) utilisateur(s) du bac à sable pour terminer les ressources qui ne sont plus nécessaires afin de réduire les coûts.
+        Guidez les utilisateurs sur les moyens de rester dans la limite budgétaire et si nécessaire, accordez-leur manuellement l'accès au
+        compte pour reprendre l'utilisation du bac à sable.
+        </p>
+        <p>
+        OU
+        </p>
+        <p>
+        b) Révisez le compte et initiez l'action de nettoyage via l'application web Innovation Sandbox.
+        </p>
+        <p>
+        OU
+        </p>
+        <p>
+        c) Si vous souhaitez continuer à utiliser le compte au-delà de sa limite budgétaire, vous pouvez utiliser l'application web
+        Innovation Sandbox pour éjecter le compte vers l'OU 'Sortie' et le déplacer ailleurs à partir de là.
+        </p>
+      </p>
+    `,
+          textBody: `
+      Le compte ${event.Detail.accountId} sous le bail ${event.Detail.leaseId.uuid} a été gelé car le coût d'utilisation a atteint le
+      seuil de gel de ${event.Detail.reason.triggeredBudgetThreshold} USD contre le budget assigné de ${event.Detail.reason.budget} USD.
+      Les utilisateurs du bac à sable ne pourront plus accéder à ce compte. Les ressources utilisées dans le compte continueront
+      d'être facturées. Veuillez effectuer l'une des actions suivantes en temps opportun :
+        a) Révisez le compte avec le(s) utilisateur(s) du bac à sable pour terminer les ressources qui ne sont plus nécessaires afin de réduire les coûts.
+        Guidez les utilisateurs sur les moyens de rester dans la limite budgétaire et si nécessaire, accordez-leur manuellement l'accès au
+        compte pour reprendre l'utilisation du bac à sable.
+        OU
+        b) Révisez le compte et initiez l'action de nettoyage via l'application web Innovation Sandbox.
+        c) Si vous souhaitez continuer à utiliser le compte au-delà de sa limite budgétaire, vous pouvez utiliser l'application web
+        Innovation Sandbox pour éjecter le compte vers l'OU 'Sortie' et le déplacer ailleurs à partir de là.
+   `
+        }
+      };
+
+      return {
+        bcc: context.destination.bcc!,
+        ...templates[language],
       };
     }
 
@@ -1047,20 +1117,41 @@ Voir votre bail à : ${context.webAppUrl}/leases/${event.Detail.leaseOwner}/${ev
     event: UserAddedToLeaseEvent,
     context: EmailTemplatesContext,
   ): SynthesizedEmail {
-    return {
-      to: context.destination.to!,
-      subject: "Innovation Sandbox: User added to lease you approved",
-      htmlBody: `
-        <h1>User added to lease you approved</h1>
-        <p><strong>${event.Detail.addedUserEmail}</strong> has been added to lease <strong>${event.Detail.leaseId}</strong> (owned by ${event.Detail.leaseOwner}) by ${event.Detail.addedBy}.</p>
-        <p>This is a lease you previously approved. View the lease at: <a href="${context.webAppUrl}/leases/${event.Detail.leaseOwner}/${event.Detail.leaseId}">${context.webAppUrl}/leases</a></p>
-      `,
-      textBody: `
+    const language = context.language || 'en';
+    const templates = {
+      'en': {
+        subject: "Innovation Sandbox: User added to lease you approved",
+        htmlBody: `
+          <h1>User added to lease you approved</h1>
+          <p><strong>${event.Detail.addedUserEmail}</strong> has been added to lease <strong>${event.Detail.leaseId}</strong> (owned by ${event.Detail.leaseOwner}) by ${event.Detail.addedBy}.</p>
+          <p>This is a lease you previously approved. View the lease at: <a href="${context.webAppUrl}/leases/${event.Detail.leaseOwner}/${event.Detail.leaseId}">${context.webAppUrl}/leases</a></p>
+        `,
+        textBody: `
 User added to lease you approved
 
 ${event.Detail.addedUserEmail} has been added to lease ${event.Detail.leaseId} (owned by ${event.Detail.leaseOwner}) by ${event.Detail.addedBy}.
 This is a lease you previously approved. View the lease at: ${context.webAppUrl}/leases/${event.Detail.leaseOwner}/${event.Detail.leaseId}
-      `,
+        `
+      },
+      'fr-CA': {
+        subject: "Innovation Sandbox : Utilisateur ajouté au bail que vous avez approuvé",
+        htmlBody: `
+          <h1>Utilisateur ajouté au bail que vous avez approuvé</h1>
+          <p><strong>${event.Detail.addedUserEmail}</strong> a été ajouté au bail <strong>${event.Detail.leaseId}</strong> (appartenant à ${event.Detail.leaseOwner}) par ${event.Detail.addedBy}.</p>
+          <p>Il s'agit d'un bail que vous avez précédemment approuvé. Voir le bail à : <a href="${context.webAppUrl}/leases/${event.Detail.leaseOwner}/${event.Detail.leaseId}">${context.webAppUrl}/leases</a></p>
+        `,
+        textBody: `
+Utilisateur ajouté au bail que vous avez approuvé
+
+${event.Detail.addedUserEmail} a été ajouté au bail ${event.Detail.leaseId} (appartenant à ${event.Detail.leaseOwner}) par ${event.Detail.addedBy}.
+Il s'agit d'un bail que vous avez précédemment approuvé. Voir le bail à : ${context.webAppUrl}/leases/${event.Detail.leaseOwner}/${event.Detail.leaseId}
+        `
+      }
+    };
+
+    return {
+      to: context.destination.to!,
+      ...templates[language],
     };
   }
 

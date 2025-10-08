@@ -34,7 +34,7 @@ import { useBreadcrumb } from "@amzn/innovation-sandbox-frontend/hooks/useBreadc
 import { useInit } from "@amzn/innovation-sandbox-frontend/hooks/useInit";
 
 export const UpdateLease = () => {
-  const { t } = useTranslation();
+  const { t, ready } = useTranslation();
   const { leaseId } = useParams();
   const navigate = useNavigate();
   const setBreadcrumb = useBreadcrumb();
@@ -140,7 +140,7 @@ export const UpdateLease = () => {
 
     // create patch api request
     const leasePatchRequest: LeasePatchRequest = {
-      leaseId: lease.leaseId,
+      leaseId: leaseId!, // Use URL parameter (base64-encoded composite key)
       budgetThresholds,
       maxSpend: maxBudgetEnabled ? maxSpend : null,
     };
@@ -170,6 +170,37 @@ export const UpdateLease = () => {
     navigate("/leases");
   };
 
+  // call api to reassign lease owner
+  const onReassignOwner = async (newOwnerEmail: string) => {
+    const leasePatchRequest: LeasePatchRequest = {
+      leaseId: leaseId!, // Use URL parameter (base64-encoded composite key)
+      userEmail: newOwnerEmail,
+    };
+
+    await updateLease(leasePatchRequest);
+    
+    // Debug and show toast with fallback
+    const translatedMessage = t("leaseUpdatedSuccess", { ns: "leases" });
+    console.log("Translation result:", translatedMessage);
+    console.log("Ready state:", ready);
+    
+    // Use hardcoded message if translation fails
+    const message = translatedMessage === "leaseUpdatedSuccess" 
+      ? "Bail mis à jour avec succès." 
+      : translatedMessage;
+    
+    showSuccessToast(message);
+    
+    // Create new composite key with updated userEmail
+    const newCompositeKey = btoa(JSON.stringify({
+      userEmail: newOwnerEmail,
+      uuid: lease.uuid
+    }));
+    
+    // Navigate to the new URL with updated composite key
+    navigate(`/leases/edit/${newCompositeKey}`);
+  };
+
   // Check if user can manage users
   const canManageUsers = () => {
     // Managers and Admins can always manage users
@@ -188,7 +219,14 @@ export const UpdateLease = () => {
   const body = () => {
     if (!isMonitoredLease(lease)) {
       // if lease is not active, don't show tabs for budget/duration
-      return <LeaseSummary lease={lease} />;
+      return (
+        <LeaseSummary 
+          lease={lease} 
+          canReassignOwner={isManagerOrAdmin()} 
+          onReassignOwner={onReassignOwner}
+          isUpdating={isUpdating}
+        />
+      );
     }
 
     // Build tabs based on user role and template settings
@@ -196,7 +234,14 @@ export const UpdateLease = () => {
       {
         label: t("tabs.summary", { ns: "leases" }),
         id: "summary",
-        content: <LeaseSummary lease={lease} />,
+        content: (
+          <LeaseSummary 
+            lease={lease} 
+            canReassignOwner={isManagerOrAdmin()} 
+            onReassignOwner={onReassignOwner}
+            isUpdating={isUpdating}
+          />
+        ),
       },
     ];
 

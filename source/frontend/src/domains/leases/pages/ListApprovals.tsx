@@ -100,7 +100,7 @@ const ReviewModalContent = ({
   return (
     <BatchActionReview
       items={selectedRequests}
-      description={`${selectedRequests.length} lease request(s) to review`}
+      description={t('leaseRequestsToReview', { count: selectedRequests.length, ns: 'leases' })}
       columnDefinitions={createColumnDefinitions(false, t)}
       identifierKey="leaseId"
       onSubmit={async (lease: Lease) => {

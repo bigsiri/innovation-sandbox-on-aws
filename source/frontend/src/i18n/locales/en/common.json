@@ -28,6 +28,12 @@
   "documentation": "Documentation",
   "exit": "Exit",
   "cancel": "Cancel",
+  "confirm": "Confirm",
+  "submit": "Submit",
+  "retry": "Retry",
+  "success": "Success",
+  "failed": "Failed",
+  "status": "Status",
   "yes": "Yes",
   "no": "No",
   "validation": {

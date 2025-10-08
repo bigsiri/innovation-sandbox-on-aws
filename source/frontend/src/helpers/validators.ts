@@ -3,9 +3,9 @@
 
 export const validateNumber = (val: any, t?: (key: string, options?: any) => string) => {
   if (isNaN(val) || val.toString() === "") {
-    return t ? t("validation.invalidNumber") : "Please enter a valid number.";
+    return t ? t("validation.invalidNumber", { ns: "common" }) : "Please enter a valid number.";
   }
   if (val === 0) {
-    return t ? t("validation.numberGreaterThanZero") : "Please enter a number larger than 0";
+    return t ? t("validation.numberGreaterThanZero", { ns: "common" }) : "Please enter a number larger than 0";
   }
 };

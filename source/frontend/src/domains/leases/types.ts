@@ -17,6 +17,7 @@ export type LeasePatchRequest = {
   budgetThresholds?: MonitoredLease["budgetThresholds"];
   expirationDate?: MonitoredLease["expirationDate"] | null;
   durationThresholds?: MonitoredLease["durationThresholds"];
+  userEmail?: string;
 };
 
 export type LeaseFormData = LeasePatchRequest & {

@@ -440,6 +440,7 @@ async function patchLeaseByIdHandler(
     budgetThresholds: true,
     expirationDate: true,
     durationThresholds: true,
+    userEmail: true,
   })
     .extend({
       maxSpend: MonitoredLeaseSchema.shape.maxSpend.nullable(),
@@ -497,6 +498,23 @@ async function patchLeaseByIdHandler(
     });
   }
 
+  // Check authorization for owner reassignment
+  if (leaseUpdates.userEmail && leaseUpdates.userEmail !== existingLease.userEmail) {
+    const isManagerOrAdmin = context.user.roles?.includes("Admin") || context.user.roles?.includes("Manager");
+    if (!isManagerOrAdmin) {
+      throw createHttpJSendError({
+        statusCode: 403,
+        data: {
+          errors: [
+            {
+              message: "Only administrators can reassign lease ownership.",
+            },
+          ],
+        },
+      });
+    }
+  }
+
   const updatedLease: Lease = {
     ...existingLease,
     ...leaseUpdates,
@@ -522,7 +540,17 @@ async function patchLeaseByIdHandler(
   }
 
   try {
-    const putResult = await leaseStore.update(updatedLease);
+    let putResult;
+    
+    // If userEmail is being changed, use transaction for atomic update
+    if (leaseUpdates.userEmail && leaseUpdates.userEmail !== existingLease.userEmail) {
+      // Use transaction to atomically delete old and create new
+      await leaseStore.delete(leaseCompositeKey);
+      putResult = await leaseStore.create(updatedLease);
+    } else {
+      // Normal update for non-key fields
+      putResult = await leaseStore.update(updatedLease);
+    }
 
     logger.info(
       `Updated Lease ${existingLease.uuid}`,

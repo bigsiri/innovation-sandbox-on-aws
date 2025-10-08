@@ -19,4 +19,5 @@ export const EventDetailTypes = {
   AccountDriftDetected: "AccountDriftDetected",
   UserAddedToLease: "UserAddedToLease",
   UserRemovedFromLease: "UserRemovedFromLease",
+  LeaseOwnerReassigned: "LeaseOwnerReassigned",
 } as const;

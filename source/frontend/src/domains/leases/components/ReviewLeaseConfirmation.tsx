@@ -19,7 +19,7 @@ export const ReviewLeaseConfirmation = ({
   leaseId: string;
   onCancel: () => any;
 }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['approvals', 'common']);
   const { mutateAsync: reviewLease, isPending: reviewLeaseIsLoading } =
     useReviewLease();
   const navigate = useNavigate();
@@ -56,7 +56,7 @@ export const ReviewLeaseConfirmation = ({
             );
           }}
         >
-          Confirm
+          {t("confirm", { ns: "common" })}
         </Button>
       </Box>
     </Box>

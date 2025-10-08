@@ -118,7 +118,7 @@ describe("BudgetForm", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText("validation.invalidNumber"),
+        screen.getByText("Please enter a valid number."),
       ).toBeInTheDocument();
     });
   });
